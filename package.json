@@ -1,0 +1,8 @@
+{
+  "name": "parabula",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "preview": "node preview/server.mjs"
+  }
+}

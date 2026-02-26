@@ -1,0 +1,143 @@
+/* Reader UI uses existing tokens from styles/a4-base.css (:root) */
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-color: var(--bg-subtle);
+  align-items: stretch;
+}
+
+.reader-shell {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.reader-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-paper);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.reader-title {
+  font-size: 16px;
+  font-weight: 500 !important;
+  color: var(--title-blue);
+  white-space: nowrap;
+}
+
+.reader-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.reader-btn {
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reader-btn:hover {
+  background: var(--bg-subtle);
+}
+
+.reader-select {
+  min-width: 320px;
+  max-width: 52vw;
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.reader-meta {
+  font-size: 13px;
+  color: var(--text-main);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.reader-main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.reader-sidebar {
+  width: 320px;
+  background: var(--bg-paper);
+  border-left: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.reader-sidebar-title {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--title-blue);
+  font-weight: 500 !important;
+}
+
+.reader-list {
+  padding: 8px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reader-item {
+  text-align: right;
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.reader-item:hover {
+  background: var(--bg-subtle);
+}
+
+.reader-item.is-active {
+  border-color: var(--title-blue);
+}
+
+.reader-stage {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  background: var(--bg-subtle);
+}
+
+.reader-frameWrap {
+  flex: 1;
+  margin: 14px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.reader-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--bg-paper);
+}

@@ -1,0 +1,32 @@
+/* עמוד 1 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-1 {
+}
+
+.page-1.a4-page {
+	padding-top: 8mm;
+}
+
+.page-1 .p1-grid {
+	display: grid;
+}
+
+.page-1 .p1-cols-1 {
+	grid-template-columns: 1fr;
+}
+
+.page-1 .p1-cols-2 {
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.page-1 .p1-cols-3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.page-1 .p1-cols-4 {
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.page-1 .p1-gap-1 {
+	gap: 1px;
+}

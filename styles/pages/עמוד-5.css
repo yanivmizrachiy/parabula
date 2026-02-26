@@ -1,0 +1,39 @@
+/* עמוד 5 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-5 .question-block {
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.page-5 .p4-text-block {
+    line-height: 26px;
+    font-size: 16px;
+}
+
+.page-5 .p4-sentence {
+    margin-bottom: 14px;
+}
+
+.page-5 .p4-sentence:last-child {
+    margin-bottom: 0;
+}
+
+.page-5 .p4-text-block .answer-box {
+    margin: 0 6px;
+}
+
+.page-5 .p4-wordbank {
+    direction: rtl;
+    text-align: right;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.page-5 .p4-wordbank-title {
+	font-weight: inherit;
+}
+
+.page-5 .p4-wordbank-list {
+    line-height: 22px;
+}

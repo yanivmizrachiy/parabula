@@ -1,0 +1,129 @@
+/* עמוד 3 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-3 {
+	--p3-graph-size: 410px;
+}
+
+.page-3 .p3-coordinate-system {
+	width: var(--p3-graph-size);
+	height: var(--p3-graph-size);
+	background-position: 17px 17px;
+	margin-right: 0;
+	margin-left: 0;
+}
+
+.page-3 .p3-top-layout {
+	direction: ltr;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--p3-graph-size);
+	gap: 10px;
+	align-items: start;
+	width: 100%;
+	margin-top: 4px;
+}
+
+.page-3 .p3-equation-intro {
+	display: flex;
+	flex-direction: column;
+}
+
+.page-3 .p3-equation-block {
+	margin: 0 0 6px;
+	line-height: 22px;
+}
+
+.page-3 .p3-equation-title {
+	margin-bottom: 4px;
+}
+
+.page-3 .p3-center-line {
+	text-align: center;
+	margin: 0;
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.page-3 .q-main {
+	margin-bottom: 0;
+}
+
+.page-3 .p3-coordinate-right {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.page-3 .p3-calc-block {
+	min-width: 0;
+}
+
+.page-3 .p3-coordinate-system {
+	margin-right: 8px;
+}
+
+.page-3 .coordinate-container {
+	margin-top: 0;
+}
+
+.page-3 .p3-calc-block {
+	direction: rtl;
+	text-align: right;
+}
+
+.page-3 .p3-calc-example {
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.page-3 .p3-calc-list {
+	direction: ltr;
+	unicode-bidi: isolate;
+	display: flex;
+	flex-direction: column;
+	height: var(--p3-graph-size);
+	justify-content: space-between;
+	gap: 0;
+	padding: 2px 0;
+}
+
+.page-3 .p3-calc-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.page-3 .p3-calc-math {
+	min-width: 70px;
+}
+
+.page-3 .p3-grid-pad {
+	width: 150px;
+	height: 26px;
+	border: 1px solid var(--border-light);
+	border-bottom: 2px solid var(--accent-dark);
+	border-radius: 4px;
+	display: inline-block;
+	background-color: #fff;
+	background-image:
+		linear-gradient(rgba(203, 213, 225, 0.45) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(203, 213, 225, 0.45) 1px, transparent 1px);
+	background-size: 13px 13px;
+}
+
+.page-3 .p3-grid-padGhost {
+	opacity: 0;
+}
+
+.page-3 .p3-dashed-blank-80 {
+	width: 80px;
+	border-bottom: 1px dashed black;
+	display: inline-block;
+}
+
+.page-3 .p3-mc-ltr {
+	direction: ltr;
+}
+
+.page-3 .p3-center-row {
+	display: flex;
+	justify-content: center;
+}

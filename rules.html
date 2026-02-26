@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules — כללים ליצירת דפי עבודה A4</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <link rel="stylesheet" href="styles/a4-base.css">
+</head>
+<body>
+
+    <!-- Rules Page 1 -->
+    <main class="a4-page">
+        <header class="header-container">
+            <h1 class="page-title">כללים</h1>
+            <div class="page-number">R1</div>
+        </header>
+
+        <div class="question-block">
+            <div>
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">מטרת המסמך: להגדיר סטנדרט אחיד ליצירת דפי עבודה להדפסה A4, באותו סגנון בדיוק, עם הפרדה מוחלטת בין HTML ל-CSS.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">כל שינוי בסגנון/כללים מתבצע אך ורק ע"י עריכה למסמך זה, ובהתאם להנחיות שתמסור.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">כלל עליון: אין CSS בתוך ה-HTML.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">אסור להשתמש ב-<span class="rules-code">&lt;style&gt;</span>, ואסור להשתמש במאפיין Inline Style על תגיות. כל עיצוב—רק בקבצי CSS.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">HTML מכיל רק מבנה/טקסט/MathJax/מחלקות. CSS מכיל את כל ה-layout והעיצוב.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">מבנה בסיס חובה לכל דף A4:</div>
+                </div>
+
+                <div class="rules-code">&lt;main class="a4-page page-1"&gt;
+  &lt;header class="header-container"&gt;
+    &lt;h1 class="page-title"&gt;כותרת&lt;/h1&gt;
+    &lt;div class="page-number"&gt;1&lt;/div&gt;
+  &lt;/header&gt;
+  &lt;div class="question-block"&gt;...&lt;/div&gt;
+&lt;/main&gt;</div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">כותרת הדף תמיד ב-<span class="rules-code">.page-title</span>, ומספר עמוד תמיד בעיגול <span class="rules-code">.page-number</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">לא מוסיפים מספור ידני לסעיפי משנה בתוך הטקסט (א./ב./ג. וכו') כאשר כבר יש בולט. סעיפי משנה נכתבים כ-<span class="rules-code">.q-sub</span> וההפרדה ביניהם נעשית באמצעות הבולט בלבד.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">כל דף עבודה חייב “רקע/עיצוב ייעודי” לפי שם העמוד (עמוד 1, עמוד 2 וכו').</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">היישום התקני: לכל עמוד קיימת מחלקה ייחודית על ה-<span class="rules-code">.a4-page</span> (למשל <span class="rules-code">page-1</span>, <span class="rules-code">page-2</span>), ובנוסף קובץ CSS ייעודי לעמוד שמכיל רק overrides/רקע של אותו עמוד.</div>
+                </div>
+
+                <div class="rules-code">&lt;link rel="stylesheet" href="styles/a4-base.css"&gt;
+&lt;link rel="stylesheet" href="styles/pages/עמוד-1.css"&gt;</div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">קובץ הבסיס נשאר אחיד לכל הפרויקט; קובץ עמוד ייעודי לא משנה טוקנים/פונטים—רק התאמות נקודתיות לאותו עמוד.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">הדפסה A4:</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">חובה לשמור על <span class="rules-code">@page { size: A4; margin: 0; }</span> ועל ביטול הצללה/שוליים למסך בתוך <span class="rules-code">@media print</span>, כפי שמוגדר ב-<span class="rules-code">styles/a4-base.css</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">אסור לשנות את מידות <span class="rules-code">.a4-page</span> (210mm × 297mm) ואת ה-padding שלו בלי הוראה מפורשת ממך.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">תצוגה מקדימה (דפדוף כמו ספר):</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">כל עמוד HTML כולל פס ניווט <span class="rules-code">.preview-nav</span> עם כפתורי “הקודם/הבא” כדי לדפדף בנוחות בין דפים. הפס מוצג רק במסך ומוסתר בהדפסה בתוך <span class="rules-code">@media print</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview</span>). ה-Reader מציג עמוד אחד בכל רגע, עם כפתורי דפדוף נוחים.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">מספור עמודים מתאפס בכל נושא חדש: כאשר מתחיל נושא חדש (כותרת חדשה), הערך בתוך <span class="rules-code">.page-number</span> חוזר ל-1, וגם הטקסט ב-<span class="rules-code">.preview-nav .nav-meta</span> מציג “שם הנושא — עמוד X / Y”.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">פס הניווט כולל גם אזור “מעבר בין נושאים” (<span class="rules-code">.preview-nav-topics</span>) עם כפתורי נושא מעוצבים (<span class="rules-code">.topic-link</span>). כפתורים אלו מוצגים רק בתצוגה (מסך) ומוסתרים בהדפסה.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">כאשר אין מקום בעמוד: מפצלים לעמוד הבא בקובץ חדש (למשל <span class="rules-code">עמוד-5.html</span>) עם קובץ CSS ייעודי (למשל <span class="rules-code">styles/pages/עמוד-5.css</span>), ומעדכנים את כל קישורי הניווט <span class="rules-code">הקודם/הבא</span>, ואת הטקסט <span class="rules-code">עמוד X / Y</span> בכל עמודי הנושא.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">דוגמה בפועל: אם הוסף “עמוד המשך” באמצע נושא (למשל <span class="rules-code">עמוד-6.html</span>), חייבים לעדכן את מספור העמוד בעיגול (<span class="rules-code">.page-number</span>) ואת <span class="rules-code">עמוד X / Y</span> בכל העמודים הרלוונטיים של אותו נושא.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">RTL / LTR:</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">המסמך כולו <span class="rules-code">dir="rtl"</span> (עברית). רכיבים מתמטיים/טבלאות/מערכות צירים משתמשים ב-<span class="rules-code">direction: ltr</span> לפי המחלקות הקיימות.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">מערכת צירים (תוויות וריווח):</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">תוויות הצירים <span class="rules-code">x</span>/<span class="rules-code">y</span> מוגדרות בבסיס (<span class="rules-code">styles/a4-base.css</span>). האות <span class="rules-code">y</span> חייבת להיות בדיוק מעל החץ של ציר ה-<span class="rules-code">y</span> ולכן היא ממורכזת ע"י <span class="rules-code">left: 50%</span> יחד עם <span class="rules-code">transform: translateX(-50%)</span>.</div>
+                </div>
+
+                <div class="rules-code">/* styles/a4-base.css */
+.label-y { left: 50%; top: -25px; transform: translateX(-50%); }</div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">אם מערכת הצירים צמודה מדי לטקסט שמעליה—לא משנים padding כללי של הדף. במקום זה מוסיפים ריווח נקודתי בקובץ ה-CSS הייעודי של אותו עמוד (למשל <span class="rules-code">margin-top</span> ל-<span class="rules-code">.coordinate-container</span>).</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">MathJax:</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">נוסחאות inline נכתבות תמיד בפורמט <span class="rules-code">\( ... \)</span>. אין להכניס רנדר ידני או ספריות חלופיות בלי עדכון לכללי המסמך.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">איסורים לשמירה על אחידות:</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">לא מוסיפים צבעים/פונטים/צללים חדשים מעבר לטוקנים שמוגדרים ב-<span class="rules-code">:root</span> של קובץ הבסיס—אלא אם תבקש במפורש.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">לא מוסיפים הדגשות למלל מיוזמתנו (בולד/קו תחתון/תיבות “הדגשה”/שינוי משקל פונט) — מדגישים רק מילים שאתה אומר במפורש להדגיש.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">לא מוסיפים “דמו”. כל עמוד עבודה שניצור בהמשך יכיל רק את התוכן שאתה מגדיר, והסגנון נגזר מהכללים כאן.</div>
+                </div>
+
+            </div>
+
+            <div>
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text">גרסה: 2026-02-27</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

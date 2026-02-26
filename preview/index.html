@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parabula — Reader</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/styles/a4-base.css" />
+    <link rel="stylesheet" href="/styles/preview.css" />
+  </head>
+  <body>
+    <div class="reader-shell">
+      <header class="reader-topbar">
+        <div class="reader-title">תצוגה מקדימה — דפדוף</div>
+
+        <div class="reader-controls">
+          <button class="reader-btn" id="prevBtn" type="button">הקודם</button>
+          <select class="reader-select" id="fileSelect" aria-label="בחירת מסמך"></select>
+          <button class="reader-btn" id="nextBtn" type="button">הבא</button>
+        </div>
+
+        <div class="reader-meta" id="meta"></div>
+      </header>
+
+      <main class="reader-main">
+        <aside class="reader-sidebar" aria-label="מסמכים">
+          <div class="reader-sidebar-title">מסמכים</div>
+          <div class="reader-list" id="fileList"></div>
+        </aside>
+
+        <section class="reader-stage" aria-label="תצוגה">
+          <div class="reader-frameWrap" id="frameWrap">
+            <iframe class="reader-frame" id="frame" title="תצוגה מקדימה" referrerpolicy="no-referrer"></iframe>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      const fileSelect = document.getElementById('fileSelect');
+      const fileList = document.getElementById('fileList');
+      const frame = document.getElementById('frame');
+      const meta = document.getElementById('meta');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      /** @type {string[]} */
+      let files = [];
+
+      function getSelectedFile() {
+        const url = new URL(window.location.href);
+        return url.searchParams.get('file') || '';
+      }
+
+      function setSelectedFile(file) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('file', file);
+        window.history.replaceState({}, '', url);
+      }
+
+      function updateSingleFrame(file, reason) {
+        if (!file) return;
+        const bust = String(Date.now());
+        frame.src = `/${encodeURIComponent(file)}?v=${bust}`;
+        meta.textContent = `${file}${reason ? ' • ' + reason : ''}`;
+      }
+
+      function renderList(selected) {
+        fileSelect.innerHTML = '';
+        fileList.innerHTML = '';
+
+        for (const f of files) {
+          const opt = document.createElement('option');
+          opt.value = f;
+          opt.textContent = f;
+          fileSelect.appendChild(opt);
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'reader-item' + (f === selected ? ' is-active' : '');
+          btn.textContent = f;
+          btn.addEventListener('click', () => {
+            setSelectedFile(f);
+            fileSelect.value = f;
+            renderList(f);
+            updateSingleFrame(f, 'נפתח');
+          });
+          fileList.appendChild(btn);
+        }
+
+        fileSelect.value = selected;
+      }
+
+      function selectNeighbor(delta) {
+        const current = getSelectedFile();
+        const idx = files.indexOf(current);
+        if (idx < 0) return;
+        const nextIdx = Math.min(files.length - 1, Math.max(0, idx + delta));
+        const nextFile = files[nextIdx];
+        setSelectedFile(nextFile);
+        renderList(nextFile);
+        updateSingleFrame(nextFile, 'דפדוף');
+      }
+
+      async function boot() {
+        const res = await fetch('/api/files', { cache: 'no-store' });
+        const data = await res.json();
+        files = (data.files || []).filter(Boolean);
+
+        const preferred = getSelectedFile();
+        const initial = files.includes(preferred) ? preferred : files[0] || '';
+
+        if (!initial) {
+          meta.textContent = 'לא נמצאו קבצי HTML להצגה.';
+          return;
+        }
+
+        setSelectedFile(initial);
+        renderList(initial);
+        updateSingleFrame(initial, 'מוכן');
+
+        fileSelect.addEventListener('change', () => {
+          const f = fileSelect.value;
+          setSelectedFile(f);
+          renderList(f);
+          updateSingleFrame(f, 'נבחר');
+        });
+
+        prevBtn.addEventListener('click', () => selectNeighbor(-1));
+        nextBtn.addEventListener('click', () => selectNeighbor(1));
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') selectNeighbor(-1);
+          if (e.key === 'ArrowRight') selectNeighbor(1);
+        });
+
+        const es = new EventSource('/events');
+        es.addEventListener('reload', () => {
+          const currentFile = getSelectedFile();
+          if (currentFile) updateSingleFrame(currentFile, 'עודכן');
+        });
+      }
+
+      boot();
+    </script>
+  </body>
+</html>

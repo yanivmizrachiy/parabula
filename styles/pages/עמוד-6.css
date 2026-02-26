@@ -1,0 +1,16 @@
+/* עמוד 6 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-6 .question-block {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.page-6 .p3-dashed-blank-80 {
+    width: 80px;
+    border-bottom: 1px dashed black;
+    display: inline-block;
+}
+
+.page-6 .p3-mc-ltr {
+    direction: ltr;
+}

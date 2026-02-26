@@ -1,0 +1,115 @@
+/* עמוד 4 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-4 .question-block {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.page-4 .p4-text-block {
+    line-height: 26px;
+    font-size: 16px;
+}
+
+.page-4 .p4-sentence {
+    margin-bottom: 14px;
+}
+
+.page-4 .p4-sentence:last-child {
+    margin-bottom: 0;
+}
+
+.page-4 .p4-center-line {
+    text-align: center;
+    margin: 6px 0;
+    direction: ltr;
+    unicode-bidi: isolate;
+}
+
+.page-4 .p4-text-block .answer-box {
+    margin: 0 6px;
+}
+
+.page-4 .p4-wordbank {
+    direction: rtl;
+    text-align: right;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.page-4 .p4-wordbank-title {
+    font-weight: inherit;
+}
+
+.page-4 .p4-wordbank-list {
+    line-height: 22px;
+}
+
+.page-4 .p4-parabola-showcase {
+    padding: 10px 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-4 .p4-parabola-svg {
+    width: 200px;
+    height: 180px;
+}
+
+.page-4 .p4-explain-block {
+    font-size: 15px;
+    line-height: 22px;
+    margin: 2px 0 8px;
+}
+
+.page-4 .p4-explain-line {
+    margin-bottom: 6px;
+}
+
+.page-4 .p4-explain-math {
+    margin: 2px 0 8px;
+}
+
+.page-4 .p4-explain-line:last-child {
+    margin-bottom: 0;
+}
+
+.page-4 .p4-callout {
+    direction: rtl;
+    text-align: right;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px 12px;
+}
+
+.page-4 .p4-callout-text {
+    width: 100%;
+}
+
+.page-4 .p4-axis-line {
+    stroke: var(--accent-dark);
+    stroke-width: 2px;
+}
+
+.page-4 .p4-axis-fill {
+    fill: var(--accent-dark);
+}
+
+.page-4 .p4-parabola-path {
+    fill: none;
+    stroke: var(--accent-dark);
+    stroke-width: 2px;
+}
+
+.page-4 .p4-svg-text {
+    fill: var(--accent-dark);
+    font-size: 14px;
+}
+
+.page-4 .p4-svg-axis-label {
+    dominant-baseline: middle;
+}
+
+.page-4 .p4-svg-text-center {
+    text-anchor: middle;
+}
