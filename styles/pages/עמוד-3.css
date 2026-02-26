@@ -1,13 +1,13 @@
 /* עמוד 3 — עיצוב/רקע ייעודי לעמוד זה בלבד */
 
 .page-3 {
-	--p3-graph-size: 410px;
+	--p3-graph-size: 396px;
 }
 
 .page-3 .p3-coordinate-system {
 	width: var(--p3-graph-size);
 	height: var(--p3-graph-size);
-	background-position: center;
+	background-position: 0 0;
 	margin-right: 0;
 	margin-left: 0;
 }

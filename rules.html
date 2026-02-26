@@ -179,7 +179,7 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>דרישה חזקה:</strong> צירי <span class="rules-code">x</span>/<span class="rules-code">y</span> חייבים להיות בדיוק על קווי הרשת (לחפוף לקו רשת). אסור להזיז את הרשת עם <span class="rules-code">background-position</span> באופן שגורם לצירים “ליפול בין משבצות”. אם יש התאמות בעמוד ייעודי—שומרים על רשת ממורכזת כך שהצירים ב-<span class="rules-code">50%</span> יישבו על קו רשת.</div>
+                    <div class="q-text rules-paragraph"><strong>דרישה חזקה:</strong> צירי <span class="rules-code">x</span>/<span class="rules-code">y</span> חייבים להיות בדיוק על קווי הרשת (לחפוף לקו רשת). הצירים חייבים להיות ממורכזים על האמצע (כלומר ממורכזים סביב <span class="rules-code">50%</span> בעזרת <span class="rules-code">transform</span>), ולא “להתחיל” ב-<span class="rules-code">50%</span>. בנוסף, גודל <span class="rules-code">.coordinate-system</span> בעמודים ייעודיים חייב להיות מכפלה של <span class="rules-code">44px</span> (כלומר מספר זוגי של משבצות בגודל <span class="rules-code">22px</span>), כדי שהקו האמצעי יהיה קו רשת. אסור להזיז את הרשת עם <span class="rules-code">background-position</span> באופן שגורם לצירים “ליפול בין משבצות”.</div>
                 </div>
 
                 <div class="rules-code">/* styles/a4-base.css */
