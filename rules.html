@@ -177,6 +177,11 @@
                     <div class="q-text rules-paragraph">תוויות הצירים <span class="rules-code">x</span>/<span class="rules-code">y</span> מוגדרות בבסיס (<span class="rules-code">styles/a4-base.css</span>). האות <span class="rules-code">y</span> חייבת להיות בדיוק מעל החץ של ציר ה-<span class="rules-code">y</span> ולכן היא ממורכזת ע"י <span class="rules-code">left: 50%</span> יחד עם <span class="rules-code">transform: translateX(-50%)</span>.</div>
                 </div>
 
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>דרישה חזקה:</strong> צירי <span class="rules-code">x</span>/<span class="rules-code">y</span> חייבים להיות בדיוק על קווי הרשת (לחפוף לקו רשת). אסור להזיז את הרשת עם <span class="rules-code">background-position</span> באופן שגורם לצירים “ליפול בין משבצות”. אם יש התאמות בעמוד ייעודי—שומרים על רשת ממורכזת כך שהצירים ב-<span class="rules-code">50%</span> יישבו על קו רשת.</div>
+                </div>
+
                 <div class="rules-code">/* styles/a4-base.css */
 .label-y { left: 50%; top: -25px; transform: translateX(-50%); }</div>
 

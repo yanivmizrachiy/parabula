@@ -149,6 +149,7 @@ html, body {
     position: relative;
     background-image: linear-gradient(rgba(203, 213, 225, 0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(203, 213, 225, 0.4) 1px, transparent 1px);
     background-size: 22px 22px;
+    background-position: center;
     margin: 0 auto;
 }
 

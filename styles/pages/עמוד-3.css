@@ -7,7 +7,7 @@
 .page-3 .p3-coordinate-system {
 	width: var(--p3-graph-size);
 	height: var(--p3-graph-size);
-	background-position: 17px 17px;
+	background-position: center;
 	margin-right: 0;
 	margin-left: 0;
 }
