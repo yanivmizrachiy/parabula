@@ -32,9 +32,6 @@
                     <div class="q-text">מטרת המסמך: להגדיר סטנדרט אחיד ליצירת דפי עבודה להדפסה A4, באותו סגנון בדיוק, עם הפרדה מוחלטת בין HTML ל-CSS.</div>
                 </div>
 
-                <div class="q-sub">
-                    <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">כל שינוי בסגנון/כללים מתבצע אך ורק ע"י עריכה למסמך זה, ובהתאם להנחיות שתמסור.</div>
                 </div>
 
                 <hr>
@@ -180,11 +177,6 @@
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
                     <div class="q-text rules-paragraph"><strong>כלל חובה (דרישה חזקה):</strong> הצירים עצמם (הקווים השחורים) חייבים לחפוף לקווי הרשת: גם ציר <span class="rules-code">x</span> וגם ציר <span class="rules-code">y</span> — ובפרט <strong>ציר ה-<span class="rules-code">y</span> חייב לעבור בדיוק על קו רשת</strong> (לא בין שתי משבצות). כדי לקבל דיוק פיקסל-לפיקסל, עובי הצירים הוא <span class="rules-code">1px</span> והם ממוקמים בדיוק ב-<span class="rules-code">50%</span> (ללא <span class="rules-code">transform</span>). בנוסף, גודל <span class="rules-code">.coordinate-system</span> בעמודים ייעודיים חייב להיות מכפלה של <span class="rules-code">44px</span> (כלומר מספר זוגי של משבצות בגודל <span class="rules-code">22px</span>) כדי שהאמצע יהיה בדיוק קו רשת. אסור להזיז את הרשת עם <span class="rules-code">background-position</span> באופן שגורם לצירים ליפול בין קווי הרשת.</div>
-                </div>
-
-                <div class="q-sub">
-                    <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">חריג מותר (רק אם נדרש בעמוד ספציפי): אם מזיזים את ציר <span class="rules-code">y</span> מעט שמאלה/ימינה (למשל <span class="rules-code">1mm</span>)—חובה להזיז באותו ערך גם את הרשת האנכית (באמצעות <span class="rules-code">background-position-x</span> / הערך הראשון של <span class="rules-code">background-position</span>) כדי שהציר ימשיך לחפוף לקו רשת. בנוסף, חובה להזיז יחד עם הציר גם את תווית <span class="rules-code">y</span> כדי שתישאר מעל החץ.</div>
                 </div>
 
                 <div class="rules-code">/* styles/a4-base.css */

@@ -2,23 +2,26 @@
 
 .page-3 {
 	--p3-graph-size: 396px;
-	--p3-y-axis-shift: 1mm;
 }
 
 .page-3 .p3-coordinate-system {
 	width: var(--p3-graph-size);
 	height: var(--p3-graph-size);
-	background-position: var(--p3-y-axis-shift) 0;
+	background-position: 0 0;
 	margin-right: 0;
 	margin-left: 0;
 }
 
+.page-3 .p3-coordinate-system .axis-x {
+	top: calc(var(--p3-graph-size) / 2);
+}
+
 .page-3 .p3-coordinate-system .axis-y {
-	left: calc(50% + var(--p3-y-axis-shift));
+	left: calc(var(--p3-graph-size) / 2);
 }
 
 .page-3 .p3-coordinate-system .label-y {
-	left: calc(50% + var(--p3-y-axis-shift));
+	left: calc(var(--p3-graph-size) / 2);
 }
 
 .page-3 .p3-top-layout {
