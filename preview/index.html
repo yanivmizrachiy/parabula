@@ -47,6 +47,7 @@
       const meta = document.getElementById('meta');
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
+      const frameWrap = document.getElementById('frameWrap');
 
       /** @type {string[]} */
       let files = [];
@@ -67,6 +68,50 @@
         const bust = String(Date.now());
         frame.src = `/${encodeURIComponent(file)}?v=${bust}`;
         meta.textContent = `${file}${reason ? ' • ' + reason : ''}`;
+      }
+
+      function injectReaderStyles(doc) {
+        if (!doc) return;
+        const existing = doc.getElementById('__reader_injected');
+        if (existing) return;
+
+        const style = doc.createElement('style');
+        style.id = '__reader_injected';
+        style.textContent = `
+          .preview-nav { display: none !important; }
+          html, body { background: var(--bg-paper) !important; }
+          body { align-items: flex-start !important; }
+          .a4-page { margin-bottom: 0 !important; }
+        `;
+        doc.head.appendChild(style);
+      }
+
+      function fitA4InFrame() {
+        try {
+          const doc = frame.contentDocument;
+          if (!doc) return;
+          injectReaderStyles(doc);
+
+          const page = doc.querySelector('.a4-page');
+          if (!page) return;
+
+          // Reset any previous scaling.
+          page.style.zoom = '';
+          page.style.transform = '';
+          page.style.transformOrigin = '';
+
+          const pageRect = page.getBoundingClientRect();
+          const availW = frame.clientWidth - 24;
+          const availH = frame.clientHeight - 24;
+          if (availW <= 0 || availH <= 0 || pageRect.width <= 0 || pageRect.height <= 0) return;
+
+          const scale = Math.min(availW / pageRect.width, availH / pageRect.height, 1);
+
+          // Prefer `zoom` (stable in Chromium) to avoid transform layout issues.
+          page.style.zoom = String(scale);
+        } catch {
+          // Ignore cross-origin / transient iframe loading states.
+        }
       }
 
       function renderList(selected) {
@@ -143,6 +188,19 @@
           const currentFile = getSelectedFile();
           if (currentFile) updateSingleFrame(currentFile, 'עודכן');
         });
+
+        frame.addEventListener('load', () => {
+          // Give MathJax/layout a beat to settle before fitting.
+          setTimeout(fitA4InFrame, 80);
+          setTimeout(fitA4InFrame, 250);
+        });
+
+        if (window.ResizeObserver && frameWrap) {
+          const ro = new ResizeObserver(() => fitA4InFrame());
+          ro.observe(frameWrap);
+        } else {
+          window.addEventListener('resize', () => fitA4InFrame());
+        }
       }
 
       boot();

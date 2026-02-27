@@ -1,0 +1,80 @@
+/* עמוד 7 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-7 .question-block {
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.page-7 .p7-showcase {
+	justify-content: center;
+	align-items: flex-end;
+	padding: 10px 25px;
+}
+
+.page-7 .p7-structures {
+	direction: ltr;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-around;
+	gap: 14px;
+	width: 100%;
+}
+
+.page-7 .p7-structure {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+}
+
+.page-7 .p7-structure-svg {
+	width: 86px;
+	height: 150px;
+	display: block;
+}
+
+.page-7 .p7-structure-label {
+	color: var(--title-blue);
+	font-size: 14px;
+	font-weight: 500 !important;
+}
+
+.page-7 .p7-match {
+	fill: none;
+	stroke: var(--accent-dark);
+	stroke-width: 3;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.page-7 .p7-dot {
+	fill: #ef4444;
+}
+
+.page-7 .p7-part-letter {
+	font-weight: 500 !important;
+	color: var(--title-blue);
+}
+
+.page-7 .p7-num {
+	direction: ltr;
+	unicode-bidi: isolate;
+	display: inline-block;
+	margin-left: 4px;
+}
+
+.page-7 .p7-qa-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 6px 22px;
+	padding-right: 20px;
+}
+
+.page-7 .p7-qa-gridA {
+	grid-template-rows: auto auto;
+	grid-auto-flow: column;
+}
+
+.page-7 .p7-qa-item {
+	line-height: 22px;
+}
