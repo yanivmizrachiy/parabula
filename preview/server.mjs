@@ -110,6 +110,114 @@ async function listHtmlFiles() {
   return results;
 }
 
+function stripHtml(text) {
+  return String(text)
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parsePageMetaFromHtml(html) {
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const docTitle = titleMatch ? stripHtml(titleMatch[1]) : '';
+
+  const navMetaMatch = html.match(/<div\s+class="nav-meta"[^>]*>([\s\S]*?)<\/div>/i);
+  const navMetaText = navMetaMatch ? stripHtml(navMetaMatch[1]) : '';
+
+  // Example: "חוקיות — עמוד 3 / 4"
+  const m = navMetaText.match(/^(.*?)\s*—\s*עמוד\s*(\d+)\s*\/\s*(\d+)\s*$/);
+  const topic = m ? m[1].trim() : '';
+  const pageIndex = m ? Number(m[2]) : null;
+  const pageTotal = m ? Number(m[3]) : null;
+
+  // Try to capture the topic list order from preview-nav-topics
+  const topicsBlockMatch = html.match(/<div\s+class="preview-nav-topics"[\s\S]*?<\/div>\s*<\/nav>/i);
+  const topicsBlock = topicsBlockMatch ? topicsBlockMatch[0] : '';
+  /** @type {{name: string, href: string}[]} */
+  const topicLinks = [];
+  if (topicsBlock) {
+    const linkRe = /<a\s+class="topic-link[^"]*"\s+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+    let linkMatch;
+    while ((linkMatch = linkRe.exec(topicsBlock))) {
+      const href = stripHtml(linkMatch[1]);
+      const name = stripHtml(linkMatch[2]);
+      if (!name) continue;
+      topicLinks.push({ name, href });
+    }
+  }
+
+  return { docTitle, topic, pageIndex, pageTotal, topicLinks };
+}
+
+async function buildToc() {
+  const files = await listHtmlFiles();
+
+  /** @type {Map<string, {name: string, pages: any[]}>} */
+  const topicsMap = new Map();
+
+  /** @type {string[]} */
+  let bestTopicOrder = [];
+
+  for (const rel of files) {
+    const fullPath = path.join(ROOT_DIR, rel);
+    let html = '';
+    try {
+      html = await fs.readFile(fullPath, 'utf8');
+    } catch {
+      continue;
+    }
+
+    const meta = parsePageMetaFromHtml(html);
+    if (meta.topicLinks.length > bestTopicOrder.length) {
+      bestTopicOrder = meta.topicLinks.map((t) => t.name);
+    }
+
+    const entry = {
+      file: rel,
+      title: meta.docTitle || rel,
+      topic: meta.topic || '',
+      pageIndex: typeof meta.pageIndex === 'number' ? meta.pageIndex : null,
+      pageTotal: typeof meta.pageTotal === 'number' ? meta.pageTotal : null
+    };
+
+    const key = entry.topic || 'אחר';
+    if (!topicsMap.has(key)) topicsMap.set(key, { name: key, pages: [] });
+    topicsMap.get(key).pages.push(entry);
+  }
+
+  /** @type {{name: string, pages: any[]}[]} */
+  const topics = Array.from(topicsMap.values());
+
+  // Sort pages within topic by pageIndex when available.
+  for (const t of topics) {
+    t.pages.sort((a, b) => {
+      const ai = typeof a.pageIndex === 'number' ? a.pageIndex : Number.POSITIVE_INFINITY;
+      const bi = typeof b.pageIndex === 'number' ? b.pageIndex : Number.POSITIVE_INFINITY;
+      if (ai !== bi) return ai - bi;
+      return String(a.file).localeCompare(String(b.file), 'he');
+    });
+  }
+
+  // Sort topics: use hinted order from preview-nav-topics, then others, with "אחר" last.
+  topics.sort((a, b) => {
+    const aIsOther = a.name === 'אחר';
+    const bIsOther = b.name === 'אחר';
+    if (aIsOther !== bIsOther) return aIsOther ? 1 : -1;
+
+    const ai = bestTopicOrder.indexOf(a.name);
+    const bi = bestTopicOrder.indexOf(b.name);
+    const aKnown = ai >= 0;
+    const bKnown = bi >= 0;
+    if (aKnown && bKnown) return ai - bi;
+    if (aKnown !== bKnown) return aKnown ? -1 : 1;
+    return String(a.name).localeCompare(String(b.name), 'he');
+  });
+
+  // Flatten reading order.
+  const flat = topics.flatMap((t) => t.pages);
+  return { topics, flat };
+}
+
 const server = http.createServer(async (req, res) => {
   if (!req.url) {
     res.statusCode = 400;
@@ -140,6 +248,18 @@ const server = http.createServer(async (req, res) => {
       const files = await listHtmlFiles();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
       res.end(JSON.stringify({ files }));
+    } catch (err) {
+      res.statusCode = 500;
+      res.end(String(err));
+    }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/toc') {
+    try {
+      const toc = await buildToc();
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(JSON.stringify(toc));
     } catch (err) {
       res.statusCode = 500;
       res.end(String(err));

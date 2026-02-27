@@ -27,14 +27,25 @@
       </header>
 
       <main class="reader-main">
-        <aside class="reader-sidebar" aria-label="מסמכים">
-          <div class="reader-sidebar-title">מסמכים</div>
+        <aside class="reader-sidebar" aria-label="תוכן עניינים">
+          <div class="reader-sidebar-title">תוכן עניינים</div>
           <div class="reader-list" id="fileList"></div>
         </aside>
 
         <section class="reader-stage" aria-label="תצוגה">
           <div class="reader-frameWrap" id="frameWrap">
-            <iframe class="reader-frame" id="frame" title="תצוגה מקדימה" referrerpolicy="no-referrer"></iframe>
+            <div class="reader-book" id="book" aria-label="ספר">
+              <div class="reader-leaf reader-leaf--right" aria-label="עמוד ימין">
+                <iframe class="reader-frame" id="frameRight" title="תצוגה מקדימה — ימין" referrerpolicy="no-referrer"></iframe>
+              </div>
+
+              <div class="reader-gutter" aria-hidden="true"></div>
+
+              <div class="reader-leaf reader-leaf--left" aria-label="עמוד שמאל">
+                <iframe class="reader-frame" id="frameLeft" title="תצוגה מקדימה — שמאל" referrerpolicy="no-referrer"></iframe>
+                <div class="reader-empty" id="emptyLeft" hidden>סוף</div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -43,14 +54,16 @@
     <script type="module">
       const fileSelect = document.getElementById('fileSelect');
       const fileList = document.getElementById('fileList');
-      const frame = document.getElementById('frame');
+      const frameRight = document.getElementById('frameRight');
+      const frameLeft = document.getElementById('frameLeft');
+      const emptyLeft = document.getElementById('emptyLeft');
       const meta = document.getElementById('meta');
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
       const frameWrap = document.getElementById('frameWrap');
 
-      /** @type {string[]} */
-      let files = [];
+      /** @type {{topics: {name: string, pages: any[]}[], flat: any[]}} */
+      let toc = { topics: [], flat: [] };
 
       function getSelectedFile() {
         const url = new URL(window.location.href);
@@ -61,13 +74,75 @@
         const url = new URL(window.location.href);
         url.searchParams.set('file', file);
         window.history.replaceState({}, '', url);
+
+        try {
+          window.localStorage.setItem('reader:lastFile', file);
+        } catch {
+          // ignore
+        }
       }
 
-      function updateSingleFrame(file, reason) {
-        if (!file) return;
+      function findEntry(file) {
+        return toc.flat.find((p) => p.file === file) || null;
+      }
+
+      function labelForEntry(entry) {
+        if (!entry) return '';
+        if (entry.topic && typeof entry.pageIndex === 'number' && typeof entry.pageTotal === 'number') {
+          return `${entry.topic} — עמוד ${entry.pageIndex} / ${entry.pageTotal}`;
+        }
+        return entry.title || entry.file;
+      }
+
+      function findIndex(file) {
+        return toc.flat.findIndex((p) => p.file === file);
+      }
+
+      function spreadStartIndexForFile(file) {
+        const idx = findIndex(file);
+        if (idx < 0) return 0;
+        // Book-like spread: odd pages on the right (1-based), even on the left.
+        return idx % 2 === 0 ? idx : Math.max(0, idx - 1);
+      }
+
+      function spreadFiles(startIdx) {
+        const right = toc.flat[startIdx] || null;
+        const left = toc.flat[startIdx + 1] || null;
+        return { right, left };
+      }
+
+      function describeSpread(right, left) {
+        if (!right) return '';
+        if (right.topic && left && left.topic && right.topic === left.topic) {
+          const a = typeof right.pageIndex === 'number' ? right.pageIndex : null;
+          const b = typeof left.pageIndex === 'number' ? left.pageIndex : null;
+          const total = typeof right.pageTotal === 'number' ? right.pageTotal : null;
+          if (a && b && total) return `${right.topic} — עמודים ${a}–${b} / ${total}`;
+        }
+
+        const r = labelForEntry(right);
+        const l = left ? labelForEntry(left) : '';
+        return l ? `${r} | ${l}` : r;
+      }
+
+      function updateSpread(startIdx, reason) {
+        const { right, left } = spreadFiles(startIdx);
+        if (!right) return;
+
         const bust = String(Date.now());
-        frame.src = `/${encodeURIComponent(file)}?v=${bust}`;
-        meta.textContent = `${file}${reason ? ' • ' + reason : ''}`;
+        frameRight.src = `/${encodeURIComponent(right.file)}?v=${bust}`;
+
+        if (left) {
+          emptyLeft.hidden = true;
+          frameLeft.hidden = false;
+          frameLeft.src = `/${encodeURIComponent(left.file)}?v=${bust}`;
+        } else {
+          frameLeft.src = 'about:blank';
+          frameLeft.hidden = true;
+          emptyLeft.hidden = false;
+        }
+
+        meta.textContent = `${describeSpread(right, left)}${reason ? ' • ' + reason : ''}`;
       }
 
       function injectReaderStyles(doc) {
@@ -86,9 +161,9 @@
         doc.head.appendChild(style);
       }
 
-      function fitA4InFrame() {
+      function fitA4InFrame(frameEl) {
         try {
-          const doc = frame.contentDocument;
+          const doc = frameEl.contentDocument;
           if (!doc) return;
           injectReaderStyles(doc);
 
@@ -101,8 +176,8 @@
           page.style.transformOrigin = '';
 
           const pageRect = page.getBoundingClientRect();
-          const availW = frame.clientWidth - 24;
-          const availH = frame.clientHeight - 24;
+          const availW = frameEl.clientWidth - 24;
+          const availH = frameEl.clientHeight - 24;
           if (availW <= 0 || availH <= 0 || pageRect.width <= 0 || pageRect.height <= 0) return;
 
           const scale = Math.min(availW / pageRect.width, availH / pageRect.height, 1);
@@ -114,92 +189,162 @@
         }
       }
 
-      function renderList(selected) {
+      function renderList(selectedRightFile) {
         fileSelect.innerHTML = '';
         fileList.innerHTML = '';
 
-        for (const f of files) {
-          const opt = document.createElement('option');
-          opt.value = f;
-          opt.textContent = f;
-          fileSelect.appendChild(opt);
+        const startIdx = spreadStartIndexForFile(selectedRightFile);
+        const { right, left } = spreadFiles(startIdx);
+        const rightFile = right?.file || '';
+        const leftFile = left?.file || '';
 
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'reader-item' + (f === selected ? ' is-active' : '');
-          btn.textContent = f;
-          btn.addEventListener('click', () => {
-            setSelectedFile(f);
-            fileSelect.value = f;
-            renderList(f);
-            updateSingleFrame(f, 'נפתח');
-          });
-          fileList.appendChild(btn);
+        for (const entry of toc.flat) {
+          const opt = document.createElement('option');
+          opt.value = entry.file;
+          opt.textContent = labelForEntry(entry);
+          fileSelect.appendChild(opt);
         }
 
-        fileSelect.value = selected;
+        for (const topic of toc.topics) {
+          const section = document.createElement('section');
+          section.className = 'reader-topic';
+
+          const title = document.createElement('div');
+          title.className = 'reader-topicTitle';
+          title.textContent = topic.name;
+          section.appendChild(title);
+
+          const list = document.createElement('div');
+          list.className = 'reader-topicList';
+
+          for (const entry of topic.pages) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            const inSpread = entry.file === rightFile || entry.file === leftFile;
+            btn.className = 'reader-item' + (entry.file === rightFile ? ' is-active' : inSpread ? ' is-inSpread' : '');
+
+            if (entry.topic && typeof entry.pageIndex === 'number' && typeof entry.pageTotal === 'number') {
+              btn.textContent = `עמוד ${entry.pageIndex} / ${entry.pageTotal}`;
+            } else {
+              btn.textContent = entry.title || entry.file;
+            }
+
+            btn.addEventListener('click', () => {
+              const idx = spreadStartIndexForFile(entry.file);
+              const r = toc.flat[idx]?.file || '';
+              setSelectedFile(r);
+              fileSelect.value = r;
+              renderList(r);
+              updateSpread(idx, 'נפתח');
+            });
+            list.appendChild(btn);
+          }
+
+          section.appendChild(list);
+          fileList.appendChild(section);
+        }
+
+        fileSelect.value = rightFile;
       }
 
-      function selectNeighbor(delta) {
+      function selectNeighborSpread(deltaSpreads) {
         const current = getSelectedFile();
-        const idx = files.indexOf(current);
-        if (idx < 0) return;
-        const nextIdx = Math.min(files.length - 1, Math.max(0, idx + delta));
-        const nextFile = files[nextIdx];
-        setSelectedFile(nextFile);
-        renderList(nextFile);
-        updateSingleFrame(nextFile, 'דפדוף');
+        const startIdx = spreadStartIndexForFile(current);
+        let maxStart = Math.max(0, toc.flat.length - 1);
+        // Spread starts are even indices: 0,2,4,... (so right page is odd-numbered 1-based).
+        if (maxStart % 2 === 1) maxStart -= 1;
+
+        const nextStart = Math.min(maxStart, Math.max(0, startIdx + deltaSpreads * 2));
+        const rightFile = toc.flat[nextStart]?.file;
+        if (!rightFile) return;
+        setSelectedFile(rightFile);
+        renderList(rightFile);
+        updateSpread(nextStart, 'דפדוף');
       }
 
       async function boot() {
-        const res = await fetch('/api/files', { cache: 'no-store' });
+        const res = await fetch('/api/toc', { cache: 'no-store' });
         const data = await res.json();
-        files = (data.files || []).filter(Boolean);
+        toc = {
+          topics: Array.isArray(data.topics) ? data.topics : [],
+          flat: Array.isArray(data.flat) ? data.flat : []
+        };
 
         const preferred = getSelectedFile();
-        const initial = files.includes(preferred) ? preferred : files[0] || '';
+
+        let last = '';
+        try {
+          last = window.localStorage.getItem('reader:lastFile') || '';
+        } catch {
+          // ignore
+        }
+
+        const exists = (f) => toc.flat.some((p) => p.file === f);
+        const initial = exists(preferred) ? preferred : exists(last) ? last : toc.flat[0]?.file || '';
 
         if (!initial) {
           meta.textContent = 'לא נמצאו קבצי HTML להצגה.';
           return;
         }
 
-        setSelectedFile(initial);
-        renderList(initial);
-        updateSingleFrame(initial, 'מוכן');
+        const startIdx = spreadStartIndexForFile(initial);
+        const rightFile = toc.flat[startIdx]?.file || initial;
+        setSelectedFile(rightFile);
+        renderList(rightFile);
+        updateSpread(startIdx, 'מוכן');
 
         fileSelect.addEventListener('change', () => {
           const f = fileSelect.value;
-          setSelectedFile(f);
-          renderList(f);
-          updateSingleFrame(f, 'נבחר');
+          const idx = spreadStartIndexForFile(f);
+          const r = toc.flat[idx]?.file || f;
+          setSelectedFile(r);
+          renderList(r);
+          updateSpread(idx, 'נבחר');
         });
 
-        prevBtn.addEventListener('click', () => selectNeighbor(-1));
-        nextBtn.addEventListener('click', () => selectNeighbor(1));
+        prevBtn.addEventListener('click', () => selectNeighborSpread(-1));
+        nextBtn.addEventListener('click', () => selectNeighborSpread(1));
 
         window.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowLeft') selectNeighbor(-1);
-          if (e.key === 'ArrowRight') selectNeighbor(1);
+          const tag = e.target?.tagName;
+          if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+          // RTL-friendly: Left = forward, Right = back
+          if (e.key === 'ArrowLeft' || e.key === 'PageDown') selectNeighborSpread(1);
+          if (e.key === 'ArrowRight' || e.key === 'PageUp') selectNeighborSpread(-1);
         });
 
         const es = new EventSource('/events');
         es.addEventListener('reload', () => {
           const currentFile = getSelectedFile();
-          if (currentFile) updateSingleFrame(currentFile, 'עודכן');
+          if (!currentFile) return;
+          const start = spreadStartIndexForFile(currentFile);
+          updateSpread(start, 'עודכן');
         });
 
-        frame.addEventListener('load', () => {
+        function scheduleFit() {
           // Give MathJax/layout a beat to settle before fitting.
-          setTimeout(fitA4InFrame, 80);
-          setTimeout(fitA4InFrame, 250);
-        });
+          setTimeout(() => fitA4InFrame(frameRight), 80);
+          setTimeout(() => fitA4InFrame(frameRight), 250);
+          if (!frameLeft.hidden) {
+            setTimeout(() => fitA4InFrame(frameLeft), 80);
+            setTimeout(() => fitA4InFrame(frameLeft), 250);
+          }
+        }
+
+        frameRight.addEventListener('load', scheduleFit);
+        frameLeft.addEventListener('load', scheduleFit);
 
         if (window.ResizeObserver && frameWrap) {
-          const ro = new ResizeObserver(() => fitA4InFrame());
+          const ro = new ResizeObserver(() => {
+            fitA4InFrame(frameRight);
+            if (!frameLeft.hidden) fitA4InFrame(frameLeft);
+          });
           ro.observe(frameWrap);
         } else {
-          window.addEventListener('resize', () => fitA4InFrame());
+          window.addEventListener('resize', () => {
+            fitA4InFrame(frameRight);
+            if (!frameLeft.hidden) fitA4InFrame(frameLeft);
+          });
         }
       }
 

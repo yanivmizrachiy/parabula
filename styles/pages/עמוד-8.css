@@ -1,0 +1,60 @@
+/* עמוד 8 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-8 .question-block {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.page-8.a4-page {
+  padding-top: 8mm;
+}
+
+.page-8 .p8-part-letter {
+  font-weight: 500 !important;
+  color: var(--title-blue);
+}
+
+.page-8 .p8-showcase {
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: 12px 18px;
+  direction: ltr;
+}
+
+.page-8 .p8-term {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 110px;
+}
+
+.page-8 .p8-tri {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.page-8 .p8-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.page-8 .p8-table {
+  width: 320px;
+  margin: 0 auto;
+}
+
+.page-8 .p8-table td {
+  height: 34px;
+  width: 160px;
+}
+
+.page-8 .p8-header {
+  background-color: var(--bg-subtle);
+  direction: rtl;
+  text-align: right;
+  padding-right: 10px;
+  font-weight: 500 !important;
+}

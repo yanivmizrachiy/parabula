@@ -1,110 +1,171 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>עמוד 1 — פונקציה ריבועית</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
     <script>
-        MathJax = { tex: { inlineMath: [['\\(', '\\)']] } };
+      MathJax = { tex: { inlineMath: [["\\(", "\\)"]] } };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
 
-    <link rel="stylesheet" href="styles/a4-base.css">
-    <link rel="stylesheet" href="styles/pages/עמוד-3.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="styles/a4-base.css" />
+    <link rel="stylesheet" href="styles/pages/עמוד-3.css" />
+  </head>
+  <body>
     <nav class="preview-nav" aria-label="ניווט בין עמודים">
-        <div class="preview-nav-top">
-            <div class="nav-side">
-                <a class="nav-link" href="עמוד-7.html">הקודם</a>
-            </div>
-            <div class="nav-meta">פונקציה ריבועית — עמוד 1 / 4</div>
-            <div class="nav-side">
-                <a class="nav-link" href="עמוד-6.html">הבא</a>
-            </div>
+      <div class="preview-nav-top">
+        <div class="nav-side">
+          <a class="nav-link" href="עמוד-8.html">הקודם</a>
         </div>
-        <div class="preview-nav-topics" aria-label="מעבר בין נושאים">
-            <a class="topic-link" href="עמוד-1.html">חוקיות</a>
-            <a class="topic-link is-active" href="עמוד-3.html" aria-current="page">פונקציה ריבועית</a>
+        <div class="nav-meta">פונקציה ריבועית — עמוד 1 / 4</div>
+        <div class="nav-side">
+          <a class="nav-link" href="עמוד-6.html">הבא</a>
         </div>
+      </div>
+      <div class="preview-nav-topics" aria-label="מעבר בין נושאים">
+        <a class="topic-link" href="עמוד-1.html">חוקיות</a>
+        <a class="topic-link is-active" href="עמוד-3.html" aria-current="page"
+          >פונקציה ריבועית</a
+        >
+        <a class="topic-link" href="עמוד-9.html">משפט פיתגורס</a>
+      </div>
     </nav>
 
     <main class="a4-page page-3">
-        <header class="header-container">
-            <h1 class="page-title">פונקציה ריבועית</h1>
-            <div class="page-number">1</div>
-        </header>
+      <header class="header-container">
+        <h1 class="page-title">פונקציה ריבועית</h1>
+        <div class="page-number">1</div>
+      </header>
 
-        <div class="question-block">
-            <div class="p3-equation-intro">
-                <div class="q-main">
-                    <div class="bullet-container"><div class="bullet-large"></div></div>
-                    <div class="q-text">המשוואה של הפרבולה הבסיסית היא:</div>
-                </div>
+      <div class="question-block">
+        <div class="p3-equation-intro">
+          <div class="q-main">
+            <div class="bullet-container"><div class="bullet-large"></div></div>
+            <div class="q-text">המשוואה של הפרבולה הבסיסית היא:</div>
+          </div>
 
-                <div class="p3-equation-block">
-                    <div class="p3-center-line">\(y = x^2\)</div>
-                    <div class="p3-center-line">או</div>
-                    <div class="p3-center-line">\(f(x) = x^2\)</div>
-                </div>
-            </div>
-
-            <div class="q-sub">
-                <div class="bullet-container"><div class="bullet-small"></div></div>
-                <div class="q-text">נתונה הפונקציה הריבועית \(f(x) = x^2\). הציבו מספרים במשוואה כדי למצוא את ערך ה-\(y\) המתאים לכל אחד מערכי ה-\(x\).</div>
-            </div>
-
-            <div class="p3-top-layout">
-                <div class="p3-calc-block">
-                    <div class="p3-calc-list">
-                        <div class="p3-calc-item p3-calc-itemExample">
-                            <span class="p3-calc-math p3-calc-example">\(f(-4)=(-4)^2=16\)</span>
-                            <span class="p3-grid-pad p3-grid-padGhost" aria-hidden="true"></span>
-                        </div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(-3)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(-2)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(-1)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(0)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(1)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(2)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(3)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                        <div class="p3-calc-item"><span class="p3-calc-math">\(f(4)=\)</span><span class="p3-grid-pad" aria-hidden="true"></span></div>
-                    </div>
-                </div>
-
-                <div class="coordinate-container p3-coordinate-right">
-                    <div class="coordinate-system p3-coordinate-system">
-                        <div class="axis axis-x"></div>
-                        <div class="axis axis-y"></div>
-                        <div class="axis-label label-x">\(x\)</div>
-                        <div class="axis-label label-y">\(y\)</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="q-sub">
-                <div class="bullet-container"><div class="bullet-small"></div></div>
-                <div class="q-text">השלימו בהתאמה את הטבלה, סמנו במערכת הצירים את הנקודות שקיבלתם, ולאחר מכן שרטטו את הגרף.</div>
-            </div>
-
-            <div class="p3-center-row">
-                <table class="math-table page-3-table">
-                    <tr class="row-subtle">
-                        <td class="label-cell">\(x\)</td><td>\(-4\)</td><td>\(-3\)</td><td>\(-2\)</td><td>\(-1\)</td><td>\(0\)</td><td>\(1\)</td><td>\(2\)</td><td>\(3\)</td><td>\(4\)</td>
-                    </tr>
-                    <tr>
-                        <td class="label-cell">\(y\)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                </table>
-            </div>
+          <div class="p3-equation-block">
+            <div class="p3-center-line">\(y = x^2\)</div>
+            <div class="p3-center-line">או</div>
+            <div class="p3-center-line">\(f(x) = x^2\)</div>
+          </div>
         </div>
-    </main>
 
-</body>
+        <div class="q-sub">
+          <div class="bullet-container"><div class="bullet-small"></div></div>
+          <div class="q-text">
+            נתונה הפונקציה הריבועית \(f(x) = x^2\). הציבו מספרים במשוואה כדי
+            למצוא את ערך ה-\(y\) המתאים לכל אחד מערכי ה-\(x\).
+          </div>
+        </div>
+
+        <div class="p3-top-layout">
+          <div class="p3-calc-block">
+            <div class="p3-calc-list">
+              <div class="p3-calc-item p3-calc-itemExample">
+                <span class="p3-calc-math p3-calc-example"
+                  >\(f(-4)=(-4)^2=16\)</span
+                >
+                <span
+                  class="p3-grid-pad p3-grid-padGhost"
+                  aria-hidden="true"
+                ></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(-3)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(-2)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(-1)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(0)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(1)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(2)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(3)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+              <div class="p3-calc-item">
+                <span class="p3-calc-math">\(f(4)=\)</span
+                ><span class="p3-grid-pad" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="coordinate-container p3-coordinate-right">
+            <div class="coordinate-system p3-coordinate-system">
+              <div class="axis axis-x"></div>
+              <div class="axis axis-y"></div>
+              <div class="axis-label label-x">\(x\)</div>
+              <div class="axis-label label-y">\(y\)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-sub">
+          <div class="bullet-container"><div class="bullet-small"></div></div>
+          <div class="q-text">
+            השלימו בהתאמה את הטבלה, סמנו במערכת הצירים את הנקודות שקיבלתם, ולאחר
+            מכן שרטטו את הגרף.
+          </div>
+        </div>
+
+        <div class="p3-center-row">
+          <table class="math-table page-3-table">
+            <tr class="row-subtle">
+              <td class="label-cell">\(x\)</td>
+              <td>\(-4\)</td>
+              <td>\(-3\)</td>
+              <td>\(-2\)</td>
+              <td>\(-1\)</td>
+              <td>\(0\)</td>
+              <td>\(1\)</td>
+              <td>\(2\)</td>
+              <td>\(3\)</td>
+              <td>\(4\)</td>
+            </tr>
+            <tr>
+              <td class="label-cell">\(y\)</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </main>
+  </body>
 </html>

@@ -98,6 +98,25 @@ body {
   overflow: auto;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+}
+
+.reader-topic {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reader-topicTitle {
+  padding: 6px 8px;
+  color: var(--title-blue);
+  font-weight: 500 !important;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.reader-topicList {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
@@ -135,9 +154,63 @@ body {
   overflow: hidden;
 }
 
+.reader-book {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+}
+
+.reader-leaf {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background: var(--bg-paper);
+}
+
+.reader-gutter {
+  width: 18px;
+  background: var(--bg-subtle);
+  border-left: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
+}
+
 .reader-frame {
   width: 100%;
   height: 100%;
   border: 0;
   background: var(--bg-paper);
+}
+
+.reader-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-main);
+  opacity: 0.55;
+  background: var(--bg-paper);
+}
+
+.reader-item.is-inSpread {
+  border-color: var(--border-light);
+  background: var(--bg-subtle);
+}
+
+@media (max-width: 980px) {
+  .reader-sidebar {
+    display: none;
+  }
+
+  .reader-select {
+    min-width: 200px;
+  }
+
+  .reader-gutter,
+  .reader-leaf--left {
+    display: none;
+  }
 }

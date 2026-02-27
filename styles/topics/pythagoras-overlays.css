@@ -1,0 +1,153 @@
+/* Auto-generated overlays for: משפט פיתגורס */
+/* Masks 'שאלה N' / 'לשאלה N' inside the rendered PNG pages and adds a black bullet for each question start. */
+
+.pythagoras .pyt-content {
+  position: relative;
+}
+
+.pythagoras .pyt-image {
+  position: relative;
+  z-index: 1;
+}
+
+.pythagoras .pyt-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background-repeat: no-repeat;
+  background-image: none;
+}
+
+.page-9.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.602% 2.143%;
+  background-position: left 86.841% top 15.529%, left calc(93.414% - 4px) top calc(16.600% - 4px), left 78.516% top 86.903%;
+}
+
+.page-10.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.602% 2.143%;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.516% top 81.288%;
+}
+
+.page-11.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.602% 2.143%;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.516% top 75.255%;
+}
+
+.page-12.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.602% 2.143%;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.516% top 77.425%;
+}
+
+.page-13.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.602% 2.143%;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.516% top 82.457%;
+}
+
+.page-14.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.609% 2.143%;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 79.161% top 80.105%;
+}
+
+.page-15.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 7.581% 2.143%, 8px 8px, 8.602% 2.143%;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.516% top 81.701%;
+}
+
+.page-16.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 7.581% 2.143%, 8px 8px;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-17.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 7.581% 2.143%, 8px 8px;
+  background-position: left 86.841% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-18.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.629% 2.143%, 8px 8px;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-19.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.629% 2.143%, 8px 8px;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-20.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.609% 2.143%, 8px 8px;
+  background-position: left 85.813% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-21.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.629% 2.143%, 8px 8px, 8.609% 2.143%, 8px 8px;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 85.813% top 46.219%, left calc(93.414% - 4px) top calc(47.291% - 4px);
+}
+
+.page-22.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.629% 2.143%, 8px 8px;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-23.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.629% 2.143%, 8px 8px;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}
+
+.page-24.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 8.629% 2.143%, 8px 8px, 9.459% 2.143%;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 77.730% top 88.956%;
+}
+
+.page-25.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 8.609% 2.143%, 8px 8px, 9.458% 2.143%;
+  background-position: left 85.813% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.516% top 88.129%;
+}
+
+.page-26.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 8.629% 2.143%, 8px 8px, 9.459% 2.143%;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 77.730% top 85.051%;
+}
+
+.page-27.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 8.629% 2.143%, 8px 8px, 9.650% 2.143%;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 77.468% top 88.129%;
+}
+
+.page-28.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 8.629% 2.143%, 8px 8px, 9.657% 2.143%;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 78.113% top 85.051%;
+}
+
+.page-29.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%), linear-gradient(var(--bg-paper), var(--bg-paper));
+  background-size: 8.609% 2.143%, 8px 8px, 9.650% 2.143%;
+  background-position: left 85.813% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px), left 77.468% top 85.051%;
+}
+
+.page-30.pythagoras .pyt-content::before {
+  background-image: linear-gradient(var(--bg-paper), var(--bg-paper)), radial-gradient(circle, var(--accent-dark) 55%, transparent 56%);
+  background-size: 8.629% 2.143%, 8px 8px;
+  background-position: left 85.793% top 8.314%, left calc(93.414% - 4px) top calc(9.386% - 4px);
+}

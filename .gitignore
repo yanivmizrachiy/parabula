@@ -1,0 +1,11 @@
+node_modules/
+
+# Generated / extracted artifacts
+print/
+
+# Large binary assets not meant for source control
+*.traineddata
+*.pdf
+
+# Source PDFs kept outside git; keep derived assets if needed
+assets/**/pdf/

@@ -1,0 +1,30 @@
+/* עמוד 10 — משפט פיתגורס */
+@import url("../topics/pythagoras.css");
+
+.page-10 {
+}
+
+.page-10 .question-block {
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.page-10 .pyt-fig-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+}
+
+.page-10 .pyt-fig-crop {
+	width: 100%;
+	height: 105mm;
+	overflow: hidden;
+}
+
+.page-10 .crop-hide-subparts > .pyt-figure {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center 18%;
+}

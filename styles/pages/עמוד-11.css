@@ -1,0 +1,23 @@
+/* עמוד 11 — משפט פיתגורס */
+@import url("../topics/pythagoras.css");
+
+.page-11 {
+}
+
+.page-11 .question-block {
+	justify-content: flex-start;
+	gap: 12px;
+}
+
+.page-11 .pyt-fig-crop {
+	width: 100%;
+	height: 200mm;
+	overflow: hidden;
+}
+
+.page-11 .crop-hide-subparts > .pyt-figure {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center 18%;
+}
