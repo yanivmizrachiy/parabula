@@ -37,6 +37,9 @@ body[data-mode='all'] .reader-shell {
   padding: 10px 12px;
   background: var(--bg-paper);
   border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .reader-topbarRow {
@@ -57,11 +60,7 @@ body[data-mode='all'] .reader-shell {
   padding: 6px 10px;
 }
 
-body[data-mode='all'] .reader-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+
 
 .reader-title {
   font-size: 16px;
