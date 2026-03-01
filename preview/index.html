@@ -42,6 +42,9 @@
         </aside>
 
         <section class="reader-stage" aria-label="תצוגה">
+          <div class="reader-fallback" id="readerFallback" role="status">
+            טוען…
+          </div>
           <div class="reader-frameWrap" id="frameWrap">
             <div class="reader-book" id="book" aria-label="ספר" hidden>
               <div class="reader-leaf reader-leaf--right" aria-label="עמוד ימין">
@@ -78,6 +81,7 @@
       const book = document.getElementById('book');
       const allPages = document.getElementById('allPages');
       const topicButtons = document.getElementById('topicButtons');
+      const readerFallback = document.getElementById('readerFallback');
 
       /** @type {{topics: {name: string, pages: any[]}[], flat: any[]}} */
       let toc = { topics: [], flat: [] };
@@ -98,6 +102,28 @@
 
       /** @type {Map<string, HTMLButtonElement>} */
       let topicButtonsMap = new Map();
+
+      function showFallback(message, details = '') {
+        if (!readerFallback) return;
+        const text = [message, details].filter(Boolean).join('\n');
+        readerFallback.textContent = text;
+        readerFallback.hidden = false;
+      }
+
+      function hideFallback() {
+        if (!readerFallback) return;
+        readerFallback.hidden = true;
+      }
+
+      // If the environment blocks module scripts, fetch, or iframes (can happen in VS Code Simple Browser),
+      // we still want a visible message rather than a blank screen.
+      window.addEventListener('error', (e) => {
+        showFallback('שגיאה בתצוגה המקדימה.', String(e?.message || ''));
+      });
+      window.addEventListener('unhandledrejection', (e) => {
+        const reason = e?.reason instanceof Error ? e.reason.message : String(e?.reason || '');
+        showFallback('שגיאה בתצוגה המקדימה.', reason);
+      });
 
       function getMode() {
         const url = new URL(window.location.href);
@@ -189,6 +215,25 @@
         }
 
         meta.textContent = `${describeSpread(right, left)}${reason ? ' • ' + reason : ''}`;
+      }
+
+      function maybeWarnIframeBlocked(frameEl) {
+        // After load, we expect to have an accessible document with an .a4-page.
+        // If not, show a helpful fallback including a direct page link.
+        try {
+          const doc = frameEl.contentDocument;
+          const hasPage = !!doc?.querySelector?.('.a4-page');
+          if (hasPage) return;
+        } catch {
+          // ignore
+        }
+
+        const selected = getSelectedFile();
+        const direct = selected ? `/${encodeURIComponent(selected)}` : '/';
+        showFallback(
+          'נראה שהחלון הפנימי חוסם הצגת מסמכים בתוך iframe.',
+          `פתח את העמוד ישירות: ${direct}`
+        );
       }
 
       function injectReaderStyles(doc) {
@@ -405,6 +450,7 @@
           'load',
           () => {
             fitA4InFrame(frame, 'all');
+            maybeWarnIframeBlocked(frame);
           },
           { once: true }
         );
@@ -459,6 +505,8 @@
 
         allPages.appendChild(frag);
         ensureAllIo();
+
+        hideFallback();
 
         if (allIo) {
           for (const item of allItems.values()) allIo.observe(item);
@@ -581,29 +629,34 @@
       }
 
       async function boot() {
-        const res = await fetch('/api/toc', { cache: 'no-store' });
-        const data = await res.json();
-        toc = {
-          topics: Array.isArray(data.topics) ? data.topics : [],
-          flat: Array.isArray(data.flat) ? data.flat : []
-        };
+        showFallback('טוען…');
 
-        const preferred = getSelectedFile();
-
-        let last = '';
         try {
-          last = window.localStorage.getItem('reader:lastFile') || '';
-        } catch {
-          // ignore
-        }
+          const res = await fetch('/api/toc', { cache: 'no-store' });
+          if (!res.ok) throw new Error(`TOC HTTP ${res.status}`);
 
-        const exists = (f) => toc.flat.some((p) => p.file === f);
-        const initial = exists(preferred) ? preferred : exists(last) ? last : toc.flat[0]?.file || '';
+          const data = await res.json();
+          toc = {
+            topics: Array.isArray(data.topics) ? data.topics : [],
+            flat: Array.isArray(data.flat) ? data.flat : []
+          };
 
-        if (!initial) {
-          meta.textContent = 'לא נמצאו קבצי HTML להצגה.';
-          return;
-        }
+          const preferred = getSelectedFile();
+
+          let last = '';
+          try {
+            last = window.localStorage.getItem('reader:lastFile') || '';
+          } catch {
+            // ignore
+          }
+
+          const exists = (f) => toc.flat.some((p) => p.file === f);
+          const initial = exists(preferred) ? preferred : exists(last) ? last : toc.flat[0]?.file || '';
+
+          if (!initial) {
+            showFallback('לא נמצאו קבצי HTML להצגה.');
+            return;
+          }
 
         const mode = getMode();
         setModeUi(mode);
@@ -625,6 +678,8 @@
           updateSpread(startIdx, 'מוכן');
           setActiveTopicButtons(rightFile);
         }
+
+        hideFallback();
 
         modeAllBtn.addEventListener('click', () => {
           if (currentMode === 'all') return;
@@ -700,6 +755,9 @@
         frameRight.addEventListener('load', scheduleFit);
         frameLeft.addEventListener('load', scheduleFit);
 
+        frameRight.addEventListener('load', () => maybeWarnIframeBlocked(frameRight));
+        frameLeft.addEventListener('load', () => maybeWarnIframeBlocked(frameLeft));
+
         if (window.ResizeObserver && frameWrap) {
           const ro = new ResizeObserver(() => {
             if (currentMode === 'all') {
@@ -721,6 +779,10 @@
             fitA4InFrame(frameRight, 'book');
             if (!frameLeft.hidden) fitA4InFrame(frameLeft, 'book');
           });
+        }
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          showFallback('לא ניתן לטעון את התצוגה המקדימה.', message);
         }
       }
 

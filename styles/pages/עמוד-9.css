@@ -9,6 +9,38 @@
 	gap: 10px;
 }
 
+.page-9 .pyt-answers {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 18px;
+	row-gap: 4px;
+	width: 100%;
+}
+
+.page-9 .pyt-answers .q-sub {
+	margin-bottom: 0;
+}
+
+.page-9 .pyt-answers .bullet-container {
+	width: 22px;
+	height: 22px;
+	margin-left: 10px;
+}
+
+.page-9 .bullet-num {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+}
+
 .page-9 .pyt-fig-stack {
 	display: flex;
 	flex-direction: column;
@@ -20,6 +52,7 @@
 	width: 100%;
 	height: 105mm;
 	overflow: hidden;
+	position: relative;
 }
 
 /* Crop/position chosen to hide the א/ב/ג labels while keeping the triangles large */
@@ -29,3 +62,33 @@
 	object-fit: cover;
 	object-position: center 18%;
 }
+
+.page-9 .pyt-subparts {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.page-9 .pyt-subpart {
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+}
+
+/* מספרי הסעיפים: 1–3 על התרשים הראשון (ימין->שמאל), 4–6 על השני */
+.page-9 .pyt-fig-crop:first-child .pyt-subpart.n1 { top: 10%; left: 82%; }
+.page-9 .pyt-fig-crop:first-child .pyt-subpart.n2 { top: 10%; left: 49%; }
+.page-9 .pyt-fig-crop:first-child .pyt-subpart.n3 { top: 10%; left: 14%; }
+
+.page-9 .pyt-fig-crop:last-child .pyt-subpart.n4 { top: 12%; left: 82%; }
+.page-9 .pyt-fig-crop:last-child .pyt-subpart.n5 { top: 12%; left: 49%; }
+.page-9 .pyt-fig-crop:last-child .pyt-subpart.n6 { top: 12%; left: 14%; }
