@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1489" height="2105" viewBox="0 0 1489 2105">
+<style>
+  .pyt-art path{ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+<path fill="rgb(255,255,255)" stroke="rgb(255,255,255)" stroke-width="0" opacity="1" d="M 0 0 L 1489 0 L 1489 2105 L 0 2105 L 0 0 Z " />
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-rtl" x="1398" y="202" font-size="23" text-anchor="end">שאלה</text>
+<text class="pyt-word pyt-ltr" x="1298" y="203" font-size="20" text-anchor="start">4</text>
+<text class="pyt-word pyt-rtl" x="1379" y="351" font-size="23" text-anchor="end">הצלע</text>
+<text class="pyt-word pyt-ltr" x="1245" y="350" font-size="23" text-anchor="start">UT‏</text>
+<text class="pyt-word pyt-rtl" x="1221" y="351" font-size="17" text-anchor="end">משותפת</text>
+<text class="pyt-word pyt-rtl" x="1094" y="350" font-size="23" text-anchor="end">לשני</text>
+<text class="pyt-word pyt-rtl" x="1023" y="350" font-size="23" text-anchor="end">המשולשים</text>
+<text class="pyt-word pyt-rtl" x="262" y="367" font-size="24" text-anchor="end">(המידות</text>
+<text class="pyt-word pyt-rtl" x="164" y="367" font-size="23" text-anchor="end">בס&quot;מ.)</text>
+<text class="pyt-word pyt-rtl" x="1379" y="403" font-size="17" text-anchor="end">הישרי-זווית</text>
+<text class="pyt-word pyt-ltr" x="1118" y="402" font-size="23" text-anchor="start">AUST‏</text>
+<text class="pyt-word pyt-rtl" x="1096" y="402" font-size="16" text-anchor="end">ו-</text>
+<text class="pyt-word pyt-ltr" x="955" y="402" font-size="23" text-anchor="start">AMTU‏</text>
+<text class="pyt-word pyt-ltr" x="633" y="383" font-size="21" text-anchor="start">5</text>
+<text class="pyt-word pyt-rtl" x="1381" y="463" font-size="17" text-anchor="end">א.</text>
+<text class="pyt-word pyt-rtl" x="1313" y="463" font-size="17" text-anchor="end">מצאואת</text>
+<text class="pyt-word pyt-rtl" x="1187" y="468" font-size="23" text-anchor="end">אורך</text>
+<text class="pyt-word pyt-ltr" x="1051" y="462" font-size="23" text-anchor="start">UT‏</text>
+<text class="pyt-word pyt-ltr" x="697" y="446" font-size="21" text-anchor="start">4</text>
+<text class="pyt-word pyt-ltr" x="443" y="452" font-size="14" text-anchor="start">2</text>
+<text class="pyt-word pyt-rtl" x="1381" y="523" font-size="17" text-anchor="end">ב.</text>
+<text class="pyt-word pyt-rtl" x="1313" y="523" font-size="17" text-anchor="end">מצאואת</text>
+<text class="pyt-word pyt-rtl" x="1187" y="528" font-size="23" text-anchor="end">אורך</text>
+<text class="pyt-word pyt-ltr" x="1043" y="522" font-size="23" text-anchor="start">MU‏</text>
+<text class="pyt-word pyt-ltr" x="732" y="500" font-size="21" text-anchor="start">5</text>
+<text class="pyt-word pyt-ltr" x="478" y="589" font-size="21" text-anchor="start">12</text>
+<text class="pyt-word pyt-ltr" x="210" y="570" font-size="21" text-anchor="start">0</text>
+<text class="pyt-word pyt-rtl" x="1400" y="1657" font-size="18" text-anchor="end">תשובות</text>
+<text class="pyt-word pyt-rtl" x="1291" y="1656" font-size="23" text-anchor="end">לשאלה</text>
+<text class="pyt-word pyt-ltr" x="1174" y="1657" font-size="20" text-anchor="start">4</text>
+<text class="pyt-word pyt-rtl" x="1399" y="1787" font-size="17" text-anchor="end">א.</text>
+<text class="pyt-word pyt-ltr" x="1350" y="1787" font-size="20" text-anchor="start">5</text>
+<text class="pyt-word pyt-rtl" x="1339" y="1787" font-size="18" text-anchor="end">סיימ</text>
+<text class="pyt-word pyt-rtl" x="1400" y="1850" font-size="16" text-anchor="end">ב.</text>
+<text class="pyt-word pyt-ltr" x="1338" y="1850" font-size="19" text-anchor="start">13</text>
+<text class="pyt-word pyt-rtl" x="1327" y="1851" font-size="17" text-anchor="end">סיימ</text>
+</g>
+</svg>

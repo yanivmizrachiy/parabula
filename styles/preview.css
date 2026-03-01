@@ -11,6 +11,11 @@ body {
   align-items: stretch;
 }
 
+/* In "all pages" mode we want normal browser scrolling (not an inner scroller). */
+body[data-mode='all'] {
+  height: auto;
+}
+
 .reader-shell {
   height: 100vh;
   width: 100vw;
@@ -18,14 +23,44 @@ body {
   flex-direction: column;
 }
 
+body[data-mode='all'] .reader-shell {
+  height: auto;
+  min-height: 100vh;
+}
+
 .reader-topbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   gap: 12px;
   padding: 10px 12px;
   background: var(--bg-paper);
   border-bottom: 1px solid var(--border-light);
+}
+
+.reader-topbarRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reader-topics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reader-topicBtn {
+  padding: 6px 10px;
+}
+
+body[data-mode='all'] .reader-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .reader-title {
@@ -43,12 +78,22 @@ body {
   justify-content: center;
 }
 
+.reader-modes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .reader-btn {
   border: 1px solid var(--border-light);
   background: var(--bg-paper);
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.reader-btn.is-active {
+  border-color: var(--title-blue);
 }
 
 .reader-btn:hover {
@@ -75,6 +120,12 @@ body {
   flex: 1;
   display: flex;
   min-height: 0;
+}
+
+/* Always prioritize preview area over TOC/sidebar. */
+body[data-mode='all'] .reader-main {
+  flex: initial;
+  min-height: initial;
 }
 
 .reader-sidebar {
@@ -146,12 +197,49 @@ body {
 
 .reader-frameWrap {
   flex: 1;
-  margin: 14px;
+  margin: 0;
+  border: 0;
+  background: var(--bg-paper);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+body[data-mode='all'] .reader-frameWrap {
+  overflow: visible;
+}
+
+.reader-all {
+  height: 100%;
+  overflow: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-subtle);
+}
+
+body[data-mode='all'] .reader-all {
+  height: auto;
+  overflow: visible;
+}
+
+.reader-allItem {
   border: 1px solid var(--border-light);
   background: var(--bg-paper);
   border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+}
+
+.reader-allItem.is-active {
+  border-color: var(--title-blue);
+}
+
+.reader-allFrame {
+  width: 100%;
+  border: 0;
+  display: block;
+  background: var(--bg-paper);
 }
 
 .reader-book {
@@ -170,10 +258,10 @@ body {
 }
 
 .reader-gutter {
-  width: 18px;
+  width: 12px;
   background: var(--bg-subtle);
-  border-left: 1px solid var(--border-light);
-  border-right: 1px solid var(--border-light);
+  border-left: 0;
+  border-right: 0;
 }
 
 .reader-frame {
@@ -201,10 +289,6 @@ body {
 }
 
 @media (max-width: 980px) {
-  .reader-sidebar {
-    display: none;
-  }
-
   .reader-select {
     min-width: 200px;
   }

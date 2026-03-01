@@ -15,15 +15,24 @@
   <body>
     <div class="reader-shell">
       <header class="reader-topbar">
-        <div class="reader-title">תצוגה מקדימה — דפדוף</div>
+        <div class="reader-topbarRow">
+          <div class="reader-title" id="readerTitle">תצוגה מקדימה — כל הדפים</div>
 
-        <div class="reader-controls">
-          <button class="reader-btn" id="prevBtn" type="button">הקודם</button>
-          <select class="reader-select" id="fileSelect" aria-label="בחירת מסמך"></select>
-          <button class="reader-btn" id="nextBtn" type="button">הבא</button>
+          <div class="reader-controls">
+            <div class="reader-modes" role="group" aria-label="מצב תצוגה">
+              <button class="reader-btn" id="modeAllBtn" type="button">כל הדפים</button>
+              <button class="reader-btn" id="modeBookBtn" type="button">דפדוף</button>
+            </div>
+
+            <button class="reader-btn" id="prevBtn" type="button">הקודם</button>
+            <select class="reader-select" id="fileSelect" aria-label="בחירת מסמך"></select>
+            <button class="reader-btn" id="nextBtn" type="button">הבא</button>
+          </div>
+
+          <div class="reader-meta" id="meta"></div>
         </div>
 
-        <div class="reader-meta" id="meta"></div>
+        <nav class="reader-topics" id="topicButtons" aria-label="מעבר בין נושאים"></nav>
       </header>
 
       <main class="reader-main">
@@ -34,7 +43,7 @@
 
         <section class="reader-stage" aria-label="תצוגה">
           <div class="reader-frameWrap" id="frameWrap">
-            <div class="reader-book" id="book" aria-label="ספר">
+            <div class="reader-book" id="book" aria-label="ספר" hidden>
               <div class="reader-leaf reader-leaf--right" aria-label="עמוד ימין">
                 <iframe class="reader-frame" id="frameRight" title="תצוגה מקדימה — ימין" referrerpolicy="no-referrer"></iframe>
               </div>
@@ -46,6 +55,8 @@
                 <div class="reader-empty" id="emptyLeft" hidden>סוף</div>
               </div>
             </div>
+
+            <div class="reader-all" id="allPages" aria-label="כל הדפים"></div>
           </div>
         </section>
       </main>
@@ -61,9 +72,44 @@
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
       const frameWrap = document.getElementById('frameWrap');
+      const readerTitle = document.getElementById('readerTitle');
+      const modeAllBtn = document.getElementById('modeAllBtn');
+      const modeBookBtn = document.getElementById('modeBookBtn');
+      const book = document.getElementById('book');
+      const allPages = document.getElementById('allPages');
+      const topicButtons = document.getElementById('topicButtons');
 
       /** @type {{topics: {name: string, pages: any[]}[], flat: any[]}} */
       let toc = { topics: [], flat: [] };
+
+      /** @type {Map<string, HTMLIFrameElement>} */
+      let allFrames = new Map();
+
+      /** @type {Map<string, HTMLElement>} */
+      let allItems = new Map();
+
+      /** @type {IntersectionObserver | null} */
+      let allIo = null;
+
+      /** @type {Set<HTMLIFrameElement>} */
+      let allLoaded = new Set();
+
+      let currentMode = 'all';
+
+      /** @type {Map<string, HTMLButtonElement>} */
+      let topicButtonsMap = new Map();
+
+      function getMode() {
+        const url = new URL(window.location.href);
+        const mode = (url.searchParams.get('mode') || '').toLowerCase();
+        return mode === 'book' ? 'book' : 'all';
+      }
+
+      function setMode(mode) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', mode);
+        window.history.replaceState({}, '', url);
+      }
 
       function getSelectedFile() {
         const url = new URL(window.location.href);
@@ -154,14 +200,14 @@
         style.id = '__reader_injected';
         style.textContent = `
           .preview-nav { display: none !important; }
-          html, body { background: var(--bg-paper) !important; }
-          body { align-items: flex-start !important; }
-          .a4-page { margin-bottom: 0 !important; }
+          html, body { background: var(--bg-paper) !important; display: block !important; }
+          body { margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+          .a4-page { margin: 0 !important; margin-bottom: 0 !important; box-shadow: none !important; }
         `;
         doc.head.appendChild(style);
       }
 
-      function fitA4InFrame(frameEl) {
+      function fitA4InFrame(frameEl, mode = 'book') {
         try {
           const doc = frameEl.contentDocument;
           if (!doc) return;
@@ -176,27 +222,236 @@
           page.style.transformOrigin = '';
 
           const pageRect = page.getBoundingClientRect();
-          const availW = frameEl.clientWidth - 24;
-          const availH = frameEl.clientHeight - 24;
+          const availW = frameEl.clientWidth;
+          const availH = frameEl.clientHeight;
           if (availW <= 0 || availH <= 0 || pageRect.width <= 0 || pageRect.height <= 0) return;
 
-          const scale = Math.min(availW / pageRect.width, availH / pageRect.height, 1);
+          // Allow upscaling in preview so the page can actually fill the available space.
+          // Cap to avoid absurd zoom on very large viewports.
+          const maxScale = 2.5;
+          const scaleRaw =
+            mode === 'all'
+              ? availW / pageRect.width
+              : Math.min(availW / pageRect.width, availH / pageRect.height);
+          const scale = Math.min(scaleRaw, maxScale);
 
           // Prefer `zoom` (stable in Chromium) to avoid transform layout issues.
           page.style.zoom = String(scale);
+
+          if (mode === 'all') {
+            const desiredH = Math.ceil(pageRect.height * scale + 2);
+            if (Number.isFinite(desiredH) && desiredH > 0) frameEl.style.height = `${desiredH}px`;
+          }
         } catch {
           // Ignore cross-origin / transient iframe loading states.
         }
       }
 
-      function renderList(selectedRightFile) {
+      function setModeUi(mode) {
+        currentMode = mode;
+        const isAll = mode === 'all';
+
+        document.body.dataset.mode = mode;
+
+        book.hidden = isAll;
+        allPages.hidden = !isAll;
+
+        prevBtn.hidden = isAll;
+        nextBtn.hidden = isAll;
+
+        modeAllBtn.classList.toggle('is-active', isAll);
+        modeBookBtn.classList.toggle('is-active', !isAll);
+
+        if (readerTitle) readerTitle.textContent = isAll ? 'תצוגה מקדימה — כל הדפים' : 'תצוגה מקדימה — דפדוף';
+      }
+
+      function updateMetaAll(selectedFile, reason) {
+        const entry = findEntry(selectedFile);
+        const label = entry ? labelForEntry(entry) : selectedFile || '';
+        const base = `כל הדפים — ${toc.flat.length} דפים`;
+        const tail = label ? ` • ${label}` : '';
+        meta.textContent = `${base}${tail}${reason ? ' • ' + reason : ''}`;
+      }
+
+      function setActiveTopicButtons(selectedFile) {
+        const entry = findEntry(selectedFile);
+        const activeTopic = entry ? entry.topic || 'אחר' : '';
+        for (const [topicName, btn] of topicButtonsMap.entries()) {
+          btn.classList.toggle('is-active', topicName === activeTopic);
+          if (topicName === activeTopic) btn.setAttribute('aria-current', 'true');
+          else btn.removeAttribute('aria-current');
+        }
+      }
+
+      function openFileInCurrentMode(file, reason) {
+        if (!file) return;
+        if (currentMode === 'all') {
+          setSelectedFile(file);
+          fileSelect.value = file;
+          renderList(file);
+          highlightAllSelected(file);
+          loadAllFrame(file);
+          scrollToAllSelected(file);
+          updateMetaAll(file, reason);
+        } else {
+          const idx = spreadStartIndexForFile(file);
+          const r = toc.flat[idx]?.file || file;
+          setSelectedFile(r);
+          fileSelect.value = r;
+          renderList(r);
+          updateSpread(idx, reason);
+        }
+      }
+
+      function buildTopicButtons() {
+        if (!topicButtons) return;
+        topicButtons.innerHTML = '';
+        topicButtonsMap = new Map();
+
+        for (const topic of toc.topics) {
+          const firstPage = topic?.pages?.[0]?.file || '';
+          const name = topic?.name || '';
+          if (name === 'אחר') continue;
+          if (!name || !firstPage) continue;
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'reader-btn reader-topicBtn';
+          btn.textContent = name;
+          btn.addEventListener('click', () => {
+            openFileInCurrentMode(firstPage, 'נושא');
+            setActiveTopicButtons(getSelectedFile() || firstPage);
+          });
+
+          topicButtons.appendChild(btn);
+          topicButtonsMap.set(name, btn);
+        }
+      }
+
+      function ensureAllIo() {
+        if (allIo) return;
+        if (!('IntersectionObserver' in window)) return;
+
+        allIo = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              const item = e.target;
+              const file = item?.dataset?.file;
+              if (!file) continue;
+              const frame = allFrames.get(file);
+              if (!frame) continue;
+              loadAllFrame(file);
+            }
+          },
+          // In "all pages" mode we use normal browser scrolling, so observe relative to viewport.
+          { root: null, rootMargin: '800px 0px' }
+        );
+      }
+
+      function loadAllFrame(file) {
+        const frame = allFrames.get(file);
+        if (!frame) return;
+        if (allLoaded.has(frame)) return;
+
+        const srcBase = frame.dataset.src;
+        if (!srcBase) return;
+
+        const bust = String(Date.now());
+        frame.src = `${srcBase}?v=${bust}`;
+        allLoaded.add(frame);
+
+        frame.addEventListener(
+          'load',
+          () => {
+            fitA4InFrame(frame, 'all');
+          },
+          { once: true }
+        );
+      }
+
+      function highlightAllSelected(selectedFile) {
+        for (const [file, el] of allItems.entries()) {
+          el.classList.toggle('is-active', file === selectedFile);
+        }
+      }
+
+      function scrollToAllSelected(selectedFile) {
+        const item = allItems.get(selectedFile);
+        if (!item) return;
+        item.scrollIntoView({ block: 'start' });
+      }
+
+      function renderAllPages(selectedFile) {
+        allPages.innerHTML = '';
+        allFrames = new Map();
+        allItems = new Map();
+        allLoaded = new Set();
+
+        if (allIo) {
+          try {
+            allIo.disconnect();
+          } catch {
+            // ignore
+          }
+          allIo = null;
+        }
+
+        const frag = document.createDocumentFragment();
+
+        for (const entry of toc.flat) {
+          const item = document.createElement('div');
+          item.className = 'reader-allItem';
+          item.dataset.file = entry.file;
+
+          const frame = document.createElement('iframe');
+          frame.className = 'reader-allFrame';
+          frame.title = entry.title || entry.file;
+          frame.referrerPolicy = 'no-referrer';
+          frame.loading = 'lazy';
+          frame.dataset.src = `/${encodeURIComponent(entry.file)}`;
+          item.appendChild(frame);
+
+          frag.appendChild(item);
+          allFrames.set(entry.file, frame);
+          allItems.set(entry.file, item);
+        }
+
+        allPages.appendChild(frag);
+        ensureAllIo();
+
+        if (allIo) {
+          for (const item of allItems.values()) allIo.observe(item);
+        } else {
+          // Fallback: load first few eagerly.
+          for (let i = 0; i < Math.min(6, toc.flat.length); i++) {
+            const f = toc.flat[i]?.file;
+            if (f) loadAllFrame(f);
+          }
+        }
+
+        highlightAllSelected(selectedFile);
+        loadAllFrame(selectedFile);
+        scrollToAllSelected(selectedFile);
+        updateMetaAll(selectedFile, 'מוכן');
+      }
+
+      function renderList(selectedFile) {
         fileSelect.innerHTML = '';
         fileList.innerHTML = '';
 
-        const startIdx = spreadStartIndexForFile(selectedRightFile);
-        const { right, left } = spreadFiles(startIdx);
-        const rightFile = right?.file || '';
-        const leftFile = left?.file || '';
+        let rightFile = '';
+        let leftFile = '';
+
+        if (currentMode === 'all') {
+          rightFile = selectedFile || '';
+          leftFile = '';
+        } else {
+          const startIdx = spreadStartIndexForFile(selectedFile);
+          const { right, left } = spreadFiles(startIdx);
+          rightFile = right?.file || '';
+          leftFile = left?.file || '';
+        }
 
         for (const entry of toc.flat) {
           const opt = document.createElement('option');
@@ -221,7 +476,17 @@
             const btn = document.createElement('button');
             btn.type = 'button';
             const inSpread = entry.file === rightFile || entry.file === leftFile;
-            btn.className = 'reader-item' + (entry.file === rightFile ? ' is-active' : inSpread ? ' is-inSpread' : '');
+            btn.className =
+              'reader-item' +
+              (currentMode === 'all'
+                ? entry.file === rightFile
+                  ? ' is-active'
+                  : ''
+                : entry.file === rightFile
+                  ? ' is-active'
+                  : inSpread
+                    ? ' is-inSpread'
+                    : '');
 
             if (entry.topic && typeof entry.pageIndex === 'number' && typeof entry.pageTotal === 'number') {
               btn.textContent = `עמוד ${entry.pageIndex} / ${entry.pageTotal}`;
@@ -230,12 +495,22 @@
             }
 
             btn.addEventListener('click', () => {
-              const idx = spreadStartIndexForFile(entry.file);
-              const r = toc.flat[idx]?.file || '';
-              setSelectedFile(r);
-              fileSelect.value = r;
-              renderList(r);
-              updateSpread(idx, 'נפתח');
+              if (currentMode === 'all') {
+                setSelectedFile(entry.file);
+                fileSelect.value = entry.file;
+                renderList(entry.file);
+                highlightAllSelected(entry.file);
+                loadAllFrame(entry.file);
+                scrollToAllSelected(entry.file);
+                updateMetaAll(entry.file, 'נפתח');
+              } else {
+                const idx = spreadStartIndexForFile(entry.file);
+                const r = toc.flat[idx]?.file || '';
+                setSelectedFile(r);
+                fileSelect.value = r;
+                renderList(r);
+                updateSpread(idx, 'נפתח');
+              }
             });
             list.appendChild(btn);
           }
@@ -245,9 +520,11 @@
         }
 
         fileSelect.value = rightFile;
+        setActiveTopicButtons(rightFile);
       }
 
       function selectNeighborSpread(deltaSpreads) {
+        if (currentMode === 'all') return;
         const current = getSelectedFile();
         const startIdx = spreadStartIndexForFile(current);
         let maxStart = Math.max(0, toc.flat.length - 1);
@@ -287,25 +564,62 @@
           return;
         }
 
-        const startIdx = spreadStartIndexForFile(initial);
-        const rightFile = toc.flat[startIdx]?.file || initial;
-        setSelectedFile(rightFile);
-        renderList(rightFile);
-        updateSpread(startIdx, 'מוכן');
+        const mode = getMode();
+        setModeUi(mode);
+        buildTopicButtons();
+
+        if (mode === 'all') {
+          // keep exact selected file for scrolling/highlight
+          setMode('all');
+          setSelectedFile(initial);
+          renderList(initial);
+          renderAllPages(initial);
+          setActiveTopicButtons(initial);
+        } else {
+          setMode('book');
+          const startIdx = spreadStartIndexForFile(initial);
+          const rightFile = toc.flat[startIdx]?.file || initial;
+          setSelectedFile(rightFile);
+          renderList(rightFile);
+          updateSpread(startIdx, 'מוכן');
+          setActiveTopicButtons(rightFile);
+        }
+
+        modeAllBtn.addEventListener('click', () => {
+          if (currentMode === 'all') return;
+          setMode('all');
+          setModeUi('all');
+          const f = getSelectedFile() || toc.flat[0]?.file || '';
+          if (!f) return;
+          setSelectedFile(f);
+          renderList(f);
+          renderAllPages(f);
+        });
+
+        modeBookBtn.addEventListener('click', () => {
+          if (currentMode === 'book') return;
+          setMode('book');
+          setModeUi('book');
+          const f = getSelectedFile() || toc.flat[0]?.file || '';
+          if (!f) return;
+          const startIdx = spreadStartIndexForFile(f);
+          const rightFile = toc.flat[startIdx]?.file || f;
+          setSelectedFile(rightFile);
+          renderList(rightFile);
+          updateSpread(startIdx, 'נפתח');
+        });
 
         fileSelect.addEventListener('change', () => {
           const f = fileSelect.value;
-          const idx = spreadStartIndexForFile(f);
-          const r = toc.flat[idx]?.file || f;
-          setSelectedFile(r);
-          renderList(r);
-          updateSpread(idx, 'נבחר');
+          openFileInCurrentMode(f, 'נבחר');
+          setActiveTopicButtons(getSelectedFile() || f);
         });
 
         prevBtn.addEventListener('click', () => selectNeighborSpread(-1));
         nextBtn.addEventListener('click', () => selectNeighborSpread(1));
 
         window.addEventListener('keydown', (e) => {
+          if (currentMode === 'all') return;
           const tag = e.target?.tagName;
           if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
           // RTL-friendly: Left = forward, Right = back
@@ -316,6 +630,18 @@
         const es = new EventSource('/events');
         es.addEventListener('reload', () => {
           const currentFile = getSelectedFile();
+          if (currentMode === 'all') {
+            // Reload only already-loaded frames.
+            const bust = String(Date.now());
+            for (const frame of allLoaded) {
+              const srcBase = frame.dataset.src;
+              if (!srcBase) continue;
+              frame.src = `${srcBase}?v=${bust}`;
+            }
+            if (currentFile) updateMetaAll(currentFile, 'עודכן');
+            return;
+          }
+
           if (!currentFile) return;
           const start = spreadStartIndexForFile(currentFile);
           updateSpread(start, 'עודכן');
@@ -323,11 +649,11 @@
 
         function scheduleFit() {
           // Give MathJax/layout a beat to settle before fitting.
-          setTimeout(() => fitA4InFrame(frameRight), 80);
-          setTimeout(() => fitA4InFrame(frameRight), 250);
+          setTimeout(() => fitA4InFrame(frameRight, 'book'), 80);
+          setTimeout(() => fitA4InFrame(frameRight, 'book'), 250);
           if (!frameLeft.hidden) {
-            setTimeout(() => fitA4InFrame(frameLeft), 80);
-            setTimeout(() => fitA4InFrame(frameLeft), 250);
+            setTimeout(() => fitA4InFrame(frameLeft, 'book'), 80);
+            setTimeout(() => fitA4InFrame(frameLeft, 'book'), 250);
           }
         }
 
@@ -336,14 +662,24 @@
 
         if (window.ResizeObserver && frameWrap) {
           const ro = new ResizeObserver(() => {
-            fitA4InFrame(frameRight);
-            if (!frameLeft.hidden) fitA4InFrame(frameLeft);
+            if (currentMode === 'all') {
+              for (const frame of allLoaded) fitA4InFrame(frame, 'all');
+              return;
+            }
+
+            fitA4InFrame(frameRight, 'book');
+            if (!frameLeft.hidden) fitA4InFrame(frameLeft, 'book');
           });
           ro.observe(frameWrap);
         } else {
           window.addEventListener('resize', () => {
-            fitA4InFrame(frameRight);
-            if (!frameLeft.hidden) fitA4InFrame(frameLeft);
+            if (currentMode === 'all') {
+              for (const frame of allLoaded) fitA4InFrame(frame, 'all');
+              return;
+            }
+
+            fitA4InFrame(frameRight, 'book');
+            if (!frameLeft.hidden) fitA4InFrame(frameLeft, 'book');
           });
         }
       }
