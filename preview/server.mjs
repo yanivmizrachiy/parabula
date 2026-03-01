@@ -31,7 +31,7 @@ function isIgnoredForListing(relPath) {
 
 function isWatchedFile(relPath) {
   const ext = path.extname(relPath).toLowerCase();
-  return ext === '.html' || ext === '.css' || ext === '.js' || ext === '.mjs';
+  return ext === '.html' || ext === '.css' || ext === '.js' || ext === '.mjs' || ext === '.svg';
 }
 
 function sendSseEvent(eventName, data) {
@@ -292,7 +292,7 @@ const server = http.createServer(async (req, res) => {
 
     const headers = {
       'Content-Type': contentTypeFor(filePath),
-      'Cache-Control': ['.html', '.css'].includes(path.extname(filePath).toLowerCase()) ? 'no-store' : 'no-cache'
+      'Cache-Control': ['.html', '.css', '.svg'].includes(path.extname(filePath).toLowerCase()) ? 'no-store' : 'no-cache'
     };
 
     res.writeHead(200, headers);
