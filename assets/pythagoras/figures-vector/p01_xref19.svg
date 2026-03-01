@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="676" height="42" viewBox="0 0 676 42">
+<style>
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+<path fill="rgb(51,51,51)" stroke="rgb(51,51,51)" stroke-width="0" opacity="1" d="M 329.5 14 L 330 29.5 L 332 32.5 L 326.5 33 L 326.5 32 L 328 31.5 L 328 16.5 L 327.5 15 L 329.5 14 Z " /><path fill="rgb(51,51,51)" stroke="rgb(51,51,51)" stroke-width="0" opacity="1" d="M 342.5 14 L 347 15 Q 350.3 18.9 349 28.5 L 345.5 33 L 344 32.5 Q 348.5 29 347 19.5 L 344.5 15 L 341 16.5 L 340 27.5 L 343 32.5 L 341.5 33 Q 335.8 29.7 338 18.5 L 340 15 L 342.5 14 Z " /><path fill="rgb(51,51,51)" stroke="rgb(51,51,51)" stroke-width="0" opacity="1" d="M 363.5 16 L 364 17.5 Q 360.2 20.7 361 28.5 L 364 33.5 L 361.5 35 Q 357.8 31.8 359 23.5 L 361 17 L 363.5 16 Z " /><path fill="rgb(51,51,51)" stroke="rgb(51,51,51)" stroke-width="0" opacity="1" d="M 367.5 19 L 372.5 20 L 374.5 19 L 377 20 Q 377.8 23.1 375 22.5 L 375 31.5 L 373 32.5 L 373 22 L 366.5 22 L 366 20.5 L 367.5 19 Z " />
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-ltr" x="10" y="30" font-size="24" text-anchor="start">N130=1140</text>
+<text class="pyt-word pyt-ltr" x="186" y="34" font-size="34" text-anchor="start">|</text>
+<text class="pyt-word pyt-rtl" x="276" y="31" font-size="19" text-anchor="end">ה)25‎</text>
+<text class="pyt-word pyt-ltr" x="425" y="31" font-size="18" text-anchor="start">50</text>
+<text class="pyt-word pyt-ltr" x="507" y="31" font-size="19" text-anchor="start">20)</text>
+<text class="pyt-word pyt-rtl" x="666" y="31" font-size="19" text-anchor="end">א)גן‎</text>
+</g>
+</svg>

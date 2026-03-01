@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { PNG } from "pngjs";
+import jpeg from "jpeg-js";
 import ImageTracer from "imagetracerjs";
 import { createWorker } from "tesseract.js";
 
@@ -11,22 +12,16 @@ function parseArgValue(flag) {
   return process.argv[index + 1] ?? null;
 }
 
-function parsePagesArg(value) {
+function parseListArg(value) {
   if (!value) return [];
   return value
     .split(",")
     .map((s) => s.trim())
-    .filter(Boolean)
-    .map((s) => Number.parseInt(s, 10))
-    .filter((n) => Number.isFinite(n) && n > 0);
-}
-
-function pad2(n) {
-  return String(n).padStart(2, "0");
+    .filter(Boolean);
 }
 
 function escapeXml(text) {
-  return text
+  return String(text)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -38,9 +33,9 @@ function clampInt(value, min, max) {
   return Math.max(min, Math.min(max, value | 0));
 }
 
-function fillRectWhite(png, x0, y0, x1, y1) {
-  const width = png.width;
-  const height = png.height;
+function fillRectWhite(image, x0, y0, x1, y1) {
+  const width = image.width;
+  const height = image.height;
   const left = clampInt(Math.min(x0, x1), 0, width - 1);
   const right = clampInt(Math.max(x0, x1), 0, width - 1);
   const top = clampInt(Math.min(y0, y1), 0, height - 1);
@@ -49,10 +44,10 @@ function fillRectWhite(png, x0, y0, x1, y1) {
   for (let y = top; y <= bottom; y += 1) {
     for (let x = left; x <= right; x += 1) {
       const idx = (width * y + x) << 2;
-      png.data[idx] = 255;
-      png.data[idx + 1] = 255;
-      png.data[idx + 2] = 255;
-      png.data[idx + 3] = 255;
+      image.data[idx] = 255;
+      image.data[idx + 1] = 255;
+      image.data[idx + 2] = 255;
+      image.data[idx + 3] = 255;
     }
   }
 }
@@ -65,7 +60,6 @@ function extractSvgInner(svg) {
 }
 
 function stripWhitePaths(svgInner) {
-  // imagetracer often emits a full-page white path; we already draw a white rect.
   return svgInner
     .replace(
       /<path[^>]*fill="rgb\((?:25[0-5]|24[8-9]),(?:25[0-5]|24[8-9]),(?:25[0-5]|24[8-9])\)"[^>]*>\s*<\/path>\s*/g,
@@ -76,13 +70,11 @@ function stripWhitePaths(svgInner) {
       ""
     );
 }
-
+          const finalSvg =
 function parseTsvWords(tsv) {
-  // TSV columns:
-  // level, page_num, block_num, par_num, line_num, word_num, left, top, width, height, conf, text
   const lines = String(tsv ?? "")
     .replace(/\r\n/g, "\n")
-    .split("\n")
+            `  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }\n` +
     .slice(1);
 
   const words = [];
@@ -92,7 +84,6 @@ function parseTsvWords(tsv) {
     if (cols.length < 12) continue;
 
     const level = Number.parseInt(cols[0], 10);
-    // 5 == word level
     if (level !== 5) continue;
 
     const left = Number.parseInt(cols[6], 10);
@@ -101,17 +92,13 @@ function parseTsvWords(tsv) {
     const height = Number.parseInt(cols[9], 10);
     const confidence = Number.parseFloat(cols[10]);
     const text = cols[11] ?? "";
+
     if (!Number.isFinite(left) || !Number.isFinite(top) || !Number.isFinite(width) || !Number.isFinite(height)) continue;
 
     words.push({
       text,
       confidence,
-      bbox: {
-        x0: left,
-        y0: top,
-        x1: left + width,
-        y1: top + height,
-      },
+      bbox: { x0: left, y0: top, x1: left + width, y1: top + height },
     });
   }
   return words;
@@ -130,48 +117,49 @@ function buildTextLayer(words) {
     const x1 = bbox.x1;
     const y1 = bbox.y1;
     const height = Math.max(1, y1 - y0);
-
-    // Approximate baseline: y1 - 0.2h (works OK for tesseract bboxes)
     const baselineY = y1 - Math.round(height * 0.2);
 
-    // Heuristic: treat Hebrew (or mixed Hebrew) as RTL, anchor to right edge.
     const isHebrew = /[\u0590-\u05FF]/.test(text);
     const anchor = isHebrew ? "end" : "start";
     const x = isHebrew ? x1 : x0;
 
     const fontSize = Math.max(10, Math.round(height * 0.9));
-
     const cls = isHebrew ? "pyt-word pyt-rtl" : "pyt-word pyt-ltr";
 
     pieces.push(
       `<text class="${cls}" x="${x}" y="${baselineY}" font-size="${fontSize}" text-anchor="${anchor}">${escapeXml(text)}</text>`
     );
   }
+
   return pieces.join("\n");
 }
 
-function shouldKeepWordAsText(text) {
-  const normalized = String(text ?? "").trim();
-  if (!normalized) return false;
+async function decodeImage(filePath) {
+  const buffer = await fs.readFile(filePath);
+  const ext = path.extname(filePath).toLowerCase();
 
-  // Hide worksheet meta labels that violate the project's "no question numbering" rule.
-  if (normalized === "שאלה") return false;
-  if (normalized === "תשובות") return false;
-  if (normalized === "תשובה") return false;
-  if (normalized === "לשאלה") return false;
+  if (ext === ".png") {
+    const png = PNG.sync.read(buffer);
+    return { width: png.width, height: png.height, data: new Uint8ClampedArray(png.data) };
+  }
 
-  return true;
+  if (ext === ".jpg" || ext === ".jpeg") {
+    const decoded = jpeg.decode(buffer, { useTArray: true });
+    return { width: decoded.width, height: decoded.height, data: new Uint8ClampedArray(decoded.data) };
+  }
+
+  throw new Error(`Unsupported image extension: ${ext}`);
 }
 
 async function main() {
-  const pagesArg = parseArgValue("--pages");
+  const filesArg = parseArgValue("--files");
   const inDirArg = parseArgValue("--inputDir");
   const outDirArg = parseArgValue("--outDir");
 
-  const pages = parsePagesArg(pagesArg);
-  if (pages.length === 0) {
+  const files = parseListArg(filesArg);
+  if (files.length === 0) {
     console.error(
-      "Usage: node scripts/vectorize-pythagoras-pages.mjs --pages 4,5,6 [--inputDir assets/pythagoras/pdf] [--outDir assets/pythagoras/vector]"
+      "Usage: node scripts/vectorize-pythagoras-figures.mjs --files p01_xref17.jpeg,p01_xref18.png [--inputDir assets/pythagoras/figures] [--outDir assets/pythagoras/figures-vector]"
     );
     process.exit(2);
   }
@@ -179,11 +167,11 @@ async function main() {
   const workspaceRoot = process.cwd();
   const inputDir = inDirArg
     ? path.resolve(workspaceRoot, inDirArg)
-    : path.join(workspaceRoot, "assets", "pythagoras", "pdf");
+    : path.join(workspaceRoot, "assets", "pythagoras", "figures");
 
   const outDir = outDirArg
     ? path.resolve(workspaceRoot, outDirArg)
-    : path.join(workspaceRoot, "assets", "pythagoras", "vector");
+    : path.join(workspaceRoot, "assets", "pythagoras", "figures-vector");
 
   await fs.mkdir(outDir, { recursive: true });
 
@@ -194,71 +182,52 @@ async function main() {
   });
 
   const tracerOptions = {
-    // Force a strict black/white palette to preserve line art.
     colorsampling: 0,
     numberofcolors: 2,
     pal: [
       { r: 255, g: 255, b: 255, a: 255 },
       { r: 0, g: 0, b: 0, a: 255 },
     ],
-    // Reduce noise / simplify
     ltres: 1,
     qtres: 1,
-    pathomit: 4,
-    // Output
+    pathomit: 2,
     strokewidth: 0,
     scale: 1,
     viewbox: true,
   };
 
   try {
-    for (const page of pages) {
-      const name = `page-${pad2(page)}`;
-      const pngPath = path.join(inputDir, `${name}.png`);
-      const outPath = path.join(outDir, `${name}.svg`);
+    for (const file of files) {
+      const inPath = path.join(inputDir, file);
+      const baseName = path.basename(file, path.extname(file));
+      const outPath = path.join(outDir, `${baseName}.svg`);
 
-      const pngBuffer = await fs.readFile(pngPath);
-      const png = PNG.sync.read(pngBuffer);
+      const image = await decodeImage(inPath);
 
-      const { data } = await worker.recognize(
-        pngPath,
-        {},
-        {
-          text: false,
-          tsv: true,
-        }
-      );
+      const { data } = await worker.recognize(inPath, {}, { text: false, tsv: true });
       const wordsAll = parseTsvWords(data?.tsv)
         .filter((w) => (w?.text ?? "").trim().length > 0)
         .filter((w) => (w?.confidence ?? 0) >= 30);
 
-      const wordsForText = wordsAll.filter((w) => shouldKeepWordAsText(w.text));
-
-      // Build a copy for tracing (remove all word bboxes to avoid tracing text)
-      const tracePng = new PNG({ width: png.width, height: png.height });
-      png.data.copy(tracePng.data);
+      // Copy for tracing and remove OCR words to avoid tracing text outlines.
+      const traceData = new Uint8ClampedArray(image.data);
+      const traceImage = { width: image.width, height: image.height, data: traceData };
 
       for (const word of wordsAll) {
         const bbox = word.bbox;
         if (!bbox) continue;
         const pad = 2;
-        fillRectWhite(tracePng, bbox.x0 - pad, bbox.y0 - pad, bbox.x1 + pad, bbox.y1 + pad);
+        fillRectWhite(traceImage, bbox.x0 - pad, bbox.y0 - pad, bbox.x1 + pad, bbox.y1 + pad);
       }
 
-      const imageData = {
-        width: tracePng.width,
-        height: tracePng.height,
-        data: new Uint8ClampedArray(tracePng.data),
-      };
-
-      const tracedSvg = ImageTracer.imagedataToSVG(imageData, tracerOptions);
+      const tracedSvg = ImageTracer.imagedataToSVG(traceImage, tracerOptions);
       const tracedInner = stripWhitePaths(extractSvgInner(tracedSvg));
-      const textLayer = buildTextLayer(wordsForText);
+      const textLayer = buildTextLayer(wordsAll);
 
-      const finalSvg = `<?xml version="1.0" encoding="UTF-8"?>\n` +
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${png.width}" height="${png.height}" viewBox="0 0 ${png.width} ${png.height}">\n` +
+      const finalSvg =
+        `<?xml version="1.0" encoding="UTF-8"?>\n` +
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${image.width}" height="${image.height}" viewBox="0 0 ${image.width} ${image.height}">\n` +
         `<style>\n` +
-        `  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }\n` +
         `  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }\n` +
         `  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }\n` +
         `  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }\n` +
@@ -269,7 +238,9 @@ async function main() {
         `</svg>\n`;
 
       await fs.writeFile(outPath, finalSvg, "utf8");
-      console.log(`Vectorized page ${page}: wrote ${path.relative(workspaceRoot, outPath)} (words: ${wordsForText.length}/${wordsAll.length})`);
+      console.log(
+        `Vectorized figure ${file}: wrote ${path.relative(workspaceRoot, outPath)} (words: ${wordsAll.length})`
+      );
     }
   } finally {
     await worker.terminate();

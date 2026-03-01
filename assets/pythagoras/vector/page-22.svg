@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1489" height="2105" viewBox="0 0 1489 2105">
+<style>
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+<path fill="rgb(136,154,170)" stroke="rgb(136,154,170)" stroke-width="0" opacity="1" d="M 586 381 L 666.5 381 L 667 384 L 586.5 384 L 586 381 Z " /><path fill="rgb(136,154,170)" stroke="rgb(136,154,170)" stroke-width="0" opacity="1" d="M 659.5 445 Q 665.3 444.2 667 447.5 L 667 463.5 L 666 464.5 L 667 465.5 L 667 472 L 661 473 L 660 466.5 L 664 457.5 L 664 451 L 659.5 450 Q 655.8 451.5 657 457 Q 653.2 458 652 455.5 Q 651.1 448.6 655.5 447 L 659.5 445 Z " /><path fill="rgb(136,154,170)" stroke="rgb(136,154,170)" stroke-width="0" opacity="1" d="M 666.5 475 L 667 479 L 586 527 Q 584.5 523.2 587.5 524 L 666.5 475 Z " /><path fill="rgb(136,154,170)" stroke="rgb(136,154,170)" stroke-width="0" opacity="1" d="M 586 562 L 666.5 562 L 667 565 L 586.5 565 L 586 562 Z " />
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-ltr" x="1283" y="203" font-size="20" text-anchor="start">23</text>
+<text class="pyt-word pyt-rtl" x="1379" y="292" font-size="22" text-anchor="end">נתון:</text>
+<text class="pyt-word pyt-ltr" x="1243" y="287" font-size="21" text-anchor="start">ABCD‏</text>
+<text class="pyt-word pyt-rtl" x="1235" y="287" font-size="16" text-anchor="end">הוא</text>
+<text class="pyt-word pyt-rtl" x="1181" y="291" font-size="26" text-anchor="end">מלבן</text>
+<text class="pyt-word pyt-rtl" x="1115" y="288" font-size="17" text-anchor="end">ובתוכו</text>
+<text class="pyt-word pyt-rtl" x="1032" y="288" font-size="17" text-anchor="end">חסום</text>
+<text class="pyt-word pyt-rtl" x="960" y="287" font-size="22" text-anchor="end">משולש</text>
+<text class="pyt-word pyt-rtl" x="863" y="288" font-size="17" text-anchor="end">ישר</text>
+<text class="pyt-word pyt-rtl" x="809" y="287" font-size="16" text-anchor="end">זווית</text>
+<text class="pyt-word pyt-ltr" x="692" y="287" font-size="21" text-anchor="start">DEC‏</text>
+<text class="pyt-word pyt-rtl" x="682" y="292" font-size="28" text-anchor="end">(כך</text>
+<text class="pyt-word pyt-rtl" x="633" y="292" font-size="22" text-anchor="end">שנקודה</text>
+<text class="pyt-word pyt-ltr" x="517" y="287" font-size="20" text-anchor="start">5</text>
+<text class="pyt-word pyt-rtl" x="507" y="287" font-size="22" text-anchor="end">על</text>
+<text class="pyt-word pyt-rtl" x="468" y="287" font-size="22" text-anchor="end">צלע</text>
+<text class="pyt-word pyt-ltr" x="357" y="292" font-size="28" text-anchor="start">(AB‏</text>
+<text class="pyt-word pyt-ltr" x="808" y="374" font-size="21" text-anchor="start">3</text>
+<text class="pyt-word pyt-ltr" x="507" y="383" font-size="10" text-anchor="start">,</text>
+<text class="pyt-word pyt-ltr" x="669" y="526" font-size="176" text-anchor="start">+N</text>
+<text class="pyt-word pyt-ltr" x="937" y="388" font-size="21" text-anchor="start">|‏</text>
+<text class="pyt-word pyt-ltr" x="495" y="533" font-size="188" text-anchor="start">|</text>
+<text class="pyt-word pyt-ltr" x="500" y="569" font-size="21" text-anchor="start">D</text>
+<text class="pyt-word pyt-ltr" x="935" y="569" font-size="21" text-anchor="start">06‏</text>
+<text class="pyt-word pyt-rtl" x="1377" y="750" font-size="17" text-anchor="end">סמנו</text>
+<text class="pyt-word pyt-rtl" x="1310" y="750" font-size="17" text-anchor="end">את</text>
+<text class="pyt-word pyt-ltr" x="1231" y="749" font-size="22" text-anchor="start">EB‏</text>
+<text class="pyt-word pyt-rtl" x="1222" y="750" font-size="17" text-anchor="end">ביא</text>
+<text class="pyt-word pyt-rtl" x="1174" y="750" font-size="17" text-anchor="end">ואת</text>
+<text class="pyt-word pyt-ltr" x="1083" y="749" font-size="22" text-anchor="start">BC‏</text>
+<text class="pyt-word pyt-rtl" x="1074" y="755" font-size="23" text-anchor="end">ב&quot;ץ</text>
+<text class="pyt-word pyt-rtl" x="1027" y="750" font-size="17" text-anchor="end">וכתבו</text>
+<text class="pyt-word pyt-ltr" x="935" y="749" font-size="22" text-anchor="start">2</text>
+<text class="pyt-word pyt-rtl" x="926" y="750" font-size="17" text-anchor="end">משוואות</text>
+<text class="pyt-word pyt-rtl" x="809" y="750" font-size="17" text-anchor="end">שיעזרו</text>
+<text class="pyt-word pyt-rtl" x="718" y="749" font-size="22" text-anchor="end">לכם</text>
+<text class="pyt-word pyt-rtl" x="659" y="749" font-size="22" text-anchor="end">למצוא</text>
+<text class="pyt-word pyt-rtl" x="571" y="750" font-size="17" text-anchor="end">את</text>
+<text class="pyt-word pyt-rtl" x="524" y="754" font-size="22" text-anchor="end">אורך</text>
+<text class="pyt-word pyt-rtl" x="459" y="749" font-size="22" text-anchor="end">הצלע</text>
+<text class="pyt-word pyt-ltr" x="338" y="749" font-size="22" text-anchor="start">:AD‏</text>
+</g>
+</svg>

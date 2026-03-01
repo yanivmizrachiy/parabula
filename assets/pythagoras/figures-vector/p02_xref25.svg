@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="153" height="39" viewBox="0 0 153 39">
+<style>
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-ltr" x="8" y="25" font-size="21" text-anchor="start">+40</text>
+<text class="pyt-word pyt-ltr" x="58" y="27" font-size="15" text-anchor="start">=6.32</text>
+<text class="pyt-word pyt-ltr" x="131" y="29" font-size="15" text-anchor="start">0</text>
+</g>
+</svg>

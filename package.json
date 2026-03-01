@@ -4,6 +4,7 @@
   "type": "module",
   "dependencies": {
     "imagetracerjs": "^1.2.6",
+    "jpeg-js": "^0.4.4",
     "pngjs": "^7.0.0",
     "tesseract.js": "^6.0.1"
   },

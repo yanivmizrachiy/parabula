@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1489" height="2105" viewBox="0 0 1489 2105">
+<style>
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+<path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 480 271 L 495 271 L 495 280 L 492 280 L 492 289.5 L 489 290 L 489 299 L 486 299 L 486 305 L 483 305 L 483 296 L 486 295.5 L 486 286.5 L 489 285.5 L 489 274 L 483.5 274 L 483 277 L 477 277 L 477 274 Q 481.5 275.5 480 271 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 535 271 L 547.5 271 L 548 274 L 551 274 L 551 290 L 548 290 L 548 293 L 545 293 L 545 296 L 542 296 L 542 299 Q 537.5 297.5 539 302 L 550.5 302 L 551 299 L 554 299 L 554 304.5 L 553.5 305 L 532 305 L 532 302 Q 536.5 303.5 535 299 L 539 299 L 539 296 L 542 296 Q 540.5 291.5 545 293 L 545 286 L 548 285.5 L 548 277 Q 543.5 278.5 545 274 L 539 274 L 539 277 L 535 277 Q 536.5 281.5 532 280 Q 530.5 275.5 535 277 L 535 271 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 569 271 L 576 271 L 576 292.5 L 579 293 L 579 296 L 576 296 L 576 305 L 569 305 L 569 296 L 557 296 L 557 290 L 560 290 Q 558.1 284.4 563 286 L 563 290 Q 558.5 288.5 560 293 L 569 293 L 569 280 L 566 280 Q 567.5 284.5 563 283 L 563 280 L 566 280 Q 564.5 275.5 569 277 L 569 271 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 511 280 L 517 280 L 517 286 L 514 286 L 514 283 Q 509.5 284.5 511 280 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 449 299 L 452 299 L 452 305 L 449 305 L 449 299 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 511 299 L 517 299 L 517 305 L 511 305 L 511 299 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 1341 423 L 1348 423 L 1348 429 L 1344 429 L 1344 435 L 1341 435 L 1341 448 L 1344 448 L 1344 457 L 1341 457 L 1341 454 L 1338 453.5 L 1338 429 L 1341 429 L 1341 423 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 1378 423 L 1382 423 Q 1380.5 427.5 1385 426 L 1385 432 L 1388 432 L 1388 445 L 1385 445 L 1385 454 Q 1380.5 452.5 1382 457 L 1378 457 L 1378 448 L 1382 447.5 L 1382 432 L 1378 432 L 1378 423 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 1351 429 L 1357 429 L 1357 432 L 1360 432 L 1360 435 Q 1364.5 433.5 1363 438 L 1369 438 L 1369 429 L 1372 429 L 1372 440.5 L 1369 441 L 1369 445 L 1372 445 Q 1370.5 449.5 1375 448 L 1375 454 L 1369 454 Q 1370.5 449.5 1366 451 L 1366 445 L 1363 445 L 1363 441 L 1360 441 Q 1361.5 436.5 1357 438 Q 1358.5 442.5 1354 441 L 1354 448 L 1357 448 L 1357 454 L 1351 454 L 1351 438 Q 1355.5 439.5 1354 435 L 1351 435 L 1351 429 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 968.5 1913 Q 971.1 1912.3 970 1915 L 967 1914.5 L 968.5 1913 Z " /><path fill="rgb(79,71,78)" stroke="rgb(79,71,78)" stroke-width="0" opacity="1" d="M 981.5 1913 Q 988.4 1911 987 1915 L 980 1914.5 L 981.5 1913 Z " />
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-ltr" x="1283" y="202" font-size="19" text-anchor="start">22</text>
+<text class="pyt-word pyt-rtl" x="1388" y="298" font-size="31" text-anchor="end">במשולש</text>
+<text class="pyt-word pyt-rtl" x="1227" y="307" font-size="31" text-anchor="end">ישר-זווית,</text>
+<text class="pyt-word pyt-rtl" x="1017" y="300" font-size="23" text-anchor="end">היחס</text>
+<text class="pyt-word pyt-ltr" x="857" y="307" font-size="31" text-anchor="start">ya‏</text>
+<text class="pyt-word pyt-rtl" x="844" y="300" font-size="23" text-anchor="end">הניצבים</text>
+<text class="pyt-word pyt-rtl" x="684" y="300" font-size="23" text-anchor="end">הוא</text>
+<text class="pyt-word pyt-rtl" x="1388" y="382" font-size="31" text-anchor="end">אורך</text>
+<text class="pyt-word pyt-rtl" x="1286" y="374" font-size="22" text-anchor="end">הניצב</text>
+<text class="pyt-word pyt-rtl" x="1172" y="382" font-size="31" text-anchor="end">הקטן</text>
+<text class="pyt-word pyt-ltr" x="992" y="374" font-size="22" text-anchor="start">pon‏</text>
+<text class="pyt-word pyt-ltr" x="925" y="372" font-size="31" text-anchor="start">14</text>
+<text class="pyt-word pyt-rtl" x="897" y="374" font-size="22" text-anchor="end">סיימ.</text>
+<text class="pyt-word pyt-rtl" x="1301" y="449" font-size="23" text-anchor="end">חשבו</text>
+<text class="pyt-word pyt-rtl" x="1193" y="449" font-size="23" text-anchor="end">את</text>
+<text class="pyt-word pyt-rtl" x="1125" y="456" font-size="31" text-anchor="end">אורך</text>
+<text class="pyt-word pyt-rtl" x="1023" y="449" font-size="23" text-anchor="end">היתר</text>
+<text class="pyt-word pyt-rtl" x="918" y="447" font-size="31" text-anchor="end">במשולש.</text>
+<text class="pyt-word pyt-rtl" x="1388" y="524" font-size="31" text-anchor="end">(ב)</text>
+<text class="pyt-word pyt-rtl" x="1301" y="523" font-size="23" text-anchor="end">חשבו</text>
+<text class="pyt-word pyt-rtl" x="1193" y="523" font-size="23" text-anchor="end">את</text>
+<text class="pyt-word pyt-rtl" x="1125" y="523" font-size="23" text-anchor="end">שטח</text>
+<text class="pyt-word pyt-rtl" x="1030" y="521" font-size="31" text-anchor="end">המשולש.</text>
+<text class="pyt-word pyt-ltr" x="1159" y="1817" font-size="19" text-anchor="start">22</text>
+<text class="pyt-word pyt-ltr" x="496" y="1894" font-size="15" text-anchor="start">Amo</text>
+<text class="pyt-word pyt-ltr" x="577" y="1892" font-size="19" text-anchor="start">336</text>
+<text class="pyt-word pyt-ltr" x="646" y="1894" font-size="19" text-anchor="start">(a)</text>
+<text class="pyt-word pyt-ltr" x="844" y="1894" font-size="15" text-anchor="start">no</text>
+<text class="pyt-word pyt-ltr" x="912" y="1892" font-size="19" text-anchor="start">50</text>
+<text class="pyt-word pyt-ltr" x="963" y="1894" font-size="19" text-anchor="start">(N)‏</text>
+</g>
+</svg>

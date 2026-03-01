@@ -1,16 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1489" height="2105" viewBox="0 0 1489 2105">
 <style>
-  .pyt-art path{ fill:#000; }
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
   .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
   .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
   .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
 </style>
 <rect width="100%" height="100%" fill="#fff"/>
 <g class="pyt-art">
-<path fill="rgb(255,255,255)" stroke="rgb(255,255,255)" stroke-width="0" opacity="1" d="M 0 0 L 1489 0 L 1489 2105 L 0 2105 L 0 0 Z " />
+<path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 1315.5 209 L 1320.5 210 L 1400 210 L 1399.5 212 L 1297 212 L 1297.5 210 L 1314.5 210 L 1315.5 209 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 279.5 403 L 606 610 L 605.5 612 L 283.5 612 L 281.5 614 L 278 610.5 L 268 591.5 L 265 588.5 L 213 502.5 L 212 498.5 L 207 492.5 L 155 406.5 L 155 404 L 278.5 404 L 279.5 403 Z M 162 408 L 166 418 L 275 598 L 278 600 L 278 434 L 277 432 L 255 432 L 255 410 L 254 408 L 162 408 Z M 259 409 L 259 429 L 277 429 L 278 428 L 278 411 L 277 409 L 259 409 Z M 283 411 L 283 585 L 284 585 L 306 585 L 307 587 L 307 608 L 593 608 L 593 606 L 538 572 L 302 421 L 286 411 L 283 411 Z M 285 589 L 283 591 L 283 607 L 285 608 L 303 608 L 303 589 L 285 589 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 1003.5 421 Q 1013.9 419.6 1018 424.5 L 1019 428.5 L 1016 432.5 Q 1021 433.5 1020 440.5 L 1016.5 445 L 1014.5 446 L 1001 446 L 1001 422.5 L 1002.5 422 L 1003.5 421 Z M 1005 425 L 1005 431 L 1014 431 Q 1016 430 1015 427 L 1014 425 L 1005 425 Z M 1005 435 L 1005 443 L 1015 442 Q 1017 441 1016 438 L 1014 435 L 1005 435 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 1026.5 421 L 1038.5 422 L 1043 425.5 Q 1045.7 428.8 1045 435.5 L 1043 441.5 L 1040.5 444 Q 1035.8 447.8 1025.5 446 L 1024 444.5 L 1024 422 L 1026.5 421 Z M 1028 425 L 1028 443 L 1038 442 L 1040 440 L 1041 436 Q 1042 429 1039 427 L 1038 425 L 1028 425 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 1055.5 421 Q 1065.6 419.4 1068 425.5 Q 1069.5 429.9 1066.5 429 L 1064 425 Q 1061.9 423.4 1056.5 424 L 1053 426.5 Q 1050.4 429.4 1051 435.5 L 1054.5 442 L 1061.5 443 L 1066.5 437 L 1069 438.5 L 1069 440.5 L 1063.5 446 Q 1053 448 1050 442.5 Q 1046.5 439 1047 431.5 L 1048 427.5 L 1051.5 423 L 1055.5 421 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 987 423 Q 990.8 422 992 424.5 L 998 446 L 979.5 446 L 979 443.5 L 987 423 Z M 989 430 L 983 442 L 985 443 L 993 443 L 990 432 L 989 430 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 973.5 442 L 976 443 Q 977.6 447.9 972 446 L 973.5 442 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 424.5 622 L 430.5 625 L 435.5 622 L 437 624.5 L 433 630.5 L 438 637.5 L 434.5 639 L 432 638 L 430.5 635 L 424.5 639 L 422 637.5 L 427 629.5 L 423 623.5 L 424.5 622 Z " /><path fill="rgb(78,87,112)" stroke="rgb(78,87,112)" stroke-width="0" opacity="1" d="M 1173 1770 L 1399.5 1770 L 1400 1773 L 1173.5 1773 L 1173 1770 Z " />
 </g>
 <g class="pyt-text">
-
+<text class="pyt-word pyt-ltr" x="1299" y="202" font-size="21" text-anchor="start">5</text>
+<text class="pyt-word pyt-ltr" x="127" y="408" font-size="20" text-anchor="start">A</text>
+<text class="pyt-word pyt-ltr" x="213" y="395" font-size="21" text-anchor="start">8</text>
+<text class="pyt-word pyt-ltr" x="289" y="394" font-size="21" text-anchor="start">B</text>
+<text class="pyt-word pyt-rtl" x="985" y="392" font-size="22" text-anchor="end">המשולשים‎</text>
+<text class="pyt-word pyt-ltr" x="1000" y="393" font-size="16" text-anchor="start">awn</text>
+<text class="pyt-word pyt-rtl" x="1149" y="393" font-size="16" text-anchor="end">מורכב‎</text>
+<text class="pyt-word pyt-ltr" x="1171" y="392" font-size="23" text-anchor="start">ABCD</text>
+<text class="pyt-word pyt-rtl" x="1385" y="394" font-size="17" text-anchor="end">המרובע‎</text>
+<text class="pyt-word pyt-rtl" x="1107" y="442" font-size="16" text-anchor="end">ו-‎</text>
+<text class="pyt-word pyt-ltr" x="1129" y="441" font-size="22" text-anchor="start">AABD</text>
+<text class="pyt-word pyt-rtl" x="1385" y="442" font-size="16" text-anchor="end">הישרי-זווית‎</text>
+<text class="pyt-word pyt-rtl" x="1386" y="501" font-size="16" text-anchor="end">א.</text>
+<text class="pyt-word pyt-rtl" x="1321" y="501" font-size="17" text-anchor="end">מצאואת</text>
+<text class="pyt-word pyt-rtl" x="1197" y="506" font-size="23" text-anchor="end">אורך</text>
+<text class="pyt-word pyt-ltr" x="1062" y="500" font-size="23" text-anchor="start">DC‏</text>
+<text class="pyt-word pyt-ltr" x="444" y="494" font-size="21" text-anchor="start">25</text>
+<text class="pyt-word pyt-ltr" x="179" y="518" font-size="21" text-anchor="start">17</text>
+<text class="pyt-word pyt-rtl" x="1387" y="561" font-size="17" text-anchor="end">ב.</text>
+<text class="pyt-word pyt-rtl" x="1321" y="561" font-size="17" text-anchor="end">מצאו</text>
+<text class="pyt-word pyt-rtl" x="1248" y="561" font-size="17" text-anchor="end">את</text>
+<text class="pyt-word pyt-rtl" x="1197" y="566" font-size="23" text-anchor="end">היקף</text>
+<text class="pyt-word pyt-rtl" x="1120" y="562" font-size="18" text-anchor="end">המרובע</text>
+<text class="pyt-word pyt-ltr" x="899" y="560" font-size="23" text-anchor="start">ABCD‏</text>
+<text class="pyt-word pyt-rtl" x="1386" y="619" font-size="16" text-anchor="end">ג.</text>
+<text class="pyt-word pyt-rtl" x="1321" y="619" font-size="16" text-anchor="end">מצאו</text>
+<text class="pyt-word pyt-rtl" x="1248" y="619" font-size="16" text-anchor="end">את</text>
+<text class="pyt-word pyt-rtl" x="1197" y="619" font-size="16" text-anchor="end">שטח</text>
+<text class="pyt-word pyt-rtl" x="1123" y="621" font-size="18" text-anchor="end">המרובע</text>
+<text class="pyt-word pyt-ltr" x="901" y="618" font-size="23" text-anchor="start">ABCD‏</text>
+<text class="pyt-word pyt-ltr" x="619" y="627" font-size="21" text-anchor="start">6</text>
+<text class="pyt-word pyt-rtl" x="285" y="638" font-size="21" text-anchor="end">ם</text>
+<text class="pyt-word pyt-ltr" x="1175" y="1762" font-size="21" text-anchor="start">5</text>
+<text class="pyt-word pyt-rtl" x="1399" y="1828" font-size="17" text-anchor="end">א.</text>
+<text class="pyt-word pyt-ltr" x="1334" y="1827" font-size="19" text-anchor="start">20</text>
+<text class="pyt-word pyt-rtl" x="1323" y="1828" font-size="17" text-anchor="end">סיימ</text>
+<text class="pyt-word pyt-rtl" x="1237" y="1827" font-size="16" text-anchor="end">ב.</text>
+<text class="pyt-word pyt-rtl" x="1204" y="1828" font-size="20" text-anchor="end">70סיימ</text>
+<text class="pyt-word pyt-rtl" x="1085" y="1828" font-size="17" text-anchor="end">ג.</text>
+<text class="pyt-word pyt-rtl" x="1057" y="1828" font-size="17" text-anchor="end">השטח</text>
+<text class="pyt-word pyt-rtl" x="968" y="1828" font-size="18" text-anchor="end">הוא</text>
+<text class="pyt-word pyt-ltr" x="867" y="1827" font-size="19" text-anchor="start">210</text>
+<text class="pyt-word pyt-rtl" x="857" y="1828" font-size="18" text-anchor="end">סמייר</text>
 </g>
 </svg>
