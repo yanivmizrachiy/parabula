@@ -24,9 +24,9 @@
               <button class="reader-btn" id="modeBookBtn" type="button">דפדוף</button>
             </div>
 
-            <button class="reader-btn" id="prevBtn" type="button">הקודם</button>
+            <button class="reader-btn reader-navBtn" id="prevBtn" type="button">◀ הקודם</button>
             <select class="reader-select" id="fileSelect" aria-label="בחירת מסמך"></select>
-            <button class="reader-btn" id="nextBtn" type="button">הבא</button>
+            <button class="reader-btn reader-navBtn" id="nextBtn" type="button">הבא ▶</button>
           </div>
 
           <div class="reader-meta" id="meta"></div>
@@ -565,6 +565,7 @@
       }
 
       function selectNeighborSpread(deltaSpreads) {
+        if (currentMode === 'all') return;
         const current = getSelectedFile();
         const startIdx = spreadStartIndexForFile(current);
         let maxStart = Math.max(0, toc.flat.length - 1);
@@ -655,8 +656,8 @@
           setActiveTopicButtons(getSelectedFile() || f);
         });
 
-        prevBtn.addEventListener('click', () => selectNeighborSpread(-1));
-        nextBtn.addEventListener('click', () => selectNeighborSpread(1));
+        prevBtn.addEventListener('click', () => selectNeighbor(-1));
+        nextBtn.addEventListener('click', () => selectNeighbor(1));
 
         window.addEventListener('keydown', (e) => {
           const tag = e.target?.tagName;

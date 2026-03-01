@@ -79,6 +79,11 @@ body[data-mode='all'] .reader-shell {
   flex-wrap: wrap;
 }
 
+.reader-navBtn {
+  font-weight: 500 !important;
+  padding: 8px 14px;
+}
+
 .reader-modes {
   display: flex;
   align-items: center;
@@ -302,5 +307,22 @@ body[data-mode='all'] .reader-all {
   .reader-gutter,
   .reader-leaf--left {
     display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .reader-topbarRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reader-controls {
+    justify-content: space-between;
+  }
+
+  .reader-select {
+    min-width: 0;
+    flex: 1;
+    max-width: none;
   }
 }
