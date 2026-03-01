@@ -47,6 +47,7 @@ body[data-mode='all'] .reader-shell {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .reader-topics {
@@ -66,7 +67,7 @@ body[data-mode='all'] .reader-shell {
   font-size: 16px;
   font-weight: 500 !important;
   color: var(--title-blue);
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .reader-controls {
@@ -75,6 +76,7 @@ body[data-mode='all'] .reader-shell {
   gap: 8px;
   flex: 1;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .reader-modes {
@@ -89,6 +91,11 @@ body[data-mode='all'] .reader-shell {
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.reader-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .reader-btn.is-active {
@@ -112,7 +119,7 @@ body[data-mode='all'] .reader-shell {
   font-size: 13px;
   color: var(--text-main);
   opacity: 0.75;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .reader-main {
