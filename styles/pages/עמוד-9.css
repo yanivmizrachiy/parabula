@@ -5,26 +5,91 @@
 }
 
 .page-9 .question-block {
-	justify-content: flex-start;
+	justify-content: space-between;
 	gap: 10px;
 }
 
-.page-9 .pyt-answers {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	column-gap: 18px;
-	row-gap: 24px;
-	width: 100%;
+.page-9 .pyt-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
-.page-9 .pyt-answers .q-sub {
+.page-9 .pyt-tri-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 14px;
+	row-gap: 10px;
+	width: 100%;
+	align-items: start;
+}
+
+.page-9 .pyt-tri-item .q-sub {
 	margin-bottom: 0;
 }
 
-.page-9 .pyt-answers .bullet-container {
+.page-9 .pyt-tri-item .bullet-container {
 	width: 22px;
 	height: 22px;
 	margin-left: 10px;
+}
+
+.page-9 .pyt-tri-content {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.page-9 .pyt-tri-svg {
+	width: 100%;
+	height: 50mm;
+	display: block;
+	color: var(--accent-dark);
+	shape-rendering: geometricPrecision;
+}
+
+.page-9 .pyt-tri-svg text {
+	font-family: inherit;
+}
+
+.page-9 .pyt-tri-edge,
+.page-9 .pyt-tri-right {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	vector-effect: non-scaling-stroke;
+}
+
+.page-9 .pyt-tri-point {
+	font-size: 14px;
+	font-weight: 500;
+	fill: currentColor;
+	unicode-bidi: isolate;
+}
+
+.page-9 .pyt-tri-side {
+	font-size: 13px;
+	font-weight: 400;
+	fill: currentColor;
+	unicode-bidi: isolate;
+}
+
+.page-9 .pyt-tri-x {
+	font-size: 14px;
+	font-weight: 500;
+	fill: currentColor;
+	unicode-bidi: isolate;
+}
+
+.page-9 .pyt-tri-answer {
+	direction: ltr;
+	unicode-bidi: isolate;
 }
 
 .page-9 .bullet-num {
@@ -41,54 +106,16 @@
 	line-height: 1;
 }
 
-.page-9 .pyt-fig-stack {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	width: 100%;
+.page-9 .pyt-solutions .q-sub {
+	margin-bottom: 0;
 }
 
-.page-9 .pyt-fig-crop {
-	width: 100%;
-	height: 105mm;
-	overflow: hidden;
-	position: relative;
+.page-9 .pyt-solutions {
+	padding-bottom: 2mm;
 }
 
-/* Crop/position chosen to hide the א/ב/ג labels while keeping the triangles large */
-.page-9 .crop-hide-subparts > .pyt-figure {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	object-position: center 18%;
+.page-9 .pyt-solution {
+	direction: ltr;
+	unicode-bidi: isolate;
+	font-weight: 500 !important;
 }
-
-.page-9 .pyt-subparts {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-}
-
-.page-9 .pyt-subpart {
-	position: absolute;
-	width: 18px;
-	height: 18px;
-	border-radius: 50%;
-	border: 1.5px solid var(--accent-dark);
-	background: var(--bg-paper);
-	color: var(--text-main);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 12px;
-	line-height: 1;
-}
-
-/* מספרי הסעיפים: 1–3 על התרשים הראשון (ימין->שמאל), 4–6 על השני */
-.page-9 .pyt-fig-crop:first-child .pyt-subpart.n1 { top: 10%; left: 82%; }
-.page-9 .pyt-fig-crop:first-child .pyt-subpart.n2 { top: 10%; left: 49%; }
-.page-9 .pyt-fig-crop:first-child .pyt-subpart.n3 { top: 10%; left: 14%; }
-
-.page-9 .pyt-fig-crop:last-child .pyt-subpart.n4 { top: 12%; left: 82%; }
-.page-9 .pyt-fig-crop:last-child .pyt-subpart.n5 { top: 12%; left: 49%; }
-.page-9 .pyt-fig-crop:last-child .pyt-subpart.n6 { top: 12%; left: 14%; }
