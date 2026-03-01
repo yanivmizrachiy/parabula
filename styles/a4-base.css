@@ -9,7 +9,7 @@
     --cell-size: 20px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-weight: 400 !important; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
     background-color: #cbd5e1;
@@ -303,6 +303,6 @@ hr { border: 0; border-top: 1px solid var(--border-light); margin: 6px 0; }
     @page { size: A4; margin: 0; }
     html, body { background: white; display: block; width: auto; height: auto; }
     body { padding: 0; margin: 0; }
-    .a4-page { box-shadow: none; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .a4-page { box-shadow: none; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: visible; }
     .preview-nav { display: none; }
 }

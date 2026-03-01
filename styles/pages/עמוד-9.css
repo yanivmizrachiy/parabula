@@ -11,9 +11,9 @@
 
 .page-9 .pyt-answers {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: repeat(3, 1fr);
 	column-gap: 18px;
-	row-gap: 4px;
+	row-gap: 24px;
 	width: 100%;
 }
 
