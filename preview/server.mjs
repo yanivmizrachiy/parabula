@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DEFAULT_PORT = Number(process.env.PORT || 5179);
+const DEFAULT_HOST = String(process.env.HOST || '127.0.0.1');
 
 /** @type {Set<import('node:http').ServerResponse>} */
 const sseClients = new Set();
@@ -303,10 +304,14 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(DEFAULT_PORT, () => {
+server.listen(DEFAULT_PORT, DEFAULT_HOST, () => {
   const addr = server.address();
   const port = typeof addr === 'object' && addr ? addr.port : DEFAULT_PORT;
-  console.log(`Preview server running: http://localhost:${port}/`);
+  const shownHost = DEFAULT_HOST === '0.0.0.0' ? 'localhost' : DEFAULT_HOST;
+  console.log(`Preview server running: http://${shownHost}:${port}/`);
+  if (DEFAULT_HOST === '0.0.0.0') {
+    console.log('LAN: use your PC IP, e.g. http://<your-ip>:' + port + '/preview');
+  }
 });
 
 // Live-reload (Windows supports recursive watch)

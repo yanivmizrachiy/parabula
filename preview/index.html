@@ -469,6 +469,11 @@
       }
 
       function renderAllPages(selectedFile) {
+        // In ALL mode we rely on iframes to render the pages.
+        // Keep the fallback visible until the selected page actually loads,
+        // otherwise the stage can look like a blank white area on first paint.
+        showFallback('טוען…');
+
         allPages.innerHTML = '';
         allFrames = new Map();
         allItems = new Map();
@@ -506,7 +511,12 @@
         allPages.appendChild(frag);
         ensureAllIo();
 
-        hideFallback();
+        const selectedFrame = allFrames.get(selectedFile);
+        if (selectedFrame) {
+          selectedFrame.addEventListener('load', () => hideFallback(), { once: true });
+        } else {
+          hideFallback();
+        }
 
         if (allIo) {
           for (const item of allItems.values()) allIo.observe(item);
@@ -675,16 +685,17 @@
           const rightFile = toc.flat[startIdx]?.file || initial;
           setSelectedFile(rightFile);
           renderList(rightFile);
+          // Hide the fallback only after the first page iframe loads.
+          frameRight.addEventListener('load', () => hideFallback(), { once: true });
           updateSpread(startIdx, 'מוכן');
           setActiveTopicButtons(rightFile);
         }
-
-        hideFallback();
 
         modeAllBtn.addEventListener('click', () => {
           if (currentMode === 'all') return;
           setMode('all');
           setModeUi('all');
+          showFallback('טוען…');
           const f = getSelectedFile() || toc.flat[0]?.file || '';
           if (!f) return;
           setSelectedFile(f);
@@ -696,12 +707,14 @@
           if (currentMode === 'book') return;
           setMode('book');
           setModeUi('book');
+          showFallback('טוען…');
           const f = getSelectedFile() || toc.flat[0]?.file || '';
           if (!f) return;
           const startIdx = spreadStartIndexForFile(f);
           const rightFile = toc.flat[startIdx]?.file || f;
           setSelectedFile(rightFile);
           renderList(rightFile);
+          frameRight.addEventListener('load', () => hideFallback(), { once: true });
           updateSpread(startIdx, 'נפתח');
         });
 

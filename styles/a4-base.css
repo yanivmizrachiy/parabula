@@ -46,7 +46,7 @@ html, body {
     border-bottom: 4px double var(--title-blue);
 }
 
-.page-title { color: var(--title-blue); font-size: 26px; }
+.page-title { color: var(--title-blue); font-size: 26px; font-weight: 400; }
 .page-number {
     width: 32px;
     height: 32px;

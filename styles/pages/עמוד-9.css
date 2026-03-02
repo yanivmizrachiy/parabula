@@ -2,10 +2,11 @@
 @import url("../topics/pythagoras.css");
 
 .page-9 {
+	--problem-block-height: 314px;
 }
 
 .page-9 .question-block {
-	justify-content: space-between;
+	justify-content: flex-start;
 	gap: 10px;
 }
 
@@ -14,7 +15,7 @@
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 10px;
 }
 
 .page-9 .pyt-tri-grid {
@@ -26,27 +27,130 @@
 	align-items: start;
 }
 
-.page-9 .pyt-tri-item .q-sub {
-	margin-bottom: 0;
+.page-9 .problem-block {
+	height: var(--problem-block-height);
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-height: 0;
+	overflow: hidden;
 }
 
-.page-9 .pyt-tri-item .bullet-container {
+.page-9 .problem-top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	min-height: 22px;
+}
+
+.page-9 .problem-top .bullet-num {
 	width: 22px;
 	height: 22px;
-	margin-left: 10px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+	flex: 0 0 auto;
 }
 
-.page-9 .pyt-tri-content {
+.page-9 .problem-answer {
+	direction: ltr;
+	unicode-bidi: isolate;
+	white-space: nowrap;
+	flex: 0 0 auto;
+	text-align: left;
+	padding-top: 6px;
+	border-top: 1px solid var(--border-light);
+}
+
+.page-9 .problem-work {
 	flex: 1;
-	min-width: 0;
+	min-height: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 }
 
+.page-9 .problem-figure {
+	flex: 0 0 auto;
+}
+
+.page-9 .pyt-tri-wrap {
+	position: relative;
+	width: 100%;
+	height: 31mm;
+	margin-top: -4px;
+}
+
+.page-9 .pyt-tri-label {
+	position: absolute;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--text-main);
+	line-height: 1;
+	white-space: nowrap;
+	user-select: none;
+	transform: translate(-50%, -50%);
+	unicode-bidi: isolate;
+	direction: ltr;
+}
+
+/* Label placements (percent based) */
+.page-9 .tri-1 .label-a { left: 19%; top: 12%; }
+.page-9 .tri-1 .label-b { left: 19%; top: 97%; }
+.page-9 .tri-1 .label-c { left: 58%; top: 97%; }
+.page-9 .tri-1 .label-12 { left: 9%; top: 57%; }
+.page-9 .tri-1 .label-5 { left: 39%; top: 98%; }
+.page-9 .tri-1 .label-x { left: 44%; top: 48%; }
+
+.page-9 .tri-2 .label-a { left: 92%; top: 40%; }
+.page-9 .tri-2 .label-b { left: 10%; top: 92%; }
+.page-9 .tri-2 .label-c { left: 92%; top: 92%; }
+.page-9 .tri-2 .label-16 { left: 50%; top: 98%; }
+.page-9 .tri-2 .label-12 { left: 94%; top: 63%; }
+.page-9 .tri-2 .label-x { left: 53%; top: 54%; }
+
+.page-9 .tri-3 .label-a { left: 86%; top: 12%; }
+.page-9 .tri-3 .label-b { left: 27%; top: 12%; }
+.page-9 .tri-3 .label-c { left: 86%; top: 96%; }
+.page-9 .tri-3 .label-3 { left: 53%; top: 8%; }
+.page-9 .tri-3 .label-4 { left: 92%; top: 59%; }
+.page-9 .tri-3 .label-x { left: 47%; top: 70%; }
+
+.page-9 .tri-4 .label-a { left: 20%; top: 12%; }
+.page-9 .tri-4 .label-b { left: 20%; top: 96%; }
+.page-9 .tri-4 .label-c { left: 78%; top: 12%; }
+.page-9 .tri-4 .label-7 { left: 52%; top: 8%; }
+.page-9 .tri-4 .label-9 { left: 10%; top: 63%; }
+.page-9 .tri-4 .label-x { left: 56%; top: 70%; }
+
+.page-9 .tri-5 .label-a { left: 92%; top: 15%; }
+.page-9 .tri-5 .label-b { left: 12%; top: 90%; }
+.page-9 .tri-5 .label-c { left: 92%; top: 90%; }
+.page-9 .tri-5 .label-15 { left: 51%; top: 98%; }
+.page-9 .tri-5 .label-20 { left: 94%; top: 58%; }
+.page-9 .tri-5 .label-x { left: 52%; top: 55%; }
+
+.page-9 .tri-6 .label-a { left: 92%; top: 92%; }
+.page-9 .tri-6 .label-b { left: 51%; top: 10%; }
+.page-9 .tri-6 .label-c { left: 12%; top: 71%; }
+.page-9 .tri-6 .label-8 { left: 78%; top: 58%; }
+.page-9 .tri-6 .label-6 { left: 35%; top: 47%; }
+.page-9 .tri-6 .label-x { left: 56%; top: 86%; }
+
 .page-9 .pyt-tri-svg {
 	width: 100%;
-	height: 50mm;
+	height: 31mm;
 	display: block;
 	color: var(--accent-dark);
 	shape-rendering: geometricPrecision;
@@ -87,23 +191,28 @@
 	unicode-bidi: isolate;
 }
 
-.page-9 .pyt-tri-answer {
+
+.page-9 .solution-space {
+	flex: 1;
+	min-height: 0;
+	border: 1px solid var(--border-light);
+	border-radius: 6px;
+	background-color: var(--bg-paper);
+	padding: 6px 8px;
 	direction: ltr;
 	unicode-bidi: isolate;
+	background-image:
+		linear-gradient(to bottom, transparent 21px, var(--grid-line) 21px, var(--grid-line) 22px),
+		linear-gradient(to right, transparent 21px, var(--grid-line) 21px, var(--grid-line) 22px);
+	background-size: 22px 22px;
+	background-repeat: repeat;
 }
 
-.page-9 .bullet-num {
-	width: 18px;
-	height: 18px;
-	border-radius: 50%;
-	border: 1.5px solid var(--accent-dark);
-	background: var(--bg-paper);
-	color: var(--text-main);
+.page-9 .pyt-footer {
+	margin-top: auto;
 	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 12px;
-	line-height: 1;
+	flex-direction: column;
+	gap: 6px;
 }
 
 .page-9 .pyt-solutions .q-sub {
@@ -114,8 +223,23 @@
 	padding-bottom: 2mm;
 }
 
+.page-9 .pyt-solutions .q-text {
+	display: grid;
+	grid-template-columns: max-content repeat(6, minmax(0, 1fr));
+	column-gap: 10px;
+	align-items: center;
+	width: 100%;
+	font-size: 12px;
+}
+
+.page-9 .pyt-solutions .solutions-label {
+	font-weight: 500;
+}
+
 .page-9 .pyt-solution {
 	direction: ltr;
 	unicode-bidi: isolate;
 	font-weight: 500 !important;
+	text-align: center;
+	white-space: nowrap;
 }
