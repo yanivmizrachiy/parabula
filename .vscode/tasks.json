@@ -19,6 +19,32 @@
           "endsPattern": "Local:\\s+http://localhost:5173/"
         }
       }
+    },
+    {
+      "label": "preview: start (node)",
+      "type": "shell",
+      "command": "npm run preview",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "preview-node",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Preview server running:",
+          "endsPattern": "Preview server running: http://"
+        }
+      }
+    },
+    {
+      "label": "test: watch page",
+      "type": "shell",
+      "command": "npm run test:watch:page",
+      "isBackground": true,
+      "problemMatcher": []
     }
   ]
 }

@@ -32,6 +32,41 @@
                     <div class="q-text">מטרת המסמך: להגדיר סטנדרט אחיד ליצירת דפי עבודה להדפסה A4, באותו סגנון בדיוק, עם הפרדה מוחלטת בין HTML ל-CSS.</div>
                 </div>
 
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">תקציר דרישות חובה (בדיקה מהירה לפני שממשיכים):</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>הפרדה מוחלטת:</strong> אין <span class="rules-code">&lt;style&gt;</span> ואין <span class="rules-code">style=""</span> בתוך HTML; עיצוב רק בקבצי CSS.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>מבנה A4:</strong> כל עמוד חייב <span class="rules-code">main.a4-page</span> + <span class="rules-code">header</span> עם <span class="rules-code">.page-title</span> ו-<span class="rules-code">.page-number</span> (עיגול), ותוכן ב-<span class="rules-code">.question-block</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>קבצים ומספור:</strong> עמודים הם <span class="rules-code">עמוד-N.html</span> בשורש, עם <span class="rules-code">styles/pages/עמוד-N.css</span>. מספור העמודים מתאפס בכל נושא חדש.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>Preview:</strong> בכל עמוד יש <span class="rules-code">.preview-nav</span> עם <span class="rules-code">הקודם/הבא</span> ו-<span class="rules-code">nav-meta</span> תקין. ב-<span class="rules-code">/preview</span> מצב <strong>"כל הדפים"</strong> הוא ברירת מחדל, וכפתורי הנושאים זמינים תמיד (בשני המצבים).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>אכיפה:</strong> לפני כל Push מריצים <span class="rules-code">npm test</span> (הבדיקות נאכפות על הכללים).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>פיתגורס (עמ' 9–10):</strong> תוויות <span class="rules-code">A/B/C</span>, אורכי צלעות ו-<span class="rules-code">x</span> נכתבות בתוך SVG כ-<span class="rules-code">&lt;text&gt;</span> (לא overlay ב-HTML) כדי שלא יזוזו.</div>
                 </div>
 
                 <hr>
@@ -169,12 +204,17 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview:node</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>. ה-Reader מציג עמוד אחד בכל רגע, עם כפתורי דפדוף נוחים.</div>
+                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview:node</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>. במצב <strong>"דפדוף"</strong> ה-Reader מציג עמוד אחד בכל רגע; במצב <strong>"כל הדפים"</strong> מוצגים כל העמודים ברצף (גלילה).</div>
                 </div>
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
                     <div class="q-text rules-paragraph">אפשר לפתוח ישירות קובץ מסוים בתוך ה-Reader באמצעות פרמטר <span class="rules-code">file</span>, לדוגמה: <span class="rules-code">/preview?file=עמוד-3.html</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>דף כללים (חובה):</strong> הקובץ <span class="rules-code">rules.html</span> הוא מסמך פנימי של הריפו בלבד, ואסור שיופיע בתצוגה המקדימה <span class="rules-code">/preview</span> (לא ברשימה, לא בתוכן העניינים, ולא בגלילה של “כל הדפים”).</div>
                 </div>
 
                 <div class="q-sub">
@@ -225,6 +265,30 @@
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
                     <div class="q-text rules-paragraph">דוגמה בפועל: אם הוסף “עמוד המשך” באמצע נושא (למשל <span class="rules-code">עמוד-6.html</span>), חייבים לעדכן את מספור העמוד בעיגול (<span class="rules-code">.page-number</span>) ואת <span class="rules-code">עמוד X / Y</span> בכל העמודים הרלוונטיים של אותו נושא.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">בדיקות ואכיפה (חובה לפני Push):</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">הכללים בפרויקט נאכפים אוטומטית ע"י בדיקות (כולל איסור CSS בתוך HTML, מבנה עמוד, ניווט <span class="rules-code">הקודם/הבא</span>, מספור לפי נושא, ודרישות ה-Reader ב-<span class="rules-code">/preview</span>).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">לפני כל עדכון ל-GitHub מריצים את הבדיקות ורק אז מסנכרנים.</div>
+                </div>
+
+                <div class="rules-code">npm test</div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>כלל עבודה:</strong> קבצי הדפים בפורמט <span class="rules-code">עמוד-N.html</span> נמצאים בשורש הפרויקט (לא בתוך תיקיות), וכל אחד מהם מצביע על <span class="rules-code">styles/pages/עמוד-N.css</span> המתאים.</div>
                 </div>
 
                 <hr>
@@ -285,7 +349,17 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>דרישה חובה:</strong> בכל שרטוטי ה-SVG, <strong>כל אות/מספר/סימן</strong> שליד הציור (כולל <span class="rules-code">A/B/C</span>, אורכי צלעות, ו-<span class="rules-code">x</span>) נכתב כ-<strong>MathJax</strong> באמצעות <span class="rules-code">\( ... \)</span> בתוך אלמנט HTML (Overlay), <strong>לא</strong> כ-<span class="rules-code">&lt;text&gt;</span> בתוך ה-SVG.</div>
+                    <div class="q-text rules-paragraph"><strong>ברירת מחדל:</strong> אם צריך סימון מתמטי “אמיתי” (למשל שברים, שורשים, חזקות מורכבות) משתמשים ב-<strong>MathJax</strong> (<span class="rules-code">\( ... \)</span>) בתוך אלמנט HTML (Overlay) מעל ה-SVG.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>פיתגורס (חובה):</strong> במשולשים של נושא פיתגורס (עמודים 9–10), תוויות נקודתיות/קצרות בלבד (<span class="rules-code">A/B/C</span>, אורכי צלעות, ו-<span class="rules-code">x</span>) נכתבות <strong>בתוך ה-SVG</strong> כ-<span class="rules-code">&lt;text&gt;</span> — <strong>לא</strong> ב-Overlay HTML. זה מונע “נדידה” של תוויות ב-preview/zoom/print ושומר שהסימון נשאר צמוד לציור.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">בתוויות SVG משתמשים בעוגנים כדי לקבל מיקום כמו <span class="rules-code">translate(-50%, -50%)</span>: <span class="rules-code">text-anchor: middle</span> + <span class="rules-code">dominant-baseline: middle</span>. האות <span class="rules-code">x</span> מוצגת באיטליק.</div>
                 </div>
 
                 <div class="q-sub">
@@ -330,7 +404,7 @@
             <div>
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text">גרסה: 2026-02-27</div>
+                    <div class="q-text">גרסה: 2026-03-02</div>
                 </div>
             </div>
         </div>

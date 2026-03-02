@@ -6,7 +6,7 @@
 }
 
 .page-9 .question-block {
-	justify-content: flex-start;
+	justify-content: space-between;
 	gap: 10px;
 }
 
@@ -92,62 +92,6 @@
 	margin-top: -4px;
 }
 
-.page-9 .pyt-tri-label {
-	position: absolute;
-	font-size: 14px;
-	font-weight: 500;
-	color: var(--text-main);
-	line-height: 1;
-	white-space: nowrap;
-	user-select: none;
-	transform: translate(-50%, -50%);
-	unicode-bidi: isolate;
-	direction: ltr;
-}
-
-/* Label placements (percent based) */
-.page-9 .tri-1 .label-a { left: 19%; top: 12%; }
-.page-9 .tri-1 .label-b { left: 19%; top: 97%; }
-.page-9 .tri-1 .label-c { left: 58%; top: 97%; }
-.page-9 .tri-1 .label-12 { left: 9%; top: 57%; }
-.page-9 .tri-1 .label-5 { left: 39%; top: 98%; }
-.page-9 .tri-1 .label-x { left: 44%; top: 48%; }
-
-.page-9 .tri-2 .label-a { left: 92%; top: 40%; }
-.page-9 .tri-2 .label-b { left: 10%; top: 92%; }
-.page-9 .tri-2 .label-c { left: 92%; top: 92%; }
-.page-9 .tri-2 .label-16 { left: 50%; top: 98%; }
-.page-9 .tri-2 .label-12 { left: 94%; top: 63%; }
-.page-9 .tri-2 .label-x { left: 53%; top: 54%; }
-
-.page-9 .tri-3 .label-a { left: 86%; top: 12%; }
-.page-9 .tri-3 .label-b { left: 27%; top: 12%; }
-.page-9 .tri-3 .label-c { left: 86%; top: 96%; }
-.page-9 .tri-3 .label-3 { left: 53%; top: 8%; }
-.page-9 .tri-3 .label-4 { left: 92%; top: 59%; }
-.page-9 .tri-3 .label-x { left: 47%; top: 70%; }
-
-.page-9 .tri-4 .label-a { left: 20%; top: 12%; }
-.page-9 .tri-4 .label-b { left: 20%; top: 96%; }
-.page-9 .tri-4 .label-c { left: 78%; top: 12%; }
-.page-9 .tri-4 .label-7 { left: 52%; top: 8%; }
-.page-9 .tri-4 .label-9 { left: 10%; top: 63%; }
-.page-9 .tri-4 .label-x { left: 56%; top: 70%; }
-
-.page-9 .tri-5 .label-a { left: 92%; top: 15%; }
-.page-9 .tri-5 .label-b { left: 12%; top: 90%; }
-.page-9 .tri-5 .label-c { left: 92%; top: 90%; }
-.page-9 .tri-5 .label-15 { left: 51%; top: 98%; }
-.page-9 .tri-5 .label-20 { left: 94%; top: 58%; }
-.page-9 .tri-5 .label-x { left: 52%; top: 55%; }
-
-.page-9 .tri-6 .label-a { left: 92%; top: 92%; }
-.page-9 .tri-6 .label-b { left: 51%; top: 10%; }
-.page-9 .tri-6 .label-c { left: 12%; top: 71%; }
-.page-9 .tri-6 .label-8 { left: 78%; top: 58%; }
-.page-9 .tri-6 .label-6 { left: 35%; top: 47%; }
-.page-9 .tri-6 .label-x { left: 56%; top: 86%; }
-
 .page-9 .pyt-tri-svg {
 	width: 100%;
 	height: 31mm;
@@ -158,6 +102,9 @@
 
 .page-9 .pyt-tri-svg text {
 	font-family: inherit;
+	text-anchor: middle;
+	dominant-baseline: middle;
+	alignment-baseline: middle;
 }
 
 .page-9 .pyt-tri-edge,
@@ -173,21 +120,22 @@
 .page-9 .pyt-tri-point {
 	font-size: 14px;
 	font-weight: 500;
-	fill: currentColor;
+	fill: var(--text-main);
 	unicode-bidi: isolate;
 }
 
 .page-9 .pyt-tri-side {
 	font-size: 13px;
 	font-weight: 400;
-	fill: currentColor;
+	fill: var(--text-main);
 	unicode-bidi: isolate;
 }
 
 .page-9 .pyt-tri-x {
 	font-size: 14px;
 	font-weight: 500;
-	fill: currentColor;
+	fill: var(--text-main);
+	font-style: italic;
 	unicode-bidi: isolate;
 }
 

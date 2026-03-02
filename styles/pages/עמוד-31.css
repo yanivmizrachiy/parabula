@@ -1,16 +1,15 @@
-/* עמוד 11 — משפט פיתגורס */
-@import url("../topics/pythagoras.css");
+/* עמוד 31 — משוואה ריבועית חסרה (c=0) */
 
-.page-11 {
-	--problem-block-height: 314px;
+.page-31 {
+	--problem-block-height: 220px;
 }
 
-.page-11 .question-block {
+.page-31 .question-block {
 	justify-content: flex-start;
 	gap: 10px;
 }
 
-.page-11 .pyt-body {
+.page-31 .eq-body {
 	flex: 1;
 	min-height: 0;
 	display: flex;
@@ -18,16 +17,16 @@
 	gap: 10px;
 }
 
-.page-11 .pyt-tri-grid {
+.page-31 .eq-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	column-gap: 14px;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: 10px;
 	row-gap: 10px;
 	width: 100%;
 	align-items: start;
 }
 
-.page-11 .problem-block {
+.page-31 .problem-block {
 	height: var(--problem-block-height);
 	background: var(--bg-subtle);
 	border: 1px solid var(--border-light);
@@ -40,7 +39,7 @@
 	overflow: hidden;
 }
 
-.page-11 .problem-top {
+.page-31 .problem-top {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -48,7 +47,7 @@
 	min-height: 22px;
 }
 
-.page-11 .problem-top .bullet-num {
+.page-31 .problem-top .bullet-num {
 	width: 22px;
 	height: 22px;
 	border-radius: 50%;
@@ -63,7 +62,7 @@
 	flex: 0 0 auto;
 }
 
-.page-11 .problem-work {
+.page-31 .problem-work {
 	flex: 1;
 	min-height: 0;
 	display: flex;
@@ -71,36 +70,19 @@
 	gap: 6px;
 }
 
-.page-11 .problem-figure {
+.page-31 .problem-figure {
 	flex: 0 0 auto;
 }
 
-.page-11 .pyt-tri-wrap {
-	position: relative;
-	width: 100%;
-	height: 31mm;
-	margin-top: -4px;
+.page-31 .problem-equation {
+	direction: ltr;
+	unicode-bidi: isolate;
+	text-align: center;
+	font-size: 16px;
+	line-height: 20px;
 }
 
-.page-11 .pyt-fig-svg {
-	width: 100%;
-	height: 31mm;
-	display: block;
-	color: var(--accent-dark);
-	shape-rendering: geometricPrecision;
-}
-
-.page-11 .pyt-fig-svg .pyt-art path {
-	fill: currentColor !important;
-	stroke: none !important;
-}
-
-.page-11 .pyt-fig-svg .pyt-text text {
-	font-family: inherit !important;
-	fill: var(--text-main) !important;
-}
-
-.page-11 .solution-space {
+.page-31 .solution-space {
 	flex: 1;
 	min-height: 0;
 	border: 1px solid var(--border-light);
@@ -116,7 +98,7 @@
 	background-repeat: repeat;
 }
 
-.page-11 .problem-answer {
+.page-31 .problem-answer {
 	direction: ltr;
 	unicode-bidi: isolate;
 	white-space: nowrap;
@@ -124,60 +106,45 @@
 	text-align: left;
 	padding-top: 6px;
 	border-top: 1px solid var(--border-light);
-	display: flex;
-	gap: 16px;
-	align-items: center;
+	font-size: 12px;
 }
 
-.page-11 .pyt-footer {
+.page-31 .problem-answer .answer-box {
+	height: 18px;
+	transform: translateY(-1px);
+}
+
+.page-31 .eq-footer {
 	margin-top: auto;
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 }
 
-.page-11 .pyt-solutions .q-sub {
+.page-31 .eq-solutions .q-sub {
 	margin-bottom: 0;
 }
 
-.page-11 .pyt-solutions {
+.page-31 .eq-solutions {
 	padding-bottom: 2mm;
 }
 
-.page-11 .pyt-solutions .q-text {
-	display: grid;
-	grid-template-columns: max-content repeat(3, minmax(0, 1fr));
-	column-gap: 10px;
+.page-31 .eq-solutions .q-text {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 10px;
 	align-items: center;
 	width: 100%;
-	font-size: 12px;
+	font-size: 11px;
 }
 
-.page-11 .pyt-solutions .solutions-label {
+.page-31 .eq-solutions .solutions-label {
 	font-weight: 500;
 }
 
-.page-11 .pyt-solutions .q-text {
-	display: grid;
-	grid-template-columns: max-content repeat(3, minmax(0, 1fr));
-	column-gap: 10px;
-	align-items: center;
-	width: 100%;
-	font-size: 12px;
-}
-
-.page-11 .pyt-solution {
+.page-31 .eq-solution {
 	direction: ltr;
 	unicode-bidi: isolate;
 	font-weight: 500 !important;
-	text-align: center;
-	white-space: nowrap;
-}
-
-.page-11 .pyt-solution {
-	direction: ltr;
-	unicode-bidi: isolate;
-	font-weight: 500 !important;
-	text-align: center;
 	white-space: nowrap;
 }

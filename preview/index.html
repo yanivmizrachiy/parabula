@@ -2,12 +2,18 @@
 <html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
+    <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Parabula — Reader</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet" />
+
+    <script>
+      MathJax = { tex: { inlineMath: [["\\(", "\\)"]] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <link rel="stylesheet" href="/styles/a4-base.css" />
     <link rel="stylesheet" href="/styles/preview.css" />
@@ -48,13 +54,13 @@
           <div class="reader-frameWrap" id="frameWrap">
             <div class="reader-book" id="book" aria-label="ספר" hidden>
               <div class="reader-leaf reader-leaf--right" aria-label="עמוד ימין">
-                <iframe class="reader-frame" id="frameRight" title="תצוגה מקדימה — ימין" referrerpolicy="no-referrer"></iframe>
+                <div class="reader-pageHost" id="pageRight" aria-label="תצוגה מקדימה — ימין"></div>
               </div>
 
               <div class="reader-gutter" aria-hidden="true"></div>
 
               <div class="reader-leaf reader-leaf--left" aria-label="עמוד שמאל">
-                <iframe class="reader-frame" id="frameLeft" title="תצוגה מקדימה — שמאל" referrerpolicy="no-referrer"></iframe>
+                <div class="reader-pageHost" id="pageLeft" aria-label="תצוגה מקדימה — שמאל"></div>
                 <div class="reader-empty" id="emptyLeft" hidden>סוף</div>
               </div>
             </div>
@@ -68,8 +74,8 @@
     <script type="module">
       const fileSelect = document.getElementById('fileSelect');
       const fileList = document.getElementById('fileList');
-      const frameRight = document.getElementById('frameRight');
-      const frameLeft = document.getElementById('frameLeft');
+      const pageRight = document.getElementById('pageRight');
+      const pageLeft = document.getElementById('pageLeft');
       const emptyLeft = document.getElementById('emptyLeft');
       const meta = document.getElementById('meta');
       const prevBtn = document.getElementById('prevBtn');
@@ -99,6 +105,48 @@
       let allLoaded = new Set();
 
       let currentMode = 'all';
+
+      /** @type {Map<string, boolean>} */
+      const lastOverflowByFile = new Map();
+
+      function extractFileName(file) {
+        const f = String(file || '').trim();
+        if (!f) return '';
+        return f.replace(/^\/+/, '').split('?')[0];
+      }
+
+      async function reportLayoutGuard(file, overflow, scrollHeight, clientHeight) {
+        const key = extractFileName(file);
+        if (!key) return;
+
+        const prev = lastOverflowByFile.get(key);
+        if (prev === overflow) return;
+        lastOverflowByFile.set(key, overflow);
+
+        try {
+          await fetch('/api/layout-guard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              file: key,
+              overflow: Boolean(overflow),
+              scrollHeight: Number(scrollHeight || 0),
+              clientHeight: Number(clientHeight || 0),
+              ts: Date.now()
+            })
+          });
+        } catch {
+          // ignore network errors
+        }
+      }
+
+      function measureOverflowFromPageEl(pageEl) {
+        if (!pageEl) return { overflow: false, scrollHeight: 0, clientHeight: 0 };
+        const clientHeight = pageEl.clientHeight;
+        const scrollHeight = pageEl.scrollHeight;
+        const overflow = scrollHeight > clientHeight + 1;
+        return { overflow, scrollHeight, clientHeight };
+      }
 
       /** @type {Map<string, HTMLButtonElement>} */
       let topicButtonsMap = new Map();
@@ -201,20 +249,132 @@
         const { right, left } = spreadFiles(startIdx);
         if (!right) return;
 
-        const bust = String(Date.now());
-        frameRight.src = `/${encodeURIComponent(right.file)}?v=${bust}`;
+        // Book mode rendering: inject <main class="a4-page"> directly (no iframe).
+        (async () => {
+          const okRight = await renderPageIntoHost(right.file, pageRight);
+          if (okRight) fitA4InHost(pageRight);
 
-        if (left) {
-          emptyLeft.hidden = true;
-          frameLeft.hidden = false;
-          frameLeft.src = `/${encodeURIComponent(left.file)}?v=${bust}`;
-        } else {
-          frameLeft.src = 'about:blank';
-          frameLeft.hidden = true;
-          emptyLeft.hidden = false;
-        }
+          if (left) {
+            emptyLeft.hidden = true;
+            pageLeft.hidden = false;
+            const okLeft = await renderPageIntoHost(left.file, pageLeft);
+            if (okLeft) fitA4InHost(pageLeft);
+          } else {
+            pageLeft.innerHTML = '';
+            pageLeft.hidden = true;
+            emptyLeft.hidden = false;
+          }
+        })();
 
         meta.textContent = `${describeSpread(right, left)}${reason ? ' • ' + reason : ''}`;
+      }
+
+      /** @type {Set<string>} */
+      const injectedStyles = new Set();
+
+      function normalizeHref(href) {
+        const h = String(href || '').trim();
+        if (!h) return '';
+        if (h.startsWith('http://') || h.startsWith('https://')) return h;
+        if (h.startsWith('/')) return h;
+        return '/' + h.replace(/^\.+\//, '');
+      }
+
+      function ensureStylesheet(href) {
+        const normalized = normalizeHref(href);
+        if (!normalized) return;
+        if (injectedStyles.has(normalized)) return;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = normalized;
+        document.head.appendChild(link);
+        injectedStyles.add(normalized);
+      }
+
+      function sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+
+      async function ensureMathJaxReady(timeoutMs = 3000) {
+        const started = Date.now();
+        while (Date.now() - started < timeoutMs) {
+          if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') return true;
+          await sleep(50);
+        }
+        return false;
+      }
+
+      async function renderPageIntoHost(file, hostEl) {
+        if (!file || !hostEl) return false;
+
+        hostEl.innerHTML = '';
+
+        let html = '';
+        try {
+          const res = await fetch(`/${encodeURIComponent(file)}`, { cache: 'no-store' });
+          if (!res.ok) {
+            hostEl.textContent = `שגיאה בטעינת העמוד (${res.status})`;
+            return false;
+          }
+          html = await res.text();
+        } catch (err) {
+          hostEl.textContent = 'שגיאה בטעינת העמוד.';
+          return false;
+        }
+
+        const parsed = new DOMParser().parseFromString(html, 'text/html');
+
+        // Load page styles (base + page-specific). We keep /styles/preview.css separate.
+        for (const link of parsed.querySelectorAll('link[rel="stylesheet"][href]')) {
+          const href = link.getAttribute('href') || '';
+          ensureStylesheet(href);
+        }
+
+        const main = parsed.querySelector('main.a4-page');
+        if (!main) {
+          hostEl.textContent = 'עמוד לא תקין (חסר main.a4-page).';
+          return false;
+        }
+
+        hostEl.appendChild(main);
+
+        // Render math (best-effort).
+        const ready = await ensureMathJaxReady();
+        if (ready) {
+          try {
+            await window.MathJax.typesetPromise([hostEl]);
+          } catch {
+            // ignore typeset failures
+          }
+        }
+
+        // Layout guard: detect A4 overflow and report to server (terminal).
+        try {
+          const pageEl = hostEl.querySelector('.a4-page');
+          const m = measureOverflowFromPageEl(pageEl);
+          reportLayoutGuard(file, m.overflow, m.scrollHeight, m.clientHeight);
+        } catch {
+          // ignore measurement errors
+        }
+
+        return true;
+      }
+
+      function fitA4InHost(hostEl) {
+        const page = hostEl?.querySelector?.('.a4-page');
+        if (!page) return;
+
+        page.style.zoom = '';
+
+        const pageRect = page.getBoundingClientRect();
+        const availW = hostEl.clientWidth;
+        const availH = hostEl.clientHeight;
+        if (availW <= 0 || availH <= 0 || pageRect.width <= 0 || pageRect.height <= 0) return;
+
+        const maxScale = 2.5;
+        const scaleRaw = Math.min(availW / pageRect.width, availH / pageRect.height);
+        const scale = Math.min(scaleRaw, maxScale);
+        page.style.zoom = String(scale);
       }
 
       function maybeWarnIframeBlocked(frameEl) {
@@ -260,6 +420,15 @@
 
           const page = doc.querySelector('.a4-page');
           if (!page) return;
+
+          // Layout guard in iframe mode.
+          try {
+            const srcBase = frameEl.dataset.src || '';
+            const m = measureOverflowFromPageEl(page);
+            reportLayoutGuard(srcBase, m.overflow, m.scrollHeight, m.clientHeight);
+          } catch {
+            // ignore
+          }
 
           // Reset any previous scaling.
           page.style.zoom = '';
@@ -685,9 +854,9 @@
           const rightFile = toc.flat[startIdx]?.file || initial;
           setSelectedFile(rightFile);
           renderList(rightFile);
-          // Hide the fallback only after the first page iframe loads.
-          frameRight.addEventListener('load', () => hideFallback(), { once: true });
           updateSpread(startIdx, 'מוכן');
+          // Hide after first render pass.
+          setTimeout(() => hideFallback(), 50);
           setActiveTopicButtons(rightFile);
         }
 
@@ -714,8 +883,8 @@
           const rightFile = toc.flat[startIdx]?.file || f;
           setSelectedFile(rightFile);
           renderList(rightFile);
-          frameRight.addEventListener('load', () => hideFallback(), { once: true });
           updateSpread(startIdx, 'נפתח');
+          setTimeout(() => hideFallback(), 50);
         });
 
         fileSelect.addEventListener('change', () => {
@@ -755,21 +924,7 @@
           updateSpread(start, 'עודכן');
         });
 
-        function scheduleFit() {
-          // Give MathJax/layout a beat to settle before fitting.
-          setTimeout(() => fitA4InFrame(frameRight, 'book'), 80);
-          setTimeout(() => fitA4InFrame(frameRight, 'book'), 250);
-          if (!frameLeft.hidden) {
-            setTimeout(() => fitA4InFrame(frameLeft, 'book'), 80);
-            setTimeout(() => fitA4InFrame(frameLeft, 'book'), 250);
-          }
-        }
-
-        frameRight.addEventListener('load', scheduleFit);
-        frameLeft.addEventListener('load', scheduleFit);
-
-        frameRight.addEventListener('load', () => maybeWarnIframeBlocked(frameRight));
-        frameLeft.addEventListener('load', () => maybeWarnIframeBlocked(frameLeft));
+        // Book mode uses direct DOM injection (no iframe). We still fit on resize.
 
         if (window.ResizeObserver && frameWrap) {
           const ro = new ResizeObserver(() => {
@@ -778,8 +933,8 @@
               return;
             }
 
-            fitA4InFrame(frameRight, 'book');
-            if (!frameLeft.hidden) fitA4InFrame(frameLeft, 'book');
+            fitA4InHost(pageRight);
+            if (!pageLeft.hidden) fitA4InHost(pageLeft);
           });
           ro.observe(frameWrap);
         } else {
@@ -789,8 +944,8 @@
               return;
             }
 
-            fitA4InFrame(frameRight, 'book');
-            if (!frameLeft.hidden) fitA4InFrame(frameLeft, 'book');
+            fitA4InHost(pageRight);
+            if (!pageLeft.hidden) fitA4InHost(pageLeft);
           });
         }
         } catch (err) {

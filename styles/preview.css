@@ -296,11 +296,22 @@ body[data-mode='all'] .reader-all {
   border-right: 0;
 }
 
-.reader-frame {
+.reader-pageHost {
   width: 100%;
   height: 100%;
-  border: 0;
+  overflow: hidden;
   background: var(--bg-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* When injecting pages directly into /preview, we want the page to be “seamless” (no extra shadow/margins). */
+.reader-pageHost .a4-page {
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden;
 }
 
 .reader-empty {

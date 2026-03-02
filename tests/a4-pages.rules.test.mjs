@@ -72,6 +72,10 @@ function escapeRegExpLiteral(text) {
   return String(text).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
 }
 
+function countMatches(re, text) {
+  return Array.from(String(text).matchAll(re)).length;
+}
+
 test('Global HTML rule: no inline CSS (<style> or style="...")', async () => {
   const htmlFiles = await listRootHtmlFiles();
   assert.ok(htmlFiles.length > 0, 'No .html files found in repo root');
@@ -250,4 +254,44 @@ test('A4 pages: preview prev/next links match global reading order', async () =>
       assert.equal(nav.next.href, expectedNext, `${file}: "הבא" must link to ${expectedNext}`);
     }
   }
+});
+
+test('Pythagoras (page 1): exactly 6 subproblems and variable is x (not OCR aleph)', async () => {
+  const file = 'עמוד-9.html';
+  const html = await readText(file);
+
+  // Instruction line must explicitly use MathJax inline x.
+  assert.ok(/חשבו את\s*\\\(x\\\)\s*במשולשים/u.test(html), `${file}: instruction must say "חשבו את \\(x\\)"`);
+  mustNotMatch(/חשבו את\s*א/u, html, file, 'instruction must not use OCR aleph (א) as the variable');
+
+  // Must contain exactly 6 exercises on the first Pythagoras page.
+  const blocks = countMatches(/<div\s+class="problem-block"/gu, html);
+  assert.equal(blocks, 6, `${file}: expected exactly 6 .problem-block entries, found ${blocks}`);
+
+  // Each exercise should have an answer line with x.
+  const answers = countMatches(/class="problem-answer"[^>]*>\s*\\\(x\\\)\s*=\s*<span\s+class="answer-box\b/gu, html);
+  assert.equal(answers, 6, `${file}: expected exactly 6 answer lines of the form "\\(x\\) =", found ${answers}`);
+
+  // Extra strict: no leftover "א =" patterns intended as the unknown variable.
+  mustNotMatch(/>\s*א\s*=\s*</u, html, file, 'must not contain "א =" as an unknown variable');
+});
+
+test('Pythagoras (page 3): figures are inline SVGs styled consistently (3 cropped viewBoxes)', async () => {
+  const file = 'עמוד-11.html';
+  const html = await readText(file);
+
+  assert.ok(/מצאו את\s*\\\(a\\\)\s*ואת\s*\\\(y\\\)/u.test(html), `${file}: instruction must mention \\(a\\) and \\(y\\)`);
+
+  // Must render as inline SVG so page CSS tokens apply (same approach as pages 9/10).
+  const inlineSvgs = countMatches(/<svg\s+class="pyt-fig-svg"/gu, html);
+  assert.equal(inlineSvgs, 3, `${file}: expected exactly 3 inline <svg class="pyt-fig-svg"> figures, found ${inlineSvgs}`);
+
+  // Each exercise uses a fixed viewBox crop of the same source coordinate space.
+  assert.ok(/viewBox="668\s+45\s+334\s+183"/u.test(html), `${file}: missing right-region viewBox crop`);
+  assert.ok(/viewBox="334\s+45\s+334\s+183"/u.test(html), `${file}: missing mid-region viewBox crop`);
+  assert.ok(/viewBox="0\s+45\s+334\s+183"/u.test(html), `${file}: missing left-region viewBox crop`);
+
+  // Guard against regressing back to external SVG <img> crops.
+  mustNotMatch(/p03_xref28_(a|b|c)\.svg/u, html, file, 'must not reference split external SVG assets');
+  mustNotMatch(/\bcrop-(left|mid|right)\b/u, html, file, 'must not use crop-left/crop-mid/crop-right classes');
 });

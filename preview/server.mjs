@@ -7,8 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const DEFAULT_PORT = Number(process.env.PORT || 5179);
+const DEFAULT_PORT = Number(process.env.PORT || 3000);
 const DEFAULT_HOST = String(process.env.HOST || '127.0.0.1');
+
+/** @type {Map<string, {overflow: boolean, scrollHeight: number, clientHeight: number, ts: number}>} */
+const lastLayoutReports = new Map();
 
 /** @type {Set<import('node:http').ServerResponse>} */
 const sseClients = new Set();
@@ -27,7 +30,7 @@ function isIgnoredPath(relPath) {
 
 function isIgnoredForListing(relPath) {
   const normalized = relPath.replace(/\\/g, '/');
-  return isIgnoredPath(normalized) || normalized.startsWith('preview/');
+  return isIgnoredPath(normalized) || normalized.startsWith('preview/') || normalized === 'rules.html';
 }
 
 function isWatchedFile(relPath) {
@@ -265,6 +268,46 @@ const server = http.createServer(async (req, res) => {
       res.statusCode = 500;
       res.end(String(err));
     }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/layout-guard' && req.method === 'POST') {
+    let raw = '';
+    req.setEncoding('utf8');
+    req.on('data', (chunk) => {
+      raw += chunk;
+      if (raw.length > 64_000) {
+        res.statusCode = 413;
+        res.end('Payload Too Large');
+        req.destroy();
+      }
+    });
+    req.on('end', () => {
+      try {
+        /** @type {{file?: string, overflow?: boolean, scrollHeight?: number, clientHeight?: number, ts?: number}} */
+        const payload = raw ? JSON.parse(raw) : {};
+        const file = String(payload.file || '').trim();
+        const overflow = Boolean(payload.overflow);
+        const scrollHeight = Number(payload.scrollHeight || 0);
+        const clientHeight = Number(payload.clientHeight || 0);
+        const ts = Number(payload.ts || Date.now());
+
+        if (file) {
+          lastLayoutReports.set(file, { overflow, scrollHeight, clientHeight, ts });
+          if (overflow) {
+            console.log(
+              `[CRITICAL ERROR] A4 overflow: ${file} (scrollHeight=${scrollHeight}px, clientHeight=${clientHeight}px)`
+            );
+          }
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (err) {
+        res.statusCode = 400;
+        res.end('Bad Request');
+      }
+    });
     return;
   }
 

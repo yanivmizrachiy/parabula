@@ -70,11 +70,10 @@ function stripWhitePaths(svgInner) {
       ""
     );
 }
-          const finalSvg =
 function parseTsvWords(tsv) {
   const lines = String(tsv ?? "")
     .replace(/\r\n/g, "\n")
-            `  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }\n` +
+    .split("\n")
     .slice(1);
 
   const words = [];
@@ -228,6 +227,7 @@ async function main() {
         `<?xml version="1.0" encoding="UTF-8"?>\n` +
         `<svg xmlns="http://www.w3.org/2000/svg" width="${image.width}" height="${image.height}" viewBox="0 0 ${image.width} ${image.height}">\n` +
         `<style>\n` +
+        `  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }\n` +
         `  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }\n` +
         `  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }\n` +
         `  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }\n` +
