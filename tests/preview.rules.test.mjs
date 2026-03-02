@@ -39,3 +39,21 @@ test('Rules doc must explicitly require /preview topic buttons', async () => {
     'rules.html: missing explicit requirement for topic buttons inside /preview Reader'
   );
 });
+
+test('Preview server must not serve rules.html', async () => {
+  const serverCode = await readText(path.join('preview', 'server.mjs'));
+
+  // Regression guard: rules.html is a repo-internal document and must not be exposed via preview.
+  assert.ok(/rules\.html/u.test(serverCode), 'preview/server.mjs: expected to reference rules.html');
+  assert.ok(
+    /isForbiddenForServing\s*\([\s\S]*?rules\.html/u.test(serverCode) ||
+      /relPath\s*===\s*['"]rules\.html['"]/u.test(serverCode) ||
+      /pathname\s*===\s*['"]\/rules\.html['"]/u.test(serverCode),
+    'preview/server.mjs: missing explicit deny rule for rules.html'
+  );
+  assert.ok(
+    /rules\.html[\s\S]*statusCode\s*=\s*404/u.test(serverCode) ||
+      /isForbiddenForServing\([\s\S]*?\)\s*\{[\s\S]*statusCode\s*=\s*404/u.test(serverCode),
+    'preview/server.mjs: expected 404 response for rules.html'
+  );
+});

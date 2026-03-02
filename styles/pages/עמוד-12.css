@@ -1,5 +1,26 @@
-/* עמוד 12 — משפט פיתגורס (מבוסס PDF) */
-@import url("../topics/pythagoras.css");
+/* עמוד 12 — משפט פיתגורס (דף עבודה) */
 
-.page-12 {
+.page-12 .question-block {
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.page-12 .pyt-diagram-frame {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 440px;
+	padding: 10px;
+	border: 1px solid var(--grid-line);
+	border-radius: 6px;
+	color: var(--text-main);
+}
+
+.page-12 .pyt-diagram {
+	display: block;
+}
+
+.page-12 .pyt-diagram text {
+	fill: currentColor;
+	font-size: 16px;
 }

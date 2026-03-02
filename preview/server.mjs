@@ -33,6 +33,11 @@ function isIgnoredForListing(relPath) {
   return isIgnoredPath(normalized) || normalized.startsWith('preview/') || normalized === 'rules.html';
 }
 
+function isForbiddenForServing(relPath) {
+  const normalized = relPath.replace(/\\/g, '/');
+  return normalized === 'rules.html';
+}
+
 function isWatchedFile(relPath) {
   const ext = path.extname(relPath).toLowerCase();
   return ext === '.html' || ext === '.css' || ext === '.js' || ext === '.mjs' || ext === '.svg';
@@ -323,6 +328,13 @@ const server = http.createServer(async (req, res) => {
   if (!filePath) {
     res.statusCode = 403;
     res.end('Forbidden');
+    return;
+  }
+
+  const relPath = path.relative(ROOT_DIR, filePath);
+  if (isForbiddenForServing(relPath)) {
+    res.statusCode = 404;
+    res.end('Not Found');
     return;
   }
 
