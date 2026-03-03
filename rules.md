@@ -15,6 +15,7 @@
 
 - 2026-03-03: הוקם מנגנון אתר ספר אוטומטי (site), ניווט, הדפסה, ופרסום ב־Pages.
 - 2026-03-03: Automation scripts updated (build-site.ps1, verify-all.ps1, publish.ps1).
+- 2026-03-03: Automation verification and report updated (verify-all.ps1, REPORT.md).
 
 ## מה נותר לעשות
 
