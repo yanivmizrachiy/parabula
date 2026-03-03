@@ -7,11 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const DEFAULT_PORT = Number(process.env.PORT || 3000);
+const DEFAULT_PORT = Number(process.env.PORT || 5179);
 const DEFAULT_HOST = String(process.env.HOST || '127.0.0.1');
-
-/** @type {Map<string, {overflow: boolean, scrollHeight: number, clientHeight: number, ts: number}>} */
-const lastLayoutReports = new Map();
 
 /** @type {Set<import('node:http').ServerResponse>} */
 const sseClients = new Set();
@@ -28,10 +25,13 @@ function isIgnoredPath(relPath) {
   );
 }
 
-function isIgnoredForListing(relPath) {
-  const normalized = relPath.replace(/\\/g, '/');
-  return isIgnoredPath(normalized) || normalized.startsWith('preview/') || normalized === 'rules.html';
-}
+const A4_PAGE_FILE_RE = /^עמוד-(\d+)\.html$/u;
+
+/** @type {null | {topics: any[], flat: any[]}} */
+let tocCache = null;
+let tocDirty = true;
+/** @type {null | Promise<any>} */
+let tocBuildPromise = null;
 
 function isForbiddenForServing(relPath) {
   const normalized = relPath.replace(/\\/g, '/');
@@ -92,31 +92,21 @@ function contentTypeFor(filePath) {
 }
 
 async function listHtmlFiles() {
-  /** @type {string[]} */
-  const results = [];
+  const entries = await fs.readdir(ROOT_DIR, { withFileTypes: true });
+  const pages = entries
+    .filter((e) => e.isFile() && A4_PAGE_FILE_RE.test(e.name))
+    .map((e) => e.name);
 
-  async function walk(dir) {
-    const entries = await fs.readdir(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const full = path.join(dir, entry.name);
-      const rel = path.relative(ROOT_DIR, full).replace(/\\/g, '/');
+  pages.sort((a, b) => {
+    const am = a.match(A4_PAGE_FILE_RE);
+    const bm = b.match(A4_PAGE_FILE_RE);
+    const ai = am ? Number(am[1]) : Number.POSITIVE_INFINITY;
+    const bi = bm ? Number(bm[1]) : Number.POSITIVE_INFINITY;
+    if (ai !== bi) return ai - bi;
+    return a.localeCompare(b, 'he');
+  });
 
-      if (isIgnoredForListing(rel)) continue;
-
-      if (entry.isDirectory()) {
-        await walk(full);
-        continue;
-      }
-
-      if (path.extname(entry.name).toLowerCase() === '.html') {
-        results.push(rel);
-      }
-    }
-  }
-
-  await walk(ROOT_DIR);
-  results.sort((a, b) => a.localeCompare(b, 'he'));
-  return results;
+  return pages;
 }
 
 function stripHtml(text) {
@@ -227,6 +217,24 @@ async function buildToc() {
   return { topics, flat };
 }
 
+async function getTocCached() {
+  if (!tocDirty && tocCache) return tocCache;
+
+  if (tocBuildPromise) return tocBuildPromise;
+
+  tocBuildPromise = buildToc()
+    .then((toc) => {
+      tocCache = toc;
+      tocDirty = false;
+      return toc;
+    })
+    .finally(() => {
+      tocBuildPromise = null;
+    });
+
+  return tocBuildPromise;
+}
+
 const server = http.createServer(async (req, res) => {
   if (!req.url) {
     res.statusCode = 400;
@@ -252,21 +260,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (requestUrl.pathname === '/api/files') {
-    try {
-      const files = await listHtmlFiles();
-      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-      res.end(JSON.stringify({ files }));
-    } catch (err) {
-      res.statusCode = 500;
-      res.end(String(err));
-    }
-    return;
-  }
-
   if (requestUrl.pathname === '/api/toc') {
     try {
-      const toc = await buildToc();
+      const toc = await getTocCached();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
       res.end(JSON.stringify(toc));
     } catch (err) {
@@ -295,10 +291,8 @@ const server = http.createServer(async (req, res) => {
         const overflow = Boolean(payload.overflow);
         const scrollHeight = Number(payload.scrollHeight || 0);
         const clientHeight = Number(payload.clientHeight || 0);
-        const ts = Number(payload.ts || Date.now());
 
         if (file) {
-          lastLayoutReports.set(file, { overflow, scrollHeight, clientHeight, ts });
           if (overflow) {
             console.log(
               `[CRITICAL ERROR] A4 overflow: ${file} (scrollHeight=${scrollHeight}px, clientHeight=${clientHeight}px)`
@@ -376,6 +370,12 @@ try {
     const rel = filename.replace(/\\/g, '/');
     if (isIgnoredPath(rel)) return;
     if (!isWatchedFile(rel)) return;
+
+     // TOC depends only on root-level עמוד-*.html files.
+     if (A4_PAGE_FILE_RE.test(path.basename(rel))) {
+       tocDirty = true;
+     }
+
     sendSseEvent('reload', { path: rel, ts: Date.now() });
   });
 } catch (err) {

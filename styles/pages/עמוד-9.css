@@ -5,9 +5,18 @@
 	--problem-block-height: 314px;
 }
 
+.page-9 .header-container {
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.page-9 .q-main {
+	margin-bottom: 0;
+}
+
 .page-9 .question-block {
 	justify-content: space-between;
-	gap: 10px;
+	gap: 0;
 }
 
 .page-9 .pyt-body {
@@ -15,14 +24,14 @@
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 0;
 }
 
 .page-9 .pyt-tri-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	column-gap: 14px;
-	row-gap: 10px;
+	row-gap: 0;
 	width: 100%;
 	align-items: start;
 }
@@ -160,7 +169,7 @@
 	margin-top: auto;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 0;
 }
 
 .page-9 .pyt-solutions .q-sub {
@@ -168,7 +177,7 @@
 }
 
 .page-9 .pyt-solutions {
-	padding-bottom: 2mm;
+	padding-bottom: 0;
 }
 
 .page-9 .pyt-solutions .q-text {

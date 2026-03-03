@@ -28,6 +28,30 @@ body[data-mode='all'] .reader-shell {
   min-height: 100vh;
 }
 
+/* Preview-only diagnostics overlay (must not affect layout or print) */
+.reader-diag {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  max-width: min(560px, calc(100vw - 24px));
+  padding: 8px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-paper);
+  color: var(--text-main);
+  font-size: 12px;
+  line-height: 18px;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 50;
+}
+
+@media print {
+  .reader-diag {
+    display: none !important;
+  }
+}
+
 .reader-topbar {
   display: flex;
   flex-direction: column;

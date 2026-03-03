@@ -71,6 +71,8 @@
       </main>
     </div>
 
+    <div class="reader-diag" id="diagOverlay" role="status" aria-live="polite" hidden></div>
+
     <script type="module">
       const fileSelect = document.getElementById('fileSelect');
       const fileList = document.getElementById('fileList');
@@ -88,6 +90,7 @@
       const allPages = document.getElementById('allPages');
       const topicButtons = document.getElementById('topicButtons');
       const readerFallback = document.getElementById('readerFallback');
+      const diagOverlay = document.getElementById('diagOverlay');
 
       /** @type {{topics: {name: string, pages: any[]}[], flat: any[]}} */
       let toc = { topics: [], flat: [] };
@@ -108,6 +111,150 @@
 
       /** @type {Map<string, boolean>} */
       const lastOverflowByFile = new Map();
+
+      // Preview-only diagnostics (non-invasive, toggleable)
+      function getDiagConfig() {
+        const url = new URL(window.location.href);
+        const diag = (url.searchParams.get('diag') || '').toLowerCase();
+        const overlay = (url.searchParams.get('diagOverlay') || '').toLowerCase();
+
+        // Defaults:
+        // - diagnostics enabled (console) unless diag=0
+        // - overlay disabled unless diagOverlay=1
+        const enabled = diag !== '0' && diag !== 'false' && diag !== 'off';
+        const overlayEnabled = overlay === '1' || overlay === 'true' || overlay === 'on';
+        return { enabled, overlayEnabled };
+      }
+
+      const diagConfig = getDiagConfig();
+
+      /** @type {Map<string, {file: string, ok: boolean, overflow: boolean, missingTitle: boolean, missingNumber: boolean, gridOff: number}>} */
+      const diagByFile = new Map();
+
+      /** @type {number | null} */
+      let diagFlushTimer = null;
+
+      let lastDiagSummary = '';
+
+      function asPxNumber(v) {
+        if (!v) return null;
+        const s = String(v).trim().toLowerCase();
+        if (s === 'auto') return null;
+        if (!s.endsWith('px')) return null;
+        const n = Number(s.slice(0, -2));
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function nearGrid(valuePx, gridSizePx, tolerancePx = 0.75) {
+        if (!Number.isFinite(valuePx)) return true;
+        const m = ((valuePx % gridSizePx) + gridSizePx) % gridSizePx;
+        return m <= tolerancePx || Math.abs(m - gridSizePx) <= tolerancePx;
+      }
+
+      function countOffGridAbsoluteChildren(gridRootEl) {
+        if (!gridRootEl) return 0;
+        const gridSize = 22;
+
+        // Only inspect absolutely-positioned descendants where left/top are explicit px.
+        // Exclusions: axis and axis labels intentionally use percentages/calc.
+        const excluded = new Set(['axis', 'axis-x', 'axis-y', 'axis-label', 'label-x', 'label-y']);
+        let off = 0;
+
+        const all = Array.from(gridRootEl.querySelectorAll('*'));
+        for (const el of all) {
+          const cls = String(el.className || '');
+          if (cls && cls.split(/\s+/).some((c) => excluded.has(c))) continue;
+
+          const cs = window.getComputedStyle(el);
+          if (cs.position !== 'absolute') continue;
+
+          const left = asPxNumber(cs.left);
+          const top = asPxNumber(cs.top);
+          if (left == null && top == null) continue;
+
+          const leftOk = left == null ? true : nearGrid(left, gridSize);
+          const topOk = top == null ? true : nearGrid(top, gridSize);
+          if (!leftOk || !topOk) off++;
+        }
+
+        return off;
+      }
+
+      function diagnosePageEl(file, pageEl) {
+        const hasTitle = Boolean(pageEl?.querySelector?.('.page-title'));
+        const hasNumber = Boolean(pageEl?.querySelector?.('.page-number'));
+
+        const m = measureOverflowFromPageEl(pageEl);
+        const overflow = Boolean(m.overflow);
+
+        let gridOff = 0;
+        if (pageEl) {
+          for (const gridRoot of Array.from(pageEl.querySelectorAll('.coordinate-system'))) {
+            gridOff += countOffGridAbsoluteChildren(gridRoot);
+          }
+        }
+
+        const missingTitle = !hasTitle;
+        const missingNumber = !hasNumber;
+        const ok = !overflow && !missingTitle && !missingNumber && gridOff === 0;
+        return { file, ok, overflow, missingTitle, missingNumber, gridOff };
+      }
+
+      function upsertDiag(result) {
+        if (!diagConfig.enabled) return;
+        if (!result || !result.file) return;
+        diagByFile.set(result.file, result);
+
+        if (diagFlushTimer != null) window.clearTimeout(diagFlushTimer);
+        diagFlushTimer = window.setTimeout(flushDiagReport, 150);
+      }
+
+      function flushDiagReport() {
+        diagFlushTimer = null;
+        if (!diagConfig.enabled) return;
+
+        const total = toc?.flat?.length || 0;
+        const done = diagByFile.size;
+
+        let okCount = 0;
+        let overflowCount = 0;
+        let missingCount = 0;
+        let gridCount = 0;
+
+        /** @type {string[]} */
+        const badFiles = [];
+
+        for (const r of diagByFile.values()) {
+          if (r.ok) okCount++;
+          if (r.overflow) overflowCount++;
+          if (r.missingTitle || r.missingNumber) missingCount++;
+          if (r.gridOff > 0) gridCount++;
+          if (!r.ok) badFiles.push(r.file);
+        }
+
+        const badCount = done - okCount;
+        const summary = `[preview:diag] checked ${done}/${total} • ok=${okCount} • issues=${badCount} (A4=${overflowCount}, missing=${missingCount}, grid=${gridCount})`;
+        if (summary !== lastDiagSummary) {
+          console.info(summary);
+          lastDiagSummary = summary;
+        }
+
+        if (badFiles.length > 0) {
+          const sample = badFiles.slice(0, 8);
+          console.warn(
+            `[preview:diag] files with issues (sample): ${sample.join(', ')}${badFiles.length > sample.length ? ' …' : ''}`
+          );
+        }
+
+        if (diagOverlay) {
+          if (diagConfig.overlayEnabled) {
+            diagOverlay.hidden = false;
+            diagOverlay.textContent = `בדיקת Preview: ${okCount}/${done} תקינים • חריגות: ${badCount} • A4: ${overflowCount} • Grid: ${gridCount} • חסר כותרת/מס׳: ${missingCount}`;
+          } else {
+            diagOverlay.hidden = true;
+          }
+        }
+      }
 
       function extractFileName(file) {
         const f = String(file || '').trim();
@@ -141,11 +288,28 @@
       }
 
       function measureOverflowFromPageEl(pageEl) {
-        if (!pageEl) return { overflow: false, scrollHeight: 0, clientHeight: 0 };
+        if (!pageEl) {
+          return {
+            overflow: false,
+            overflowY: false,
+            overflowX: false,
+            scrollHeight: 0,
+            clientHeight: 0,
+            scrollWidth: 0,
+            clientWidth: 0
+          };
+        }
+
         const clientHeight = pageEl.clientHeight;
         const scrollHeight = pageEl.scrollHeight;
-        const overflow = scrollHeight > clientHeight + 1;
-        return { overflow, scrollHeight, clientHeight };
+        const clientWidth = pageEl.clientWidth;
+        const scrollWidth = pageEl.scrollWidth;
+
+        const overflowY = scrollHeight > clientHeight + 1;
+        const overflowX = scrollWidth > clientWidth + 1;
+        const overflow = overflowY || overflowX;
+
+        return { overflow, overflowY, overflowX, scrollHeight, clientHeight, scrollWidth, clientWidth };
       }
 
       /** @type {Map<string, HTMLButtonElement>} */
@@ -253,12 +417,28 @@
         (async () => {
           const okRight = await renderPageIntoHost(right.file, pageRight);
           if (okRight) fitA4InHost(pageRight);
+          if (diagConfig.enabled && okRight) {
+            try {
+              const pageEl = pageRight?.querySelector?.('main.a4-page') || pageRight?.querySelector?.('.a4-page');
+              upsertDiag(diagnosePageEl(right.file, pageEl));
+            } catch {
+              // ignore
+            }
+          }
 
           if (left) {
             emptyLeft.hidden = true;
             pageLeft.hidden = false;
             const okLeft = await renderPageIntoHost(left.file, pageLeft);
             if (okLeft) fitA4InHost(pageLeft);
+            if (diagConfig.enabled && okLeft) {
+              try {
+                const pageEl = pageLeft?.querySelector?.('main.a4-page') || pageLeft?.querySelector?.('.a4-page');
+                upsertDiag(diagnosePageEl(left.file, pageEl));
+              } catch {
+                // ignore
+              }
+            }
           } else {
             pageLeft.innerHTML = '';
             pageLeft.hidden = true;
@@ -620,6 +800,27 @@
           () => {
             fitA4InFrame(frame, 'all');
             maybeWarnIframeBlocked(frame);
+
+            if (diagConfig.enabled) {
+              try {
+                const doc = frame.contentDocument;
+                const pageEl = doc?.querySelector?.('main.a4-page') || doc?.querySelector?.('.a4-page');
+                upsertDiag(diagnosePageEl(file, pageEl));
+
+                // Re-check after MathJax/fonts settle; lightweight by design.
+                window.setTimeout(() => {
+                  try {
+                    const doc2 = frame.contentDocument;
+                    const pageEl2 = doc2?.querySelector?.('main.a4-page') || doc2?.querySelector?.('.a4-page');
+                    upsertDiag(diagnosePageEl(file, pageEl2));
+                  } catch {
+                    // ignore
+                  }
+                }, 900);
+              } catch {
+                // ignore
+              }
+            }
           },
           { once: true }
         );
@@ -762,22 +963,8 @@
             }
 
             btn.addEventListener('click', () => {
-              if (currentMode === 'all') {
-                setSelectedFile(entry.file);
-                fileSelect.value = entry.file;
-                renderList(entry.file);
-                highlightAllSelected(entry.file);
-                loadAllFrame(entry.file);
-                scrollToAllSelected(entry.file);
-                updateMetaAll(entry.file, 'נפתח');
-              } else {
-                const idx = spreadStartIndexForFile(entry.file);
-                const r = toc.flat[idx]?.file || '';
-                setSelectedFile(r);
-                fileSelect.value = r;
-                renderList(r);
-                updateSpread(idx, 'נפתח');
-              }
+              openFileInCurrentMode(entry.file, 'נפתח');
+              setActiveTopicButtons(getSelectedFile() || entry.file);
             });
             list.appendChild(btn);
           }
@@ -819,6 +1006,11 @@
             topics: Array.isArray(data.topics) ? data.topics : [],
             flat: Array.isArray(data.flat) ? data.flat : []
           };
+
+          if (diagConfig.enabled) {
+            diagByFile.clear();
+            flushDiagReport();
+          }
 
           const preferred = getSelectedFile();
 
@@ -916,12 +1108,15 @@
               frame.src = `${srcBase}?v=${bust}`;
             }
             if (currentFile) updateMetaAll(currentFile, 'עודכן');
+            if (diagConfig.enabled) flushDiagReport();
             return;
           }
 
           if (!currentFile) return;
           const start = spreadStartIndexForFile(currentFile);
           updateSpread(start, 'עודכן');
+
+          if (diagConfig.enabled) flushDiagReport();
         });
 
         // Book mode uses direct DOM injection (no iframe). We still fit on resize.

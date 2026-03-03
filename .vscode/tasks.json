@@ -24,6 +24,12 @@
       "label": "preview: start (node)",
       "type": "shell",
       "command": "npm run preview",
+      "options": {
+        "env": {
+          "HOST": "127.0.0.1",
+          "PORT": "5179"
+        }
+      },
       "isBackground": true,
       "problemMatcher": {
         "owner": "preview-node",
@@ -38,6 +44,20 @@
           "endsPattern": "Preview server running: http://"
         }
       }
+    },
+    {
+      "label": "preview: open (embedded)",
+      "command": "${command:simpleBrowser.show}",
+      "args": ["http://127.0.0.1:5179/preview"],
+      "problemMatcher": []
+    },
+    {
+      "label": "preview: frictionless (auto)",
+      "dependsOn": ["preview: start (node)", "preview: open (embedded)"],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": { "reveal": "never" }
     },
     {
       "label": "test: watch page",

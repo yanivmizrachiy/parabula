@@ -95,6 +95,48 @@
 
                 <div class="q-main">
                     <div class="bullet-container"><div class="bullet-large"></div></div>
+                    <div class="q-text">תוכן מיובא (תמונות מודבקות + חוברות PDF מרובות עמודים):</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>מטרה:</strong> לתמוך בתוכן מיובא מורכב (וקטורי/סרוק/משולב) <strong>בלי</strong> לשבור את חוקי A4/Grid/מבנה, ובלי עבודה ידנית. הייבוא הוא תהליך אוטומטי של ניתוח/ניקוי/המרה שמטרתו <strong>דיוק ואכיפה בלבד</strong>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>תמונות חתוכות/מודבקות:</strong> כאשר מקור מגיע כתמונה (PNG/JPEG) או כחתך מתוך חוברת, משתמשים בצינור אוטומטי שמפריד בין <strong>קו‑איור</strong> לבין <strong>טקסט</strong> כדי לשמור חדות ולמנוע “טקסט בתוך תמונה” שלא ניתן לאכיפה. בפועל זה נעשה באמצעות סקריפטים ייעודיים (למשל <span class="rules-code">scripts/vectorize-pythagoras-figures.mjs</span>).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>PDF חוברות שלמות ברמת עמוד:</strong> עבודה עם חוברות מרובות עמודים נעשית <strong>ברמת עמוד</strong> (page‑by‑page). מקור עמוד נשמר כ‑PNG תחת <span class="rules-code">assets/&lt;topic&gt;/pdf</span>, ומומר ל‑SVG תחת <span class="rules-code">assets/&lt;topic&gt;/vector</span> בצורה אוטומטית (למשל <span class="rules-code">scripts/vectorize-pythagoras-pages.mjs</span>). כך ה‑HTML נשאר מבני, והגרפיקה נשמרת יציבה ב‑Preview/zoom/print.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>OCR (Tesseract) לצורכי אכיפה בלבד:</strong> OCR רץ מקומית (ללא שירות חיצוני) ומשמש רק לזיהוי טקסט מתוך מקור סרוק/תמונה, כדי לבנות שכבת טקסט נפרדת או דוח אכיפה (למשל <span class="rules-code">scripts/ocr-pythagoras.mjs</span> ו‑<span class="rules-code">tesseract.js</span>). OCR אינו מייצר תוכן חדש ואינו מחליף עריכה — הוא כלי אכיפה/דיוק בלבד.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>מדידות DOM / Bounding Boxes:</strong> אכיפה כוללת בדיקות Headless שמודדות בפועל את ה‑DOM (כולל bounding boxes ו‑overflow) כדי לוודא: <span class="rules-code">.page-title</span> קיים, <span class="rules-code">.page-number</span> קיים, אין חריגה אנכית <strong>או אופקית</strong> מגבולות A4, אין אלמנטים שיוצאים מחוץ לגבולות הדף (כולל פוטרים/אזורי פתרון/תמונות/וקטורים), ואין אלמנטים מחוץ לגריד בתוך <span class="rules-code">.coordinate-system</span>. הבדיקה ממתינה בצורה מוגבלת לפונטים/MathJax כדי למדוד Layout קרוב להדפסה. בדיקות אלו משמשות Guardrails שמונעות יצירה/שינוי אוטומטי אם יש חריגה.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>תמונות רסטר ב-HTML (אכיפה):</strong> מקור יכול להגיע כ‑PNG/JPEG כחלק מתהליך הייבוא, אבל <strong>בגרסה הסופית של דפי העבודה</strong> לא משאירים <span class="rules-code">&lt;img&gt;</span> שמצביע ל‑PNG/JPEG/WebP/GIF. במקום זאת ממירים את המקור ל‑SVG תחת <span class="rules-code">assets/&lt;topic&gt;/vector</span> ומשתמשים ב‑SVG (למשל דרך <span class="rules-code">&lt;img src="...svg"&gt;</span> או Inline SVG), כדי למנוע “טקסט חבוי בתמונה” ולשמור איכות הדפסה/A4.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>הערת תאימות לכלל “אין CSS בתוך HTML”:</strong> האיסור על <span class="rules-code">&lt;style&gt;</span> ו‑<span class="rules-code">style=""</span> חל על קבצי <strong>HTML</strong> בלבד. קבצי SVG שמגיעים כ‑Assets (מתוך תהליך הייבוא) יכולים לכלול Style פנימי כחלק מהקובץ הגרפי, כל עוד ה‑HTML נשאר נקי ועומד בכללי המבנה.</div>
+                </div>
+
+                <hr>
+
+                <div class="q-main">
+                    <div class="bullet-container"><div class="bullet-large"></div></div>
                     <div class="q-text">כלל עליון: אין CSS בתוך ה-HTML.</div>
                 </div>
 
@@ -204,7 +246,16 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview:node</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>. במצב <strong>"דפדוף"</strong> ה-Reader מציג עמוד אחד בכל רגע; במצב <strong>"כל הדפים"</strong> מוצגים כל העמודים ברצף (גלילה).</div>
+                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>. במצב <strong>"דפדוף"</strong> ה-Reader מציג עמוד אחד בכל רגע; במצב <strong>"כל הדפים"</strong> מוצגים כל העמודים ברצף (גלילה).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>Preview אוטומטי ללא חיכוך</strong><br>
+                    סביבת הפיתוח וה‑Preview חייבות להיות מוגדרות כך שהרצת Preview לא תדרוש אישורים ידניים (Allow / Trust / Permissions).<br>
+                    ה‑Preview אמור לעלות אוטומטית בהרצה אחת, ללא אינטראקציה מצד המשתמש.<br>
+                    כל בקשת אישור נחשבת חיכוך שיש להסיר או לתעד כחריגה.<br>
+                    הערה: Prompt של <strong>Workspace Trust</strong> הוא מנגנון אבטחה של VS Code שנשמר בפרופיל המשתמש (לא בקבצי הריפו), ולכן לא ניתן להבטיח ביטולו מתוך הפרויקט בלבד. אם מופיע Trust Prompt בעת פתיחת התיקייה—יש לסמן Trust פעם אחת או להגדיר זאת בהגדרות משתמש של VS Code, ולתעד זאת כחריגה אם אי אפשר להסיר.</div>
                 </div>
 
                 <div class="q-sub">
