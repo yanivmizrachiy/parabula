@@ -1,68 +1,32 @@
-# Parabula Automation Report (2026-03-03)
+# Parabula - GitHub Pages Stabilization Report
 
-# Parabula Automation Report (2026-03-03)
+## Status
+Final: FAILED
 
-## What Was Broken And Why
+## Site State Before Run
+- site/ exists, is not ignored, and contains HTML output.
 
-- `tools/build-site.ps1` contained corrupted text / partial content (mojibake) that caused PowerShell parser errors.
-- MathJax was not reliably injected into the generated `site/` HTML output.
-- `tools/publish.ps1` needed stricter enforcement and reliable failure behavior for external `git` commands.
-- A local `pre-push` hook invocation caused `git push` to fail until publish was hardened to handle it.
+## Root Cause of the Original 404
+- site/ was previously ignored by git (.gitignore), so GitHub Pages could not serve it.
+- tools/build-site.ps1 deletes and regenerates site/, which can remove a manually-created entry point if it is not generated as part of the build.
+- An earlier redirect-style index had an invalid URL embedding newlines, which can break navigation.
 
-## Files Changed
+## Files Changed or Created
+- UNKNOWN
 
-- `tools/build-site.ps1`
-- `verify-all.ps1`
-- `tools/publish.ps1`
-- `rules.md`
-- `REPORT.md`
+## site/index.html (Current)
+- A simple landing page titled "Parabula" with a relative link list to all site/**/*.html (excluding index.html).
 
-## What `tools/build-site.ps1` Does Now
+## GitHub Pages Configuration
+- No GitHub Actions workflow was found in-repo for Pages.
+- This repo produces a static publish directory at site/. GitHub Pages is expected to be configured in the repository settings to publish from that directory.
 
-1. Deletes `site/` if it exists.
-2. Recreates `site/`.
-3. Iterates all `pages/**/index.html`.
-4. Writes each output under `site/` preserving the directory structure, but replaces `index.html` with `<leaf-folder>.html`:
-   - Example: `pages/topic/page/index.html` -> `site/topic/page.html`
-5. Loads HTML as raw text.
-6. If `tex-chtml.js` is missing, injects the MathJax script line immediately before `</head>`.
-7. Saves output as UTF-8.
+## Last Commit
+eb72951a87c0fd170154a93703765ffd155867ab
 
-## How MathJax Is Injected
+## Public URL
+https://yanivmizrachiy.github.io/parabula/
 
-- The script checks whether the HTML contains `tex-chtml.js`.
-- If not, it inserts this exact line before `</head>`:
-  - `<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>`
-
-## What `verify-all.ps1` Validates
-
-1. Required paths exist: `tools/build-site.ps1`, `tools/publish.ps1`, `pages/`, `rules.md`, `.git`.
-2. Runs `tools/build-site.ps1`.
-3. Confirms `site/` exists.
-4. Confirms every `site/**/*.html` contains `tex-chtml.js`.
-5. Runs `git fetch origin`.
-6. Compares `git rev-parse HEAD` to `git rev-parse origin/main` and stops if different.
-7. Prints `git status -sb` and the last 3 commits (local and `origin/main`).
-
-## What `tools/publish.ps1` Enforces
-
-1. Checks `git status --porcelain`.
-2. Stops if there are no working-tree changes and the branch is not ahead.
-3. Stops if `rules.md` is not among the changed paths when creating a new commit.
-4. Runs `git add -A`.
-5. Commits with a timestamp message: `publish: yyyy-MM-dd_HH-mm-ss`.
-6. Pushes with `git push --no-verify` and stops on any git failure (exit code checked).
-7. If the branch is already ahead with no working-tree changes, it pushes the existing commits.
-
-## Recommended Daily Run Command
-
-```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File verify-all.ps1
-pwsh -NoProfile -ExecutionPolicy Bypass -File tools/publish.ps1
-```
-
-## Final Git Status
-
-```text
-## main...origin/main
-```
+## Failure Detail
+ERROR: Unexpected changes after verify-all.ps1:
+ M REPORT.md

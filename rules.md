@@ -54,3 +54,5 @@
 - מה נבדק:
 - השפעה על הספר:
 - מה נותר לעשות:
+
+- stabilize github pages entry point 2026-03-03
