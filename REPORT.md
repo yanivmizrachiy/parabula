@@ -2,7 +2,7 @@
 
 ## Status
 
-Final: OK
+Final: FAILED
 
 ## Site State Before Run
 
@@ -13,6 +13,12 @@ Final: OK
 - site/ was previously ignored by git (.gitignore), so GitHub Pages could not serve it.
 - tools/build-site.ps1 deletes and regenerates site/, which can remove a manually-created entry point if it is not generated as part of the build.
 - An earlier redirect-style index had an invalid URL embedding newlines, which can break navigation.
+
+## Deep Diagnosis (Why it is STILL 404)
+
+- GitHub API reports `has_pages=false` for this repository.
+- GitHub Pages API endpoint returns 404 (`GET /repos/{owner}/{repo}/pages`).
+- This means GitHub Pages is not enabled in Repository Settings, so the public URL remains 404 regardless of the site/ content or the workflow.
 
 ## Files Changed or Created
 
@@ -31,9 +37,13 @@ Final: OK
 - GitHub Actions workflow is used for Pages deployment: .github/workflows/pages.yml
 - The workflow publishes the static output from site/.
 
+Required repository setting:
+
+- Settings -> Pages -> Build and deployment -> Source = GitHub Actions
+
 ## Last Commit
 
-bd994b43ff74b9d178513deb4533430a74f2d3f1
+5670db465721c5fa1fba90988887df74ee1f9684
 
 ## Public URL
 
