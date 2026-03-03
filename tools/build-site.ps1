@@ -1,34 +1,79 @@
-param([string]$RepoRoot=(Get-Location).Path,[string]$PagesRoot="pages",[string]$OutRoot="site")
-function EnsureDir($p){ New-Item -ItemType Directory -Force -Path $p | Out-Null }
-$topicDirs = Get-ChildItem (Join-Path $RepoRoot $PagesRoot) -Directory -ErrorAction SilentlyContinue
-if(-not $topicDirs){ throw "No topics found under pages/" }
-EnsureDir (Join-Path $RepoRoot $OutRoot)
-EnsureDir (Join-Path $RepoRoot "$OutRoot\assets")
-$indexCards=@()
-foreach($topic in $topicDirs){
-  $topicName=$topic.Name; $topicOut=Join-Path $RepoRoot "$OutRoot\$topicName"; EnsureDir $topicOut
-  $pages=Get-ChildItem $topic.FullName -Directory | Where-Object { $_.Name -match "^עמוד-\d+$" } | Sort-Object { [int]($_.Name -replace "עמוד-","") }
-  if(-not $pages){ continue }
-  $i=0; foreach($p in $pages){ $i++; $n=$pages.Count
-    $prev=if($i -gt 1){"page-$($i-1).html"}else{""}; $next=if($i -lt $n){"page-$($i+1).html"}else{""}
-    $src=Join-Path $p.FullName "index.html"; if(-not (Test-Path $src)){ continue }
-    $body=Get-Content $src -Raw; $out=Join-Path $topicOut "page-$i.html"
-    $html=@(
-      "<!doctype html>","<html lang=""he"" dir=""rtl"">","<head>","<meta charset=""utf-8"" />","<meta name=""viewport"" content=""width=device-width,initial-scale=1"" />",
-      "<title>$topicName — עמוד $i</title>","<link rel=""stylesheet"" href=""../assets/book.css"" />",
-      "<script>window.MathJax={tex:{inlineMath:[[\"\\(\",\"\\)\"]],displayMath:[[\"\
 
 \[\",\"\\]
 
 \"]]}};</script>",
-      "<script defer src=""https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js""></script>","</head>","<body>",
-      "<div class=""shell""><div class=""a4""><div class=""pagepad"">",$body,"</div><div class=""pagenum"">עמוד $i מתוך $n</div></div></div>",
-      "<script src=""../assets/book.js""></script>","</body>","</html>"
-    ) -join "`n"
-    Set-Content $out $html -Encoding UTF8
-  }
-  $indexCards += "<li><a href=""$topicName/page-1.html"">$topicName</a></li>"
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$pagesRoot = Join-Path $repoRoot 'pages'
+$outRoot = Join-Path $repoRoot 'site'
+
+$mathJaxTag = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>'
+
+function Ensure-Directory {
+  param([Parameter(Mandatory=$true)][string]$Path)
+  New-Item -ItemType Directory -Force -Path $Path | Out-Null
 }
-$toc = @("<!doctype html>","<html lang=""he"" dir=""rtl"">","<head>","<meta charset=""utf-8"" />","<meta name=""viewport"" content=""width=device-width,initial-scale=1"" />","<title>Parabula — ספר</title>","<link rel=""stylesheet"" href=""assets/book.css"" />","</head>","<body>","<div class=""shell""><div class=""a4""><div class=""pagepad""><h1>תוכן עניינים</h1><ul>"+($indexCards -join "")+"</ul></div></div></div>","</body>","</html>") -join "`n"
-Set-Content (Join-Path $RepoRoot "$OutRoot\index.html") $toc -Encoding UTF8
-"OK: site generated"
+
+function Contains-MathJax {
+  param([Parameter(Mandatory=$true)][string]$Html)
+  return ($Html.IndexOf('mathjax@3/es5/tex-chtml.js', [System.StringComparison]::OrdinalIgnoreCase) -ge 0)
+}
+
+function Inject-MathJax {
+  param(
+    [Parameter(Mandatory=$true)][string]$Html,
+    [Parameter(Mandatory=$true)][string]$Tag
+  )
+
+  if (Contains-MathJax -Html $Html) {
+    return $Html
+  }
+
+  $headClose = $Html.IndexOf('</head>', [System.StringComparison]::OrdinalIgnoreCase)
+  if ($headClose -ge 0) {
+    return $Html.Insert($headClose, ($Tag + "`n"))
+  }
+
+  $headOpen = $Html.IndexOf('<head', [System.StringComparison]::OrdinalIgnoreCase)
+  if ($headOpen -ge 0) {
+    $gt = $Html.IndexOf('>', $headOpen)
+    if ($gt -ge 0) {
+      return $Html.Insert($gt + 1, ("`n" + $Tag + "`n"))
+    }
+  }
+
+  return "<head>`n$Tag`n</head>`n" + $Html
+}
+
+if (Test-Path -LiteralPath $outRoot) {
+  Remove-Item -LiteralPath $outRoot -Recurse -Force
+}
+Ensure-Directory -Path $outRoot
+
+if (-not (Test-Path -LiteralPath $pagesRoot)) {
+  throw "Missing pages root: $pagesRoot"
+}
+
+$indexFiles = Get-ChildItem -LiteralPath $pagesRoot -Recurse -File -Filter 'index.html'
+foreach ($indexFile in $indexFiles) {
+  $srcDir = Split-Path -Path $indexFile.FullName -Parent
+  $relDir = [System.IO.Path]::GetRelativePath($pagesRoot, $srcDir)
+  if ($relDir -eq '.') { $relDir = '' }
+
+  $leafDirName = Split-Path -Path $srcDir -Leaf
+  $parentRel = [System.IO.Path]::GetDirectoryName($relDir)
+  if ($null -eq $parentRel) { $parentRel = '' }
+
+  $destDir = if ([string]::IsNullOrWhiteSpace($parentRel)) { $outRoot } else { Join-Path $outRoot $parentRel }
+  Ensure-Directory -Path $destDir
+
+  $destFile = Join-Path $destDir ($leafDirName + '.html')
+
+  $html = Get-Content -LiteralPath $indexFile.FullName -Raw -Encoding utf8
+  $html = Inject-MathJax -Html $html -Tag $mathJaxTag
+  Set-Content -LiteralPath $destFile -Value $html -Encoding utf8
+}
+
+Write-Host "OK: site generated"
