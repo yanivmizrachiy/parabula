@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>גרף עולה, יורד או קבוע</title>
+</head>
+<body>
+  <div class="page">
+    <div class="page-badge" aria-label="מספר עמוד">4</div>
+
+    <header class="header">
+      <h1 class="title">גרף עולה, יורד או קבוע</h1>
+    </header>
+
+    <section class="section" aria-label="שאלה 1">
+      <p class="instruction">
+        <span class="bullet" aria-hidden="true"></span>
+        <span>על מערכת הצירים מסומנות נקודות:</span>
+      </p>
+
+      <div class="graphwrap">
+        <div class="main-graph" aria-label="מערכת צירים עם נקודות">
+          <svg viewBox="0 0 360 360" width="100%" height="100%" role="img" aria-label="מערכת צירים עם נקודות מסומנות">
+            <defs>
+              <marker id="arrow4" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,0 L12,6 L0,12 Z" fill="currentColor" />
+              </marker>
+
+              <pattern id="grid4" width="15" height="15" patternUnits="userSpaceOnUse">
+                <path d="M15 0H0V15" fill="none" class="grid-line" />
+              </pattern>
+            </defs>
+
+            <rect x="30" y="30" width="300" height="300" fill="url(#grid4)" aria-hidden="true" />
+
+            <!-- axes -->
+            <line class="axis" x1="180" y1="330" x2="180" y2="18" marker-end="url(#arrow4)" />
+            <line class="axis" x1="30" y1="180" x2="342" y2="180" marker-end="url(#arrow4)" />
+            <text x="170" y="18" dominant-baseline="hanging"><tspan font-style="italic">y</tspan></text>
+            <text x="345" y="188" dominant-baseline="hanging"><tspan font-style="italic">x</tspan></text>
+
+            <!-- descending line passing through A(0,-6) and T(-3,0): y = -2x - 6 -->
+            <line class="line" x1="60" y1="30" x2="210" y2="330" />
+
+            <!-- points: T(-3,0), P(2,-2), M(2,-4), Q(-2,-6), A(0,-6) -->
+            <circle class="point" cx="135" cy="180" r="4" />
+            <text x="122" y="168">T</text>
+
+            <circle class="point" cx="210" cy="210" r="4" />
+            <text x="218" y="214">P</text>
+
+            <circle class="point" cx="210" cy="240" r="4" />
+            <text x="218" y="244">M</text>
+
+            <circle class="point" cx="150" cy="270" r="4" />
+            <text x="126" y="288">Q</text>
+
+            <circle class="point" cx="180" cy="270" r="4" />
+            <text x="188" y="288">A</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="prompt" aria-label="נוסח השאלה">
+        <div>ישר יורד עובר דרך הנקודה A(0,-6)</div>
+        <div>איזו נקודה מהנקודות שלפניכם נמצאת על הישר?</div>
+      </div>
+
+      <div class="choices" aria-label="אפשרויות בחירה">
+        <div class="choice"><span class="choice-box" aria-hidden="true"></span><span class="choice-label">T</span></div>
+        <div class="choice"><span class="choice-box" aria-hidden="true"></span><span class="choice-label">M</span></div>
+        <div class="choice"><span class="choice-box" aria-hidden="true"></span><span class="choice-label">Q</span></div>
+        <div class="choice"><span class="choice-box" aria-hidden="true"></span><span class="choice-label">P</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="שאלה 2">
+      <p class="instruction">
+        <span class="bullet" aria-hidden="true"></span>
+        <span>הגרף של פונקציה קווית עובר דרך הנקודות: (-4,-3) , (5,-6)</span>
+      </p>
+
+      <div class="graphwrap graphwrap-compact">
+        <div class="secondary-graph" aria-label="מערכת צירים עם ישר ונקודות">
+          <svg viewBox="0 0 360 360" width="100%" height="100%" role="img" aria-label="גרף של פונקציה קווית דרך שתי נקודות">
+            <defs>
+              <marker id="arrow4b" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,0 L12,6 L0,12 Z" fill="currentColor" />
+              </marker>
+
+              <pattern id="grid4b" width="15" height="15" patternUnits="userSpaceOnUse">
+                <path d="M15 0H0V15" fill="none" class="grid-line" />
+              </pattern>
+            </defs>
+
+            <rect x="30" y="30" width="300" height="300" fill="url(#grid4b)" aria-hidden="true" />
+
+            <!-- axes -->
+            <line class="axis" x1="180" y1="330" x2="180" y2="18" marker-end="url(#arrow4b)" />
+            <line class="axis" x1="30" y1="180" x2="342" y2="180" marker-end="url(#arrow4b)" />
+            <text x="170" y="18" dominant-baseline="hanging"><tspan font-style="italic">y</tspan></text>
+            <text x="345" y="188" dominant-baseline="hanging"><tspan font-style="italic">x</tspan></text>
+
+            <!-- line through (-4,-3) and (5,-6): y = -(1/3)x - 13/3 -->
+            <line class="line" x1="30" y1="200" x2="330" y2="300" />
+
+            <!-- points -->
+            <circle class="point" cx="120" cy="225" r="4" />
+            <circle class="point" cx="255" cy="270" r="4" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="q2-prompts" aria-label="שאלות המשך">
+        <div class="q2-line">
+          <div>האם הגרף עולה או יורד?</div>
+          <div class="answer-box mini" aria-hidden="true"></div>
+        </div>
+        <div class="q2-line">
+          <div>האם השיפוע חיובי או שלילי?</div>
+          <div class="answer-box mini" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
