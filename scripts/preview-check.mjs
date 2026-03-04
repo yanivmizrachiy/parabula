@@ -1,7 +1,13 @@
 import { spawn } from 'node:child_process';
 import puppeteer from 'puppeteer';
 
-const PAGE_RE = /^עמוד-\d+\.html$/u;
+const ROOT_PAGE_RE = /^עמוד-\d+\.html$/u;
+const SITE_PAGE_RE = /^site\/[\s\S]+?\/עמוד-\d+\.html$/u;
+
+function isSupportedTocEntry(file) {
+  const f = String(file || '').replace(/\\/g, '/');
+  return ROOT_PAGE_RE.test(f) || SITE_PAGE_RE.test(f);
+}
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -239,7 +245,7 @@ async function main() {
       throw new Error('/api/toc returned no files');
     }
 
-    const bad = files.filter((f) => !PAGE_RE.test(f));
+    const bad = files.filter((f) => !isSupportedTocEntry(f));
     if (bad.length > 0) {
       throw new Error(`/api/toc returned non-page html entries: ${bad.slice(0, 20).join(', ')}${bad.length > 20 ? ' …' : ''}`);
     }

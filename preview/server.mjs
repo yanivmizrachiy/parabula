@@ -91,13 +91,51 @@ function contentTypeFor(filePath) {
   }
 }
 
+async function walkFiles(rootDir, relStart) {
+  const absStart = path.join(rootDir, relStart);
+  /** @type {string[]} */
+  const out = [];
+
+  /** @type {string[]} */
+  const stack = [absStart];
+
+  while (stack.length) {
+    const dir = stack.pop();
+    if (!dir) break;
+
+    let entries = [];
+    try {
+      entries = await fs.readdir(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+
+    for (const e of entries) {
+      const abs = path.join(dir, e.name);
+      const rel = path.relative(rootDir, abs).replace(/\\/g, '/');
+      if (isIgnoredPath(rel)) continue;
+
+      if (e.isDirectory()) {
+        stack.push(abs);
+        continue;
+      }
+
+      if (!e.isFile()) continue;
+      out.push(rel);
+    }
+  }
+
+  return out;
+}
+
 async function listHtmlFiles() {
-  const entries = await fs.readdir(ROOT_DIR, { withFileTypes: true });
-  const pages = entries
+  // 1) Root-level work pages: עמוד-*.html
+  const rootEntries = await fs.readdir(ROOT_DIR, { withFileTypes: true });
+  const rootPages = rootEntries
     .filter((e) => e.isFile() && A4_PAGE_FILE_RE.test(e.name))
     .map((e) => e.name);
 
-  pages.sort((a, b) => {
+  rootPages.sort((a, b) => {
     const am = a.match(A4_PAGE_FILE_RE);
     const bm = b.match(A4_PAGE_FILE_RE);
     const ai = am ? Number(am[1]) : Number.POSITIVE_INFINITY;
@@ -106,7 +144,25 @@ async function listHtmlFiles() {
     return a.localeCompare(b, 'he');
   });
 
-  return pages;
+  // 2) Built topic pages: site/**/*.html (exclude site/index.html)
+  /** @type {string[]} */
+  let sitePages = [];
+  const siteDir = path.join(ROOT_DIR, 'site');
+  try {
+    const st = await fs.stat(siteDir);
+    if (st.isDirectory()) {
+      const all = await walkFiles(ROOT_DIR, 'site');
+      sitePages = all
+        .filter((rel) => rel.toLowerCase().endsWith('.html'))
+        .filter((rel) => rel !== 'site/index.html');
+    }
+  } catch {
+    // no site dir
+  }
+
+  sitePages.sort((a, b) => a.localeCompare(b, 'he'));
+
+  return [...rootPages, ...sitePages];
 }
 
 function stripHtml(text) {
@@ -148,6 +204,13 @@ function parsePageMetaFromHtml(html) {
   return { docTitle, topic, pageIndex, pageTotal, topicLinks };
 }
 
+function topicFromFilePath(relPath) {
+  const normalized = String(relPath || '').replace(/\\/g, '/');
+  if (!normalized.startsWith('site/')) return '';
+  const parts = normalized.split('/').filter(Boolean);
+  return parts.length >= 2 ? parts[1] : '';
+}
+
 async function buildToc() {
   const files = await listHtmlFiles();
 
@@ -167,6 +230,7 @@ async function buildToc() {
     }
 
     const meta = parsePageMetaFromHtml(html);
+    const topicFallback = meta.topic ? '' : topicFromFilePath(rel);
     if (meta.topicLinks.length > bestTopicOrder.length) {
       bestTopicOrder = meta.topicLinks.map((t) => t.name);
     }
@@ -174,10 +238,15 @@ async function buildToc() {
     const entry = {
       file: rel,
       title: meta.docTitle || rel,
-      topic: meta.topic || '',
+      topic: meta.topic || topicFallback || '',
       pageIndex: typeof meta.pageIndex === 'number' ? meta.pageIndex : null,
       pageTotal: typeof meta.pageTotal === 'number' ? meta.pageTotal : null
     };
+
+    if (entry.pageIndex == null) {
+      const m2 = path.basename(rel).match(A4_PAGE_FILE_RE);
+      if (m2) entry.pageIndex = Number(m2[1]);
+    }
 
     const key = entry.topic || 'אחר';
     if (!topicsMap.has(key)) topicsMap.set(key, { name: key, pages: [] });
@@ -371,10 +440,11 @@ try {
     if (isIgnoredPath(rel)) return;
     if (!isWatchedFile(rel)) return;
 
-     // TOC depends only on root-level עמוד-*.html files.
-     if (A4_PAGE_FILE_RE.test(path.basename(rel))) {
-       tocDirty = true;
-     }
+    // TOC depends on root-level עמוד-*.html and site/**/*.html (excluding site/index.html).
+    const base = path.basename(rel);
+    const isRootWorkPage = A4_PAGE_FILE_RE.test(base) && !rel.includes('/');
+    const isSiteHtml = rel.startsWith('site/') && rel.toLowerCase().endsWith('.html') && rel !== 'site/index.html';
+    if (isRootWorkPage || isSiteHtml) tocDirty = true;
 
     sendSseEvent('reload', { path: rel, ts: Date.now() });
   });

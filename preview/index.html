@@ -508,6 +508,12 @@
         return false;
       }
 
+      function encodeUrlPath(relPath) {
+        const raw = String(relPath || '').replace(/\\/g, '/').replace(/^\/+/, '');
+        const parts = raw.split('/').filter(Boolean);
+        return parts.map((p) => encodeURIComponent(p)).join('/');
+      }
+
       async function renderPageIntoHost(file, hostEl, abortSignal) {
         if (!file || !hostEl) return false;
 
@@ -538,31 +544,40 @@
         }
 
         const main = parsed.querySelector('main.a4-page');
-        if (!main) {
-          hostEl.textContent = 'עמוד לא תקין (חסר main.a4-page).';
-          return false;
-        }
+        if (main) {
+          hostEl.appendChild(main);
 
-        hostEl.appendChild(main);
-
-        // Render math (best-effort).
-        const ready = await ensureMathJaxReady();
-        if (ready) {
-          try {
-            await window.MathJax.typesetPromise([hostEl]);
-          } catch {
-            // ignore typeset failures
+          // Render math (best-effort).
+          const ready = await ensureMathJaxReady();
+          if (ready) {
+            try {
+              await window.MathJax.typesetPromise([hostEl]);
+            } catch {
+              // ignore typeset failures
+            }
           }
+
+          // Layout guard: detect A4 overflow and report to server (terminal).
+          try {
+            const pageEl = hostEl.querySelector('.a4-page');
+            const m = measureOverflowFromPageEl(pageEl);
+            reportLayoutGuard(file, m.overflow, m.scrollHeight, m.clientHeight);
+          } catch {
+            // ignore measurement errors
+          }
+
+          return true;
         }
 
-        // Layout guard: detect A4 overflow and report to server (terminal).
-        try {
-          const pageEl = hostEl.querySelector('.a4-page');
-          const m = measureOverflowFromPageEl(pageEl);
-          reportLayoutGuard(file, m.overflow, m.scrollHeight, m.clientHeight);
-        } catch {
-          // ignore measurement errors
-        }
+        // Fallback for non-A4 pages (e.g., built topic pages under site/): use an iframe.
+        const frame = document.createElement('iframe');
+        frame.className = 'reader-hostFrame';
+        frame.title = String(file);
+        frame.referrerPolicy = 'no-referrer';
+        frame.loading = 'eager';
+        const bust = String(Date.now());
+        frame.src = `/${encodeUrlPath(file)}?v=${bust}`;
+        hostEl.appendChild(frame);
 
         return true;
       }
