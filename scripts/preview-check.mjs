@@ -1,4 +1,6 @@
 import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 import puppeteer from 'puppeteer';
 
 const ROOT_PAGE_RE = /^עמוד-\d+\.html$/u;
@@ -11,6 +13,40 @@ function isSupportedTocEntry(file) {
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+function firstExistingFile(paths) {
+  for (const p of paths) {
+    if (!p) continue;
+    try {
+      if (fs.existsSync(p)) return p;
+    } catch {
+      // ignore
+    }
+  }
+  return '';
+}
+
+function findBrowserExecutable() {
+  const envPath = String(process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || '').trim();
+  if (envPath && fs.existsSync(envPath)) return envPath;
+
+  const programFiles = process.env.PROGRAMFILES || '';
+  const programFilesX86 = process.env['PROGRAMFILES(X86)'] || '';
+  const localAppData = process.env.LOCALAPPDATA || '';
+
+  const candidates = [
+    // Chrome
+    programFiles && path.join(programFiles, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    programFilesX86 && path.join(programFilesX86, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    localAppData && path.join(localAppData, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    // Edge (almost always present on Windows)
+    programFiles && path.join(programFiles, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+    programFilesX86 && path.join(programFilesX86, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+    localAppData && path.join(localAppData, 'Microsoft', 'Edge', 'Application', 'msedge.exe')
+  ];
+
+  return firstExistingFile(candidates);
 }
 
 async function fetchOk(url) {
@@ -41,7 +77,13 @@ function collectFilesFromToc(toc) {
 }
 
 async function runHeadlessGuardrails(base, files) {
-  const browser = await puppeteer.launch({ headless: 'new' });
+  const executablePath = findBrowserExecutable();
+  const launchOptions = {
+    headless: 'new',
+    ...(executablePath ? { executablePath } : {})
+  };
+
+  const browser = await puppeteer.launch(launchOptions);
 
   try {
     const page = await browser.newPage();
@@ -245,12 +287,18 @@ async function main() {
       throw new Error('/api/toc returned no files');
     }
 
-    const bad = files.filter((f) => !isSupportedTocEntry(f));
-    if (bad.length > 0) {
-      throw new Error(`/api/toc returned non-page html entries: ${bad.slice(0, 20).join(', ')}${bad.length > 20 ? ' …' : ''}`);
+    // The TOC may include non-A4 HTML (e.g. built site pages under site/**).
+    // Guardrails here are specifically for root A4 textbook pages.
+    const rootFiles = files
+      .map((f) => String(f || '').replace(/\\/g, '/'))
+      .filter((f) => ROOT_PAGE_RE.test(f));
+
+    if (rootFiles.length === 0) {
+      const sample = files.slice(0, 10).join(', ');
+      throw new Error(`/api/toc returned no root A4 pages (עמוד-*.html). Sample: ${sample}`);
     }
 
-    const failures = await runHeadlessGuardrails(base, files);
+    const failures = await runHeadlessGuardrails(base, rootFiles);
     if (failures.length > 0) {
       console.error('FAIL: headless A4 guardrails detected issues.');
       for (const f of failures.slice(0, 30)) {
@@ -261,7 +309,9 @@ async function main() {
       return;
     }
 
-    console.log(`OK: preview server up (${base}), /preview=200, /api/toc ok (${files.length} entries), headless guardrails ok`);
+    console.log(
+      `OK: preview server up (${base}), /preview=200, /api/toc ok (${files.length} entries; ${rootFiles.length} root A4 pages), headless guardrails ok`
+    );
   } finally {
     if (server?.child) await stopPreviewServer(server.child);
   }

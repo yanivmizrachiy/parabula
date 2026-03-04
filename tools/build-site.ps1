@@ -46,7 +46,27 @@ foreach ($indexFile in $indexFiles) {
 
     $destPath = Join-Path $destDir ($leaf + '.html')
 
+    # If this page/topic ships a stylesheet, copy it next to the flattened output.
+    $topicStyle = if ([string]::IsNullOrWhiteSpace($parentRel)) { $null } else { Join-Path (Join-Path $pagesRoot $parentRel) 'style.css' }
+    $pageStyle = Join-Path $srcDir 'style.css'
+    $styleToCopy = $null
+    if ($topicStyle -and (Test-Path -LiteralPath $topicStyle -PathType Leaf)) {
+        $styleToCopy = $topicStyle
+    }
+    elseif (Test-Path -LiteralPath $pageStyle -PathType Leaf) {
+        $styleToCopy = $pageStyle
+    }
+    if ($styleToCopy) {
+        Copy-Item -LiteralPath $styleToCopy -Destination (Join-Path $destDir 'style.css') -Force
+    }
+
     $html = Get-Content -LiteralPath $indexFile.FullName -Raw -Encoding utf8
+
+    # Pages live one directory deeper under pages/, but are flattened into site/<topic>/עמוד-X.html.
+    # Rewrite a shared topic stylesheet href accordingly.
+    $html = $html.Replace('href="../style.css"', 'href="style.css"')
+    $html = $html.Replace("href='../style.css'", "href='style.css'")
+
     if ($html -notlike '*tex-chtml.js*') {
         $pos = $html.IndexOf('</head>', [System.StringComparison]::OrdinalIgnoreCase)
         if ($pos -lt 0) {

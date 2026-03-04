@@ -1,0 +1,403 @@
+@page { size: A4; margin: 14mm; }
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --screen-bg: #f2f2f2;
+  --title-blue: #0b55d4;
+  --accent-red: #d40000;
+  --page-padding: 14mm;
+  --page-outline: 1px dashed rgba(0, 0, 0, 0.45);
+
+  --axis-stroke: 3.0;
+  --graph-stroke: 1.25;
+  --line-stroke: 1.25;
+  --table-header-bg: #e6e6e6;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, "Noto Sans Hebrew", "Segoe UI", sans-serif;
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@media screen {
+  body { background: var(--screen-bg); }
+
+  .page {
+    margin: 12px auto;
+    background: var(--paper);
+    outline: var(--page-outline);
+    outline-offset: 0;
+  }
+}
+
+@media print {
+  body { background: var(--paper); }
+
+  .page {
+    margin: 0;
+    outline: none;
+  }
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: var(--page-padding);
+  position: relative;
+}
+
+.page-badge {
+  position: absolute;
+  left: 14mm;
+  top: 14mm;
+  width: 18mm;
+  height: 18mm;
+  border: 0.8mm solid var(--accent-red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18pt;
+  line-height: 1;
+  color: var(--accent-red);
+  background: var(--paper);
+}
+
+.header {
+  margin-top: 2mm;
+  margin-bottom: 6mm;
+  padding-left: 24mm;
+}
+
+.title {
+  color: var(--title-blue);
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 21pt;
+  font-weight: 700;
+  margin: 0 0 4mm 0;
+  text-align: right;
+  letter-spacing: 0.35px;
+  padding-bottom: 2.5mm;
+  border-bottom: 0.8mm solid var(--title-blue);
+}
+
+.instruction {
+  font-size: 13.5pt;
+  margin: 0;
+  line-height: 1.25;
+  display: flex;
+  gap: 2.5mm;
+  align-items: baseline;
+  justify-content: flex-start;
+  width: 100%;
+  text-align: right;
+}
+
+.bullet {
+  width: 3.2mm;
+  height: 3.2mm;
+  border-radius: 50%;
+  background: var(--ink);
+  flex: 0 0 auto;
+  align-self: center;
+}
+
+.section { margin-top: 4mm; }
+
+/* Page 1: table of small graphs */
+.q2-table {
+  width: 100%;
+  margin-top: 4mm;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12.5pt;
+}
+
+.q2-table th,
+.q2-table td {
+  border: 0.35mm solid var(--ink);
+  padding: 2.2mm 2mm;
+  vertical-align: middle;
+}
+
+.q2-table thead th {
+  background: var(--table-header-bg);
+  font-weight: 700;
+  text-align: center;
+}
+
+.q2-table td { text-align: center; }
+
+.q2-table .opt {
+  display: grid;
+  gap: 2.2mm;
+  justify-items: center;
+  align-items: center;
+}
+
+.q2-table .opt-line {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.q2-table .checkbox {
+  width: 4.2mm;
+  height: 4.2mm;
+  border: 0.35mm solid var(--ink);
+  background: var(--paper);
+  display: inline-block;
+}
+
+.q2-table svg {
+  width: 54mm;
+  height: 38mm;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Page 2: multi-line graphs + answer boxes */
+.q3a-layout {
+  margin-top: 4mm;
+  display: grid;
+  grid-template-columns: 52mm 120mm;
+  gap: 5mm;
+  align-items: start;
+}
+
+.answerlist { direction: ltr; }
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  gap: 3.5mm 4.5mm;
+  align-items: start;
+}
+
+.answeritem {
+  display: flex;
+  gap: 2mm;
+  align-items: center;
+}
+
+.answerkey {
+  width: 6mm;
+  font-size: 13pt;
+  line-height: 1;
+}
+
+.answer-box {
+  width: 56mm;
+  height: 8.5mm;
+  position: relative;
+  border: 0.35mm solid var(--ink);
+  border-radius: 2mm;
+  background: linear-gradient(180deg, var(--paper) 0%, var(--paper) 55%, var(--table-header-bg) 140%);
+  box-shadow:
+    0 0.8mm 1.1mm rgba(0, 0, 0, 0.18),
+    inset 0 0.55mm 0.7mm rgba(255, 255, 255, 0.95),
+    inset 0 -0.55mm 0.7mm rgba(0, 0, 0, 0.10);
+}
+
+.answer-box::before {
+  content: "";
+  position: absolute;
+  inset: 0.6mm;
+  border-radius: 1.2mm;
+  border: 0.22mm solid rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+.answer-box.mini { width: 30mm; }
+
+@media print {
+  .answer-box {
+    background: var(--paper);
+    box-shadow: none;
+  }
+
+  .answer-box::before { display: none; }
+}
+
+.subprompt {
+  margin: 4mm 0 0 0;
+  font-size: 13pt;
+}
+
+.blank {
+  display: inline-block;
+  min-width: 30mm;
+  height: 5mm;
+  border-bottom: 0.35mm solid var(--ink);
+  vertical-align: baseline;
+}
+
+.blank.small { min-width: 16mm; }
+
+.q3a-graph {
+  width: 120mm;
+  height: 72mm;
+  justify-self: start;
+}
+
+.q3b-graph {
+  width: 120mm;
+  height: 120mm;
+  margin-top: 4mm;
+}
+
+.q3b-answers {
+  margin-top: 4mm;
+  font-size: 13pt;
+  line-height: 1.7;
+}
+
+.q3b-line {
+  display: flex;
+  gap: 4mm;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 3mm;
+}
+
+/* Page 3: graphs + choices */
+.graphwrap {
+  margin-top: 5mm;
+  display: grid;
+  justify-items: center;
+}
+
+.graphwrap-compact { margin-top: 4mm; }
+
+.main-graph {
+  width: 154mm;
+  height: 122mm;
+}
+
+.secondary-graph {
+  width: 140mm;
+  height: 106mm;
+}
+
+.prompt {
+  margin-top: 5mm;
+  font-size: 13pt;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.choices {
+  margin-top: 5mm;
+  display: grid;
+  gap: 5mm;
+  width: 60mm;
+  margin-right: auto;
+}
+
+.q2-prompts {
+  margin-top: 4mm;
+  font-size: 13pt;
+  line-height: 1.7;
+}
+
+.q2-line {
+  display: flex;
+  gap: 4mm;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 2.5mm;
+}
+
+.choice {
+  display: flex;
+  flex-direction: row;
+  gap: 4mm;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.choice-box {
+  width: 4.2mm;
+  height: 4.2mm;
+  border: 0.35mm solid var(--ink);
+  background: var(--paper);
+  flex: 0 0 auto;
+}
+
+.choice-label {
+  font-size: 13pt;
+  direction: ltr;
+}
+
+/* SVG textbook style */
+svg {
+  color: var(--ink);
+  shape-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
+  overflow: visible;
+}
+
+svg text {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  fill: currentColor;
+}
+
+svg .axis {
+  stroke: currentColor;
+  stroke-width: var(--axis-stroke);
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .graph-line {
+  stroke: currentColor;
+  stroke-width: var(--graph-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .graph-line.light { opacity: 0.55; }
+
+svg .grid-line {
+  stroke: currentColor;
+  stroke-width: 0.8;
+  opacity: 0.18;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .tick {
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.65;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .point {
+  fill: currentColor;
+}
+
+svg .line {
+  stroke: currentColor;
+  stroke-width: var(--line-stroke);
+  opacity: 0.55;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .linelabel {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
