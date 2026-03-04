@@ -339,8 +339,10 @@
 
       function getMode() {
         const url = new URL(window.location.href);
-        const mode = (url.searchParams.get('mode') || '').toLowerCase();
-        return mode === 'book' ? 'book' : 'all';
+        const raw = url.searchParams.get('mode');
+        if (!raw) return 'book';
+        const mode = String(raw).toLowerCase();
+        return mode === 'all' ? 'all' : 'book';
       }
 
       function setMode(mode) {
@@ -409,44 +411,66 @@
         return l ? `${r} | ${l}` : r;
       }
 
-      function updateSpread(startIdx, reason) {
+      /** @type {number} */
+      let spreadRenderSeq = 0;
+      /** @type {AbortController | null} */
+      let spreadAbortRight = null;
+      /** @type {AbortController | null} */
+      let spreadAbortLeft = null;
+
+      async function updateSpread(startIdx, reason) {
+        const seq = ++spreadRenderSeq;
+
+        try {
+          spreadAbortRight?.abort();
+        } catch {
+          // ignore
+        }
+        try {
+          spreadAbortLeft?.abort();
+        } catch {
+          // ignore
+        }
+
+        spreadAbortRight = new AbortController();
+        spreadAbortLeft = new AbortController();
+
         const { right, left } = spreadFiles(startIdx);
         if (!right) return;
 
-        // Book mode rendering: inject <main class="a4-page"> directly (no iframe).
-        (async () => {
-          const okRight = await renderPageIntoHost(right.file, pageRight);
-          if (okRight) fitA4InHost(pageRight);
-          if (diagConfig.enabled && okRight) {
+        meta.textContent = `${describeSpread(right, left)}${reason ? ' • ' + reason : ''}`;
+
+        const okRight = await renderPageIntoHost(right.file, pageRight, spreadAbortRight.signal);
+        if (seq !== spreadRenderSeq) return;
+        if (okRight) fitA4InHost(pageRight);
+        if (diagConfig.enabled && okRight) {
+          try {
+            const pageEl = pageRight?.querySelector?.('main.a4-page') || pageRight?.querySelector?.('.a4-page');
+            upsertDiag(diagnosePageEl(right.file, pageEl));
+          } catch {
+            // ignore
+          }
+        }
+
+        if (left) {
+          emptyLeft.hidden = true;
+          pageLeft.hidden = false;
+          const okLeft = await renderPageIntoHost(left.file, pageLeft, spreadAbortLeft.signal);
+          if (seq !== spreadRenderSeq) return;
+          if (okLeft) fitA4InHost(pageLeft);
+          if (diagConfig.enabled && okLeft) {
             try {
-              const pageEl = pageRight?.querySelector?.('main.a4-page') || pageRight?.querySelector?.('.a4-page');
-              upsertDiag(diagnosePageEl(right.file, pageEl));
+              const pageEl = pageLeft?.querySelector?.('main.a4-page') || pageLeft?.querySelector?.('.a4-page');
+              upsertDiag(diagnosePageEl(left.file, pageEl));
             } catch {
               // ignore
             }
           }
-
-          if (left) {
-            emptyLeft.hidden = true;
-            pageLeft.hidden = false;
-            const okLeft = await renderPageIntoHost(left.file, pageLeft);
-            if (okLeft) fitA4InHost(pageLeft);
-            if (diagConfig.enabled && okLeft) {
-              try {
-                const pageEl = pageLeft?.querySelector?.('main.a4-page') || pageLeft?.querySelector?.('.a4-page');
-                upsertDiag(diagnosePageEl(left.file, pageEl));
-              } catch {
-                // ignore
-              }
-            }
-          } else {
-            pageLeft.innerHTML = '';
-            pageLeft.hidden = true;
-            emptyLeft.hidden = false;
-          }
-        })();
-
-        meta.textContent = `${describeSpread(right, left)}${reason ? ' • ' + reason : ''}`;
+        } else {
+          pageLeft.innerHTML = '';
+          pageLeft.hidden = true;
+          emptyLeft.hidden = false;
+        }
       }
 
       /** @type {Set<string>} */
@@ -484,20 +508,23 @@
         return false;
       }
 
-      async function renderPageIntoHost(file, hostEl) {
+      async function renderPageIntoHost(file, hostEl, abortSignal) {
         if (!file || !hostEl) return false;
 
         hostEl.innerHTML = '';
 
         let html = '';
         try {
-          const res = await fetch(`/${encodeURIComponent(file)}`, { cache: 'no-store' });
+          const res = await fetch(`/${encodeURIComponent(file)}`, { cache: 'no-store', signal: abortSignal });
           if (!res.ok) {
             hostEl.textContent = `שגיאה בטעינת העמוד (${res.status})`;
             return false;
           }
           html = await res.text();
         } catch (err) {
+          if (err && typeof err === 'object' && 'name' in err && err.name === 'AbortError') {
+            return false;
+          }
           hostEl.textContent = 'שגיאה בטעינת העמוד.';
           return false;
         }
@@ -682,7 +709,7 @@
         nextBtn.disabled = startIdx >= maxStart;
       }
 
-      function selectNeighbor(delta) {
+      async function selectNeighbor(delta) {
         const current = getSelectedFile();
         if (!current) return;
 
@@ -691,12 +718,12 @@
           if (idx < 0) return;
           const nextFile = toc.flat[idx + delta]?.file || '';
           if (!nextFile) return;
-          openFileInCurrentMode(nextFile, 'ניווט');
+          await openFileInCurrentMode(nextFile, 'ניווט');
           setActiveTopicButtons(nextFile);
           return;
         }
 
-        selectNeighborSpread(delta);
+        await selectNeighborSpread(delta);
       }
 
       function updateMetaAll(selectedFile, reason) {
@@ -717,7 +744,7 @@
         }
       }
 
-      function openFileInCurrentMode(file, reason) {
+      async function openFileInCurrentMode(file, reason) {
         if (!file) return;
         if (currentMode === 'all') {
           setSelectedFile(file);
@@ -733,7 +760,10 @@
           setSelectedFile(r);
           fileSelect.value = r;
           renderList(r);
-          updateSpread(idx, reason);
+          showFallback('טוען…');
+          await updateSpread(idx, reason);
+          hideFallback();
+          setActiveTopicButtons(r);
         }
       }
 
@@ -978,7 +1008,7 @@
         updatePrevNextDisabled();
       }
 
-      function selectNeighborSpread(deltaSpreads) {
+      async function selectNeighborSpread(deltaSpreads) {
         if (currentMode === 'all') return;
         const current = getSelectedFile();
         const startIdx = spreadStartIndexForFile(current);
@@ -991,7 +1021,10 @@
         if (!rightFile) return;
         setSelectedFile(rightFile);
         renderList(rightFile);
-        updateSpread(nextStart, 'דפדוף');
+        showFallback('טוען…');
+        await updateSpread(nextStart, 'דפדוף');
+        hideFallback();
+        setActiveTopicButtons(rightFile);
       }
 
       async function boot() {
@@ -1046,9 +1079,8 @@
           const rightFile = toc.flat[startIdx]?.file || initial;
           setSelectedFile(rightFile);
           renderList(rightFile);
-          updateSpread(startIdx, 'מוכן');
-          // Hide after first render pass.
-          setTimeout(() => hideFallback(), 50);
+          await updateSpread(startIdx, 'מוכן');
+          hideFallback();
           setActiveTopicButtons(rightFile);
         }
 
@@ -1075,8 +1107,8 @@
           const rightFile = toc.flat[startIdx]?.file || f;
           setSelectedFile(rightFile);
           renderList(rightFile);
-          updateSpread(startIdx, 'נפתח');
-          setTimeout(() => hideFallback(), 50);
+          updateSpread(startIdx, 'נפתח').then(() => hideFallback());
+          setActiveTopicButtons(rightFile);
         });
 
         fileSelect.addEventListener('change', () => {
@@ -1085,15 +1117,15 @@
           setActiveTopicButtons(getSelectedFile() || f);
         });
 
-        prevBtn.addEventListener('click', () => selectNeighbor(-1));
-        nextBtn.addEventListener('click', () => selectNeighbor(1));
+        prevBtn.addEventListener('click', () => void selectNeighbor(-1));
+        nextBtn.addEventListener('click', () => void selectNeighbor(1));
 
         window.addEventListener('keydown', (e) => {
           const tag = e.target?.tagName;
           if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
           // RTL-friendly: Left = forward, Right = back
-          if (e.key === 'ArrowLeft' || e.key === 'PageDown') selectNeighbor(1);
-          if (e.key === 'ArrowRight' || e.key === 'PageUp') selectNeighbor(-1);
+          if (e.key === 'ArrowLeft' || e.key === 'PageDown') void selectNeighbor(1);
+          if (e.key === 'ArrowRight' || e.key === 'PageUp') void selectNeighbor(-1);
         });
 
         const es = new EventSource('/events');
