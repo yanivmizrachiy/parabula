@@ -2,7 +2,7 @@
 
 ## Status
 
-Final: FAILED
+Final: SUCCESS
 
 ## Site State Before Run
 
@@ -14,11 +14,11 @@ Final: FAILED
 - tools/build-site.ps1 deletes and regenerates site/, which can remove a manually-created entry point if it is not generated as part of the build.
 - An earlier redirect-style index had an invalid URL embedding newlines, which can break navigation.
 
-## Deep Diagnosis (Why it is STILL 404)
+## What Fixed the 404
 
-- GitHub API reports `has_pages=false` for this repository.
-- GitHub Pages API endpoint returns 404 (`GET /repos/{owner}/{repo}/pages`).
-- This means GitHub Pages is not enabled in Repository Settings, so the public URL remains 404 regardless of the site/ content or the workflow.
+- GitHub Pages was enabled for this repository with build type `workflow` (GitHub Actions).
+- The GitHub Actions workflow `.github/workflows/pages.yml` completed successfully and deployed the `site/` artifact.
+- The public URL now serves `site/index.html` (no longer 404).
 
 ## Files Changed or Created
 
@@ -37,13 +37,17 @@ Final: FAILED
 - GitHub Actions workflow is used for Pages deployment: .github/workflows/pages.yml
 - The workflow publishes the static output from site/.
 
-Required repository setting:
+Verified state:
 
-- Settings -> Pages -> Build and deployment -> Source = GitHub Actions
+- Pages is enabled and configured for GitHub Actions deployments.
+
+Verification evidence:
+
+- Workflow run: https://github.com/yanivmizrachiy/parabula/actions/runs/22683729213 (conclusion: success)
 
 ## Last Commit
 
-948cc9de82deb9bc9d31ec91ada9bf49f1ae3691
+3af2009a1c216a60a7f66c46aa42691d5ad47dde
 
 ## Public URL
 
