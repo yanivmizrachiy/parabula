@@ -1,0 +1,26 @@
+:root{ --bg:#0b1220; --panel:#101a2f; --text:#eaf0ff; --muted:#a8b3d6; --line:#24304d; --accent:#4aa3ff; }
+*{ box-sizing:border-box; font-family: Heebo, Assistant, Arial, sans-serif; }
+body{ margin:0; background:var(--bg); color:var(--text); display:grid; grid-template-columns: 340px 1fr; grid-template-rows: 64px 1fr; height:100vh; }
+.topbar{ grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, #0f1a33, #0b1220); position:sticky; top:0; z-index:10;}
+.title{ font-weight:800; letter-spacing:.2px; }
+.controls{ display:flex; gap:8px; align-items:center; }
+.controls input{ width:260px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0e1830; color:var(--text); outline:none; }
+.controls button{ padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0e1830; color:var(--text); cursor:pointer; }
+.controls button:hover{ border-color:var(--accent); }
+.side{ padding:14px; border-left:1px solid var(--line); background:var(--panel); overflow:auto; }
+.side-title{ color:var(--muted); font-weight:700; margin:8px 0; }
+.item{ display:flex; gap:8px; align-items:center; padding:10px; border-radius:10px; border:1px solid transparent; cursor:pointer; }
+.item:hover{ border-color:var(--line); background:#0e1830; }
+.item .k{ color:var(--muted); font-size:12px; }
+.item .t{ font-weight:700; }
+.badge{ margin-right:auto; color:var(--muted); font-size:12px; }
+.star{ border:1px solid var(--line); background:#0e1830; color:var(--text); border-radius:10px; padding:6px 10px; cursor:pointer;}
+.star.on{ border-color:var(--accent); }
+.main{ padding:14px; overflow:auto; }
+.nav{ display:flex; gap:10px; align-items:center; margin-bottom:12px; }
+.nav button, .nav a{ padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0e1830; color:var(--text); text-decoration:none; cursor:pointer;}
+.nav button:hover, .nav a:hover{ border-color:var(--accent); }
+.view{ border:1px solid var(--line); border-radius:12px; overflow:hidden; background:white; color:black; }
+.frame{ width:100%; border:0; height: calc(100vh - 64px - 14px - 14px - 12px - 54px); }
+.stack{ display:flex; flex-direction:column; gap:12px; padding:12px; }
+.stack iframe{ width:100%; border:1px solid #ddd; border-radius:10px; height: 880px; background:white; }

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Reader</title>
+  <link rel="stylesheet" href="./reader.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">Reader</div>
+    <div class="controls">
+      <input id="q" placeholder="חיפוש..." autocomplete="off"/>
+      <button id="btn-mode" title="מצב קריאה">רציף</button>
+      <button id="btn-bookmarks" title="סימניות">★</button>
+      <button id="btn-continue" title="המשך מהמקום האחרון">המשך</button>
+    </div>
+  </header>
+
+  <aside class="side">
+    <div class="side-title">תוכן עניינים</div>
+    <div id="toc"></div>
+    <div class="side-title">סימניות</div>
+    <div id="bm"></div>
+  </aside>
+
+  <main class="main">
+    <div class="nav">
+      <button id="prev">◀ קודם</button>
+      <a id="open" target="_blank" rel="noopener">פתח דף</a>
+      <button id="next">הבא ▶</button>
+    </div>
+
+    <section id="view" class="view"></section>
+  </main>
+
+  <script type="module" src="./reader.mjs"></script>
+</body>
+</html>

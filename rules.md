@@ -142,3 +142,11 @@ pm run verify.
 - מה נותר לעשות: אם 
 pm run verify נכשל — לתקן לפי הפלט ואז לפרסם.
 
+## Super Book Engine — Mandatory (Auto-enforced) [2026-03-05 23:53:44]
+
+- Reader is a first-class product: must support search, bookmarks, continue reading, and a continuous reading mode (scroll) via /preview/reader.html.
+- /api/toc is the source of truth for reading order; Reader navigation must match it.
+- Stable public links: do not break existing URLs. Any moved/renamed path must be mapped in edirects.json and handled by 404.html.
+- Metadata governance: meta/pages.json must exist and validate against schemas/page-meta.schema.json. Any page added must include metadata (href/title/topic/order).
+- Visual print safety: visual regression must pass. Any CSS/layout change that alters rendered pages requires baseline update by intention and review.
+- RULES updated: 2026-03-05 23:55:16
