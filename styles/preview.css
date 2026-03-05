@@ -7,7 +7,7 @@ body {
 }
 
 body {
-  background-color: var(--bg-subtle);
+  background-color: var(--bg-paper);
   align-items: stretch;
 }
 
@@ -231,7 +231,7 @@ body[data-mode='all'] .reader-main {
   flex: 1;
   display: flex;
   min-width: 0;
-  background: var(--bg-subtle);
+  background: var(--bg-paper);
   position: relative;
 }
 
@@ -275,7 +275,7 @@ body[data-mode='all'] .reader-frameWrap {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: var(--bg-subtle);
+  background: var(--bg-paper);
 }
 
 body[data-mode='all'] .reader-all {
@@ -319,7 +319,7 @@ body[data-mode='all'] .reader-all {
 
 .reader-gutter {
   width: 12px;
-  background: var(--bg-subtle);
+  background: var(--bg-paper);
   border-left: 0;
   border-right: 0;
 }
