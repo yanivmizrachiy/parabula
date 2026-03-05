@@ -386,6 +386,10 @@ svg .tick {
 
 svg .point {
   fill: currentColor;
+  stroke: var(--paper);
+  stroke-width: 1.2;
+  paint-order: stroke;
+  vector-effect: non-scaling-stroke;
 }
 
 svg .line {

@@ -7,7 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const DEFAULT_PORT = Number(process.env.PORT || 5179);
+const PORT_ENV = String(process.env.PORT ?? '').trim();
+const DEFAULT_PORT = Number.isFinite(Number(PORT_ENV)) ? Number(PORT_ENV) : 5179;
 const DEFAULT_HOST = String(process.env.HOST || '127.0.0.1');
 
 /** @type {Set<import('node:http').ServerResponse>} */
@@ -420,6 +421,46 @@ const server = http.createServer(async (req, res) => {
     res.statusCode = 404;
     res.end('Not Found');
   }
+});
+
+async function isPreviewAlreadyRunning(host, port) {
+  if (!host || !port) return false;
+  const url = `http://${host}:${port}/preview`;
+  try {
+    const res = await fetch(url, { redirect: 'manual' });
+    if (res.status !== 200) return false;
+    const ct = String(res.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('text/html')) return false;
+    const html = await res.text();
+    return html.includes('<title>Parabula — Reader</title>') || html.includes('class="reader-shell"');
+  } catch {
+    return false;
+  }
+}
+
+server.on('error', (err) => {
+  const e = /** @type {any} */ (err);
+
+  if (e && e.code === 'EADDRINUSE' && Number.isFinite(DEFAULT_PORT) && DEFAULT_PORT !== 0) {
+    void (async () => {
+      const shownHost = DEFAULT_HOST === '0.0.0.0' ? 'localhost' : DEFAULT_HOST;
+      const ok = await isPreviewAlreadyRunning(shownHost, DEFAULT_PORT);
+      if (ok) {
+        console.log(`Preview server running: http://${shownHost}:${DEFAULT_PORT}/`);
+        console.log('(Already running; not starting a second server on the same port.)');
+        process.exit(0);
+      }
+
+      console.error(`Preview server failed to start: address already in use ${DEFAULT_HOST}:${DEFAULT_PORT}`);
+      console.error('If this is your preview server, just open http://' + shownHost + ':' + DEFAULT_PORT + '/preview');
+      console.error('Otherwise, stop the process using the port, or run with a different PORT (e.g. PORT=5180).');
+      process.exit(1);
+    })();
+    return;
+  }
+
+  console.error('Preview server failed to start:', err);
+  process.exit(1);
 });
 
 server.listen(DEFAULT_PORT, DEFAULT_HOST, () => {

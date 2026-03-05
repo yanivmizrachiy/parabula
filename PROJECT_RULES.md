@@ -19,6 +19,14 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 - **All page-specific CSS** goes ONLY in `styles/pages/עמוד-N.css`.
 - `styles/a4-base.css` is **immutable foundation** (do not edit).
 
+### Project-wide HTML/CSS separation (required)
+
+- The repository enforces **full separation between HTML and CSS**.
+- **No inline CSS anywhere**:
+  - No `<style>` blocks
+  - No `style="..."` attributes
+- Styling must live in dedicated CSS files (A4 pages under `styles/`, topic pages under their topic `style.css`).
+
 ### RTL rules
 
 - RTL (`dir="rtl"`) must be preserved across layout and navigation.
@@ -61,6 +69,10 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 - The preview must **detect A4 overflow** for `.a4-page` and report a terminal line:
   - Prefix: `[CRITICAL ERROR]`
   - Include file name and measured heights.
+
+### /preview Reader UI (navigation must stay visible)
+
+- In `/preview`, the Reader’s top controls (mode toggle, prev/next, and topic buttons) must remain **visible while scrolling**.
 
 ---
 

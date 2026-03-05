@@ -17,6 +17,8 @@ body[data-mode='all'] {
 }
 
 .reader-shell {
+  /* The topbar is fixed, so reserve space for it. JS keeps this var in sync. */
+  padding-top: var(--reader-topbar-h, 0px);
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -61,8 +63,10 @@ body[data-mode='all'] .reader-shell {
   padding: 10px 12px;
   background: var(--bg-paper);
   border-bottom: 1px solid var(--border-light);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
 }
 

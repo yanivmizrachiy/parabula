@@ -306,3 +306,23 @@ hr { border: 0; border-top: 1px solid var(--border-light); margin: 6px 0; }
     .a4-page { box-shadow: none; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: visible; }
     .preview-nav { display: none; }
 }
+
+/* --- Premium Math Visualization Rules --- */
+.graph-label {
+    font-family: 'Assistant', sans-serif;
+    font-style: italic;
+    font-size: 14px;
+    fill: #2c3e50;
+    dominant-baseline: hanging;
+}
+
+.math-line {
+    stroke: #3498db;
+    stroke-width: 2.5;
+    fill: none;
+}
+
+.axis-line {
+    stroke: #000;
+    stroke-width: 1.5;
+}

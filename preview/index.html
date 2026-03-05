@@ -92,6 +92,25 @@
       const readerFallback = document.getElementById('readerFallback');
       const diagOverlay = document.getElementById('diagOverlay');
 
+      const topbar = document.querySelector('.reader-topbar');
+
+      function syncTopbarOffset() {
+        if (!topbar) return;
+        const h = Math.max(0, Math.ceil(topbar.getBoundingClientRect().height || 0));
+        document.documentElement.style.setProperty('--reader-topbar-h', `${h}px`);
+      }
+
+      try {
+        if (topbar && 'ResizeObserver' in window) {
+          const ro = new ResizeObserver(() => syncTopbarOffset());
+          ro.observe(topbar);
+        }
+      } catch {
+        // ignore
+      }
+
+      window.addEventListener('resize', () => syncTopbarOffset());
+
       /** @type {{topics: {name: string, pages: any[]}[], flat: any[]}} */
       let toc = { topics: [], flat: [] };
 
@@ -514,6 +533,24 @@
         return parts.map((p) => encodeURIComponent(p)).join('/');
       }
 
+      function resolveAssetHref(file, href) {
+        const h = String(href || '').trim();
+        if (!h) return '';
+        if (h.startsWith('http://') || h.startsWith('https://')) return h;
+        if (h.startsWith('/')) return h;
+
+        const filePath = '/' + encodeUrlPath(file);
+        const baseDir = filePath.replace(/[^/]*$/, '');
+
+        try {
+          const u = new URL(h, window.location.origin + baseDir);
+          return u.pathname + u.search;
+        } catch {
+          // Last resort: behave like normalizeHref() used to.
+          return '/' + h.replace(/^\.+\//, '');
+        }
+      }
+
       async function renderPageIntoHost(file, hostEl, abortSignal) {
         if (!file || !hostEl) return false;
 
@@ -521,7 +558,7 @@
 
         let html = '';
         try {
-          const res = await fetch(`/${encodeURIComponent(file)}`, { cache: 'no-store', signal: abortSignal });
+          const res = await fetch(`/${encodeUrlPath(file)}`, { cache: 'no-store', signal: abortSignal });
           if (!res.ok) {
             hostEl.textContent = `שגיאה בטעינת העמוד (${res.status})`;
             return false;
@@ -537,14 +574,15 @@
 
         const parsed = new DOMParser().parseFromString(html, 'text/html');
 
-        // Load page styles (base + page-specific). We keep /styles/preview.css separate.
-        for (const link of parsed.querySelectorAll('link[rel="stylesheet"][href]')) {
-          const href = link.getAttribute('href') || '';
-          ensureStylesheet(href);
-        }
-
         const main = parsed.querySelector('main.a4-page');
         if (main) {
+          // Load page styles (base + page-specific). We keep /styles/preview.css separate.
+          // IMPORTANT: resolve relative hrefs against the *page file* path (not /preview's <base href="/">).
+          for (const link of parsed.querySelectorAll('link[rel="stylesheet"][href]')) {
+            const href = link.getAttribute('href') || '';
+            ensureStylesheet(resolveAssetHref(file, href));
+          }
+
           hostEl.appendChild(main);
 
           // Render math (best-effort).
@@ -579,6 +617,15 @@
         frame.src = `/${encodeUrlPath(file)}?v=${bust}`;
         hostEl.appendChild(frame);
 
+        frame.addEventListener(
+          'load',
+          () => {
+            fitA4InFrame(frame, 'book');
+            maybeWarnIframeBlocked(frame);
+          },
+          { once: true }
+        );
+
         return true;
       }
 
@@ -604,14 +651,14 @@
         // If not, show a helpful fallback including a direct page link.
         try {
           const doc = frameEl.contentDocument;
-          const hasPage = !!doc?.querySelector?.('.a4-page');
+          const hasPage = !!doc?.querySelector?.('.a4-page, .page');
           if (hasPage) return;
         } catch {
           // ignore
         }
 
         const selected = getSelectedFile();
-        const direct = selected ? `/${encodeURIComponent(selected)}` : '/';
+        const direct = selected ? `/${encodeUrlPath(selected)}` : '/';
         showFallback(
           'נראה שהחלון הפנימי חוסם הצגת מסמכים בתוך iframe.',
           `פתח את העמוד ישירות: ${direct}`
@@ -630,6 +677,7 @@
           html, body { background: var(--bg-paper) !important; display: block !important; }
           body { margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
           .a4-page { margin: 0 !important; margin-bottom: 0 !important; box-shadow: none !important; }
+          .page { margin: 0 !important; outline: none !important; }
         `;
         doc.head.appendChild(style);
       }
@@ -640,7 +688,7 @@
           if (!doc) return;
           injectReaderStyles(doc);
 
-          const page = doc.querySelector('.a4-page');
+          const page = doc.querySelector('.a4-page') || doc.querySelector('.page');
           if (!page) return;
 
           // Layout guard in iframe mode.
@@ -700,6 +748,9 @@
         modeBookBtn.classList.toggle('is-active', !isAll);
 
         if (readerTitle) readerTitle.textContent = isAll ? 'תצוגה מקדימה — כל הדפים' : 'תצוגה מקדימה — דפדוף';
+
+        // Topbar height can change when controls wrap.
+        syncTopbarOffset();
       }
 
       function updatePrevNextDisabled() {
@@ -805,6 +856,9 @@
           topicButtons.appendChild(btn);
           topicButtonsMap.set(name, btn);
         }
+
+        // Topic button wrapping can change header height.
+        syncTopbarOffset();
       }
 
       function ensureAllIo() {
@@ -915,7 +969,8 @@
           frame.title = entry.title || entry.file;
           frame.referrerPolicy = 'no-referrer';
           frame.loading = 'lazy';
-          frame.dataset.src = `/${encodeURIComponent(entry.file)}`;
+          // Use per-segment URL encoding so relative assets (e.g. style.css) resolve correctly.
+          frame.dataset.src = `/${encodeUrlPath(entry.file)}`;
           item.appendChild(frame);
 
           frag.appendChild(item);
