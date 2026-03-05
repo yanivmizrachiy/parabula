@@ -1,5 +1,5 @@
 {
-  "\": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "A4 Page Metadata",
   "type": "object",
   "required": ["href","title","topic","order"],
