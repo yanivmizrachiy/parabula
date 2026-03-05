@@ -1,7 +1,6 @@
 {
-    "liveServer.settings.port": 5500,
-    "liveServer.settings.root": "/",
-    "liveServer.settings.NoBrowser": false,
-    "liveServer.settings.donotShowInfoMsg": true,
-    "task.allowAutomaticTasks": "on"
+    "livePreview.autoRefreshPreview": "onAnyChange",
+    "livePreview.openPreviewTarget": "Embedded Preview",
+    "livePreview.notifyOnOpen": false,
+    "livePreview.defaultPreviewPath": "/pages/reader.html"
 }

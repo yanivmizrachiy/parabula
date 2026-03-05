@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Parabola - קורא ספרים חכם</title>
+    <link rel="stylesheet" href="../styles/pages/reader.css">
+</head>
+<body>
+    <div class="reader-layout">
+        <button class="nav-arrow" onclick="prevPage()" id="btn-prev" title="לעמוד הקודם">▶</button>
+        
+        <div class="document-container">
+            <header class="reader-header">
+                <span id="page-indicator">טוען עמוד...</span>
+                <button onclick="printCurrentPage()" class="print-btn">🖨️ הדפס עמוד זה</button>
+            </header>
+            
+            <iframe id="book-frame" src="עמוד-1.html"></iframe>
+        </div>
+
+        <button class="nav-arrow" onclick="nextPage()" id="btn-next" title="לעמוד הבא">◀</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 40; // עדכן את המספר הזה כשתגדיל את הספר
+        const frame = document.getElementById('book-frame');
+        const indicator = document.getElementById('page-indicator');
+
+        function updateReader() {
+            frame.src = encodeURI('עמוד-' + currentPage + '.html');
+            indicator.innerText = 'עמוד ' + currentPage + ' מתוך ' + totalPages;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) { currentPage++; updateReader(); }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) { currentPage--; updateReader(); }
+        }
+
+        function printCurrentPage() {
+            frame.contentWindow.print();
+        }
+
+        // טעינה ראשונית
+        updateReader();
+    </script>
+</body>
+</html>
+
