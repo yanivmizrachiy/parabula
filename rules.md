@@ -150,3 +150,7 @@ pm run verify נכשל — לתקן לפי הפלט ואז לפרסם.
 - Metadata governance: meta/pages.json must exist and validate against schemas/page-meta.schema.json. Any page added must include metadata (href/title/topic/order).
 - Visual print safety: visual regression must pass. Any CSS/layout change that alters rendered pages requires baseline update by intention and review.
 - RULES updated: 2026-03-05 23:55:16
+
+### HTML Hygiene — Mandatory [2026-03-05 23:59:04]
+- No inline style attributes (style="...") anywhere in published HTML, including 404.html. Use external CSS files only.
+

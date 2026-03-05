@@ -18,10 +18,15 @@
     "test": "node --test",
     "verify": "npm test && npm run preview:check",
     "test:watch:page": "node scripts/test-watch.mjs --testFile tests/עמוד-2.test.mjs",
-    "ocr:pythagoras:1-3": "node scripts/ocr-pythagoras.mjs --pages 1,2,3"
+    "ocr:pythagoras:1-3": "node scripts/ocr-pythagoras.mjs --pages 1,2,3",
+    "meta:check": "node scripts/validate-meta.mjs",
+    "visual:test": "node scripts/visual-regression.mjs",
+    "verify:super": "npm run meta:check && npm run visual:test"
   },
   "devDependencies": {
     "puppeteer": "^24.37.5",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "ajv": "^8.17.1",
+    "playwright": "^1.58.2"
   }
 }
