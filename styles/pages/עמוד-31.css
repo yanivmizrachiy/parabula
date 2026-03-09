@@ -22,11 +22,12 @@
 	column-gap: 8px;
 	row-gap: 8px;
 	width: 100%;
-	align-items: start;
+	align-items: stretch;
 }
 
 .page-31 .problem-block {
 	min-height: 0;
+	height: 100%;
 	background: var(--bg-subtle);
 	border: 1px solid var(--border-light);
 	border-radius: 8px;
@@ -128,9 +129,9 @@
 }
 
 .page-31 .eq-solutions .q-text {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 3px 8px;
+	display: grid;
+	grid-template-columns: max-content repeat(9, minmax(0, 1fr));
+	column-gap: 8px;
 	align-items: center;
 	width: 100%;
 	font-size: 10px;
@@ -144,5 +145,6 @@
 	direction: ltr;
 	unicode-bidi: isolate;
 	font-weight: 500 !important;
+	text-align: center;
 	white-space: nowrap;
 }

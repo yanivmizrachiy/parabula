@@ -18,6 +18,11 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 - Pages must be laid out to **use the full A4 page area** (no large unintended empty regions), while still respecting the A4 contract above.
 - **Pythagoras — page 3** (`עמוד-3.html`) MUST be composed to **span the entire A4 page** and utilize the available height according to the design rules of this repo.
 
+### Topic pages must not overflow (required)
+
+- Topic pages under `pages/**` that represent printable A4 content must also be composed so that interactive/writing elements (e.g., answer boxes) **never spill outside the A4 bounds**.
+- Avoid fixed widths that can overflow in narrow columns; prefer responsive layout primitives (`min-width: 0`, flexible grid tracks, and `flex: 1` where appropriate).
+
 ### CSS rules (critical)
 
 - **ZERO inline styles**: no `<style>` tags and no `style="..."` attributes in any `עמוד-N.html`.
@@ -43,6 +48,33 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
   - Inline: `\( ... \)`
   - Display: `$$ ... $$`
 - **Do not use `$...$`** or any `$` math delimiter in pages.
+
+### Math notation (answers)
+
+- When a problem has **two solutions** (e.g., quadratic roots), label them as **subscripts** using MathJax: `\(x_1\)` and `\(x_2\)` (not `x1/x2` text).
+
+### Hebrew math writing (required)
+
+- In Hebrew text, write negative numbers in a **mathematically correct order**: “מינוס 4” (or `\(-4\)`), not “4 מינוס”.
+
+### Subquestion formatting (required)
+
+- Subquestions inside a page (e.g., `.q-sub`) are separated by the **black bullet** only.
+- Do **not** add manual numbering markers inside the text (no `א./ב./ג.` and no `1/2/3`) unless the user explicitly requested numbered subquestions for that page.
+
+### Solution / writing space (required)
+
+- Pages that include free-writing areas (e.g., `.solution-space`) must be laid out so those areas **expand to use the available A4 height**, avoiding large unintended blank regions.
+
+### Exercise blocks must be separated (required)
+
+- In exercise grids/lists (e.g., `.pyt-tri-grid` with `.problem-block`), each block must be visually separated with **white space between blocks**.
+- Blocks must not touch each other; do not set vertical gaps to zero in a way that merges adjacent blocks.
+
+### Solutions footer (layout + notation)
+
+- When a page includes a compact solutions footer (e.g., `.eq-solutions`, `.pyt-solutions`), the answers must be **distributed across the full line width** (e.g., via CSS grid), not clumped to one side.
+- For exercises whose answers are a **pair** (e.g., two roots), present the pair with **correct parentheses**: `\((x_1,\,x_2)\)` or `\((a,\,b)\)` as appropriate.
 
 ### SVG rules
 
@@ -83,6 +115,7 @@ Notes:
 ### /preview Reader UI (navigation must stay visible)
 
 - In `/preview`, the Reader’s top controls (mode toggle, prev/next, and topic buttons) must remain **visible while scrolling**.
+- In `/preview`, the Reader must show an **accurate A4 print boundary frame** for every page at all times (in all modes), so layout decisions are made against real print bounds — including in topics like **"גרף עולה / יורד"**.
 
 ---
 

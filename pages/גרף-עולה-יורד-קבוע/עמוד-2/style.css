@@ -122,10 +122,10 @@ body {
 
 .answers-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, auto);
-  grid-auto-flow: column;
-  gap: 3.5mm 4.5mm;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, auto);
+  grid-auto-flow: row;
+  gap: 3mm;
   align-items: start;
 }
 
@@ -133,6 +133,7 @@ body {
   display: flex;
   gap: 2mm;
   align-items: center;
+  min-width: 0;
 }
 
 .answerkey {
@@ -164,6 +165,12 @@ body {
 }
 
 .answer-box.mini { width: 30mm; }
+
+.answeritem .answer-box.mini {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+}
 
 @media print {
   .answer-box {

@@ -280,7 +280,8 @@ test('Pythagoras (page 3): figures are inline SVGs styled consistently (3 croppe
   const file = 'עמוד-11.html';
   const html = await readText(file);
 
-  assert.ok(/מצאו את\s*\\\(a\\\)\s*ואת\s*\\\(y\\\)/u.test(html), `${file}: instruction must mention \\(a\\) and \\(y\\)`);
+  assert.ok(/מצאו את\s*\\\(x\\\)\s*ואת\s*\\\(y\\\)/u.test(html), `${file}: instruction must mention \\(x\\) and \\(y\\)`);
+  mustNotMatch(/\\\(a\\\)/u, html, file, 'must not mention \\(a\\) (project convention: use x/y only)');
 
   // Must render as inline SVG so page CSS tokens apply (same approach as pages 9/10).
   const inlineSvgs = countMatches(/<svg\s+class="pyt-fig-svg"/gu, html);

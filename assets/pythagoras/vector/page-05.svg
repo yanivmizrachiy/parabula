@@ -15,16 +15,10 @@
 <text class="pyt-word pyt-ltr" x="127" y="408" font-size="20" text-anchor="start">A</text>
 <text class="pyt-word pyt-ltr" x="213" y="395" font-size="21" text-anchor="start">8</text>
 <text class="pyt-word pyt-ltr" x="289" y="394" font-size="21" text-anchor="start">B</text>
-<text class="pyt-word pyt-rtl" x="985" y="392" font-size="22" text-anchor="end">המשולשים‎</text>
-<text class="pyt-word pyt-ltr" x="1000" y="393" font-size="16" text-anchor="start">awn</text>
-<text class="pyt-word pyt-rtl" x="1149" y="393" font-size="16" text-anchor="end">מורכב‎</text>
-<text class="pyt-word pyt-ltr" x="1171" y="392" font-size="23" text-anchor="start">ABCD</text>
-<text class="pyt-word pyt-rtl" x="1385" y="394" font-size="17" text-anchor="end">המרובע‎</text>
-<text class="pyt-word pyt-rtl" x="1107" y="442" font-size="16" text-anchor="end">ו-‎</text>
-<text class="pyt-word pyt-ltr" x="1129" y="441" font-size="22" text-anchor="start">AABD</text>
-<text class="pyt-word pyt-rtl" x="1385" y="442" font-size="16" text-anchor="end">הישרי-זווית‎</text>
+<text class="pyt-word pyt-rtl" x="1385" y="394" font-size="22" text-anchor="end">המרובע ABCD מורכב משני המשולשים הישרי-זווית</text>
+<text class="pyt-word pyt-rtl" x="1385" y="442" font-size="22" text-anchor="end">(△ABD) ו- (△BDC).</text>
 <text class="pyt-word pyt-rtl" x="1386" y="501" font-size="16" text-anchor="end">א.</text>
-<text class="pyt-word pyt-rtl" x="1321" y="501" font-size="17" text-anchor="end">מצאואת</text>
+<text class="pyt-word pyt-rtl" x="1321" y="501" font-size="17" text-anchor="end">מצאו את</text>
 <text class="pyt-word pyt-rtl" x="1197" y="506" font-size="23" text-anchor="end">אורך</text>
 <text class="pyt-word pyt-ltr" x="1062" y="500" font-size="23" text-anchor="start">DC‏</text>
 <text class="pyt-word pyt-ltr" x="444" y="494" font-size="21" text-anchor="start">25</text>
@@ -42,17 +36,17 @@
 <text class="pyt-word pyt-rtl" x="1123" y="621" font-size="18" text-anchor="end">המרובע</text>
 <text class="pyt-word pyt-ltr" x="901" y="618" font-size="23" text-anchor="start">ABCD‏</text>
 <text class="pyt-word pyt-ltr" x="619" y="627" font-size="21" text-anchor="start">6</text>
-<text class="pyt-word pyt-rtl" x="285" y="638" font-size="21" text-anchor="end">ם</text>
+<text class="pyt-word pyt-rtl" x="285" y="638" font-size="21" text-anchor="end">ס״מ</text>
 <text class="pyt-word pyt-ltr" x="1175" y="1762" font-size="21" text-anchor="start">5</text>
 <text class="pyt-word pyt-rtl" x="1399" y="1828" font-size="17" text-anchor="end">א.</text>
 <text class="pyt-word pyt-ltr" x="1334" y="1827" font-size="19" text-anchor="start">20</text>
-<text class="pyt-word pyt-rtl" x="1323" y="1828" font-size="17" text-anchor="end">סיימ</text>
+<text class="pyt-word pyt-rtl" x="1323" y="1828" font-size="17" text-anchor="end">ס״מ</text>
 <text class="pyt-word pyt-rtl" x="1237" y="1827" font-size="16" text-anchor="end">ב.</text>
-<text class="pyt-word pyt-rtl" x="1204" y="1828" font-size="20" text-anchor="end">70סיימ</text>
+<text class="pyt-word pyt-rtl" x="1204" y="1828" font-size="20" text-anchor="end">70 ס״מ</text>
 <text class="pyt-word pyt-rtl" x="1085" y="1828" font-size="17" text-anchor="end">ג.</text>
 <text class="pyt-word pyt-rtl" x="1057" y="1828" font-size="17" text-anchor="end">השטח</text>
 <text class="pyt-word pyt-rtl" x="968" y="1828" font-size="18" text-anchor="end">הוא</text>
 <text class="pyt-word pyt-ltr" x="867" y="1827" font-size="19" text-anchor="start">210</text>
-<text class="pyt-word pyt-rtl" x="857" y="1828" font-size="18" text-anchor="end">סמייר</text>
+<text class="pyt-word pyt-rtl" x="857" y="1828" font-size="18" text-anchor="end">ס״מ²</text>
 </g>
 </svg>

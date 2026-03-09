@@ -34,7 +34,7 @@ test('Pythagoras topic page 2 (עמוד-10.html): has 6 SVG triangle problems an
 
   // Footer requirement
   assert.ok(/class="pyt-footer"/u.test(html), 'עמוד-10.html: missing .pyt-footer');
-  assert.ok(html.includes('תשובות לשאלה 2:'), 'עמוד-10.html: missing "תשובות לשאלה 2:" label');
+  assert.ok(html.includes('תשובות:'), 'עמוד-10.html: missing "תשובות:" label');
   assert.equal(countMatches(/class="pyt-solution\b/gu, html), 6, 'עמוד-10.html: expected 6 .pyt-solution entries');
 
   // Navigation: active topic link must have aria-current

@@ -310,6 +310,12 @@ body[data-mode='all'] .reader-all {
   align-items: stretch;
 }
 
+/* Book mode: single page at a time. */
+body[data-mode='book'] .reader-gutter,
+body[data-mode='book'] .reader-leaf--left {
+  display: none;
+}
+
 .reader-leaf {
   flex: 1;
   min-width: 0;
@@ -348,6 +354,9 @@ body[data-mode='all'] .reader-all {
   margin-bottom: 0 !important;
   box-shadow: none !important;
   overflow: hidden;
+  /* Show A4 print boundaries in preview without affecting layout.
+     Use inset border so it won't get clipped by host overflow. */
+  box-shadow: inset 0 0 0 1px var(--border-light) !important;
 }
 
 .reader-empty {

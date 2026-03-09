@@ -51,18 +51,6 @@
 	fill: #ef4444;
 }
 
-.page-7 .p7-part-letter {
-	font-weight: 500 !important;
-	color: var(--title-blue);
-}
-
-.page-7 .p7-num {
-	direction: ltr;
-	unicode-bidi: isolate;
-	display: inline-block;
-	margin-left: 4px;
-}
-
 .page-7 .p7-qa-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;

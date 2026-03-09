@@ -19,16 +19,24 @@
 }
 
 .page-11 .pyt-tri-grid {
+	flex: 1;
+	min-height: 0;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	column-gap: 14px;
 	row-gap: 10px;
+	grid-auto-rows: minmax(var(--problem-block-height), 1fr);
 	width: 100%;
-	align-items: start;
+	align-items: stretch;
+}
+
+.page-11 .pyt-tri-grid .problem-block:nth-child(3) {
+	grid-column: 1 / -1;
 }
 
 .page-11 .problem-block {
-	height: var(--problem-block-height);
+	height: auto;
+	min-height: var(--problem-block-height);
 	background: var(--bg-subtle);
 	border: 1px solid var(--border-light);
 	border-radius: 8px;
@@ -36,7 +44,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
-	min-height: 0;
 	overflow: hidden;
 }
 
@@ -78,13 +85,13 @@
 .page-11 .pyt-tri-wrap {
 	position: relative;
 	width: 100%;
-	height: 31mm;
+	height: 36mm;
 	margin-top: -4px;
 }
 
 .page-11 .pyt-fig-svg {
 	width: 100%;
-	height: 31mm;
+	height: 36mm;
 	display: block;
 	color: var(--accent-dark);
 	shape-rendering: geometricPrecision;

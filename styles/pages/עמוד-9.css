@@ -2,7 +2,7 @@
 @import url("../topics/pythagoras.css");
 
 .page-9 {
-	--problem-block-height: 314px;
+	--problem-block-height: 306px;
 }
 
 .page-9 .header-container {
@@ -16,7 +16,7 @@
 
 .page-9 .question-block {
 	justify-content: space-between;
-	gap: 0;
+	gap: 6px;
 }
 
 .page-9 .pyt-body {
@@ -24,14 +24,14 @@
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 0;
+	gap: 6px;
 }
 
 .page-9 .pyt-tri-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	column-gap: 14px;
-	row-gap: 0;
+	row-gap: 8px;
 	width: 100%;
 	align-items: start;
 }

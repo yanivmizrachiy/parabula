@@ -176,10 +176,10 @@ body {
 
 .answers-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, auto);
-  grid-auto-flow: column;
-  gap: 3.5mm 4.5mm;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, auto);
+  grid-auto-flow: row;
+  gap: 3mm;
   align-items: start;
 }
 
@@ -187,6 +187,7 @@ body {
   display: flex;
   gap: 2mm;
   align-items: center;
+  min-width: 0;
 }
 
 .answerkey {
@@ -219,6 +220,12 @@ body {
 
 .answer-box.mini { width: 30mm; }
 
+.answeritem .answer-box.mini {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+}
+
 @media print {
   .answer-box {
     background: var(--paper);
@@ -231,6 +238,8 @@ body {
 .subprompt {
   margin: 4mm 0 0 0;
   font-size: 13pt;
+  /* Align with instruction text (after the bullet), so it doesn't appear to start at the section bullet dot. */
+  padding-right: calc(3.2mm + 2.5mm);
 }
 
 .blank {
