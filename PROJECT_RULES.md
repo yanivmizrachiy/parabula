@@ -13,6 +13,11 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 - `.a4-page` is **exactly** `210mm × 297mm`.
 - DO NOT use `overflow: auto` anywhere to “fix” height.
 
+### A4 content coverage (required)
+
+- Pages must be laid out to **use the full A4 page area** (no large unintended empty regions), while still respecting the A4 contract above.
+- **Pythagoras — page 3** (`עמוד-3.html`) MUST be composed to **span the entire A4 page** and utilize the available height according to the design rules of this repo.
+
 ### CSS rules (critical)
 
 - **ZERO inline styles**: no `<style>` tags and no `style="..."` attributes in any `עמוד-N.html`.
