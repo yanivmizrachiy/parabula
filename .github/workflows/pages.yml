@@ -25,6 +25,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build site/ (from pages/)
+        shell: pwsh
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = 'Stop'
+          ./tools/build-site.ps1
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

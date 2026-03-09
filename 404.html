@@ -28,12 +28,13 @@
       return;
     }
     document.getElementById('msg').textContent = 'לא נמצא ניתוב לקישור הזה. חוזר למסך הראשי…';
-    setTimeout(()=>location.replace('/preview/reader.html'), 1200);
+    setTimeout(()=>location.replace('/preview'), 1200);
   }catch(e){
     document.getElementById('msg').textContent = 'שגיאה בטעינת ניתובים. חוזר למסך הראשי…';
-    setTimeout(()=>location.replace('/preview/reader.html'), 1200);
+    setTimeout(()=>location.replace('/preview'), 1200);
   }
 })();
 </script>
 </body>
 </html>
+

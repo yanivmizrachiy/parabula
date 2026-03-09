@@ -57,8 +57,13 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 ### The canonical preview server
 
 - Run: `npm run preview`
-- URL: http://localhost:3000
+- URL: http://127.0.0.1:5179
 - Reader UI: `/preview` (same as `/`)
+
+Notes:
+
+- Default host/port are controlled by env vars `HOST` and `PORT` (see `preview/server.mjs`).
+- Windows helper: `./preview.ps1` (can also run with `-Lan` to bind `0.0.0.0`).
 
 ### Live reload + correctness signals
 
