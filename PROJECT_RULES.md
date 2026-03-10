@@ -134,6 +134,26 @@ Prev/Next links must match the repo’s global reading order as defined by topic
 
 ---
 
+## 2.1) Page numbering UI (design uniformity)
+
+### Root A4 pages (`עמוד-N.html`)
+
+- The page index UI is the circular badge `.page-number` in the header.
+- Its **visual design must remain uniform across the entire project**.
+- Do not override `.page-number` styling in page CSS (`styles/pages/עמוד-N.css`).
+- Do not override `.header-container` in page CSS (`styles/pages/עמוד-N.css`) — keep header placement uniform.
+- Prefer fixing layout issues by adjusting the content area, not by moving/hiding/re-styling the page number.
+
+### Topic pages (`pages/**`)
+
+- The topic page index UI is the circular badge `.page-badge`.
+- Its **visual design must remain uniform across the entire project** (match the canonical A4 header badge look).
+- The badge color must use `var(--title-blue)` (not per-topic accent colors).
+- The badge must be styled only in the canonical topic stylesheet `pages/<topic>/style.css`.
+- Do not create or link per-page topic stylesheets like `pages/<topic>/עמוד-X/style.css`.
+
+---
+
 ## 3) Automated testing loop
 
 ### One-command validation

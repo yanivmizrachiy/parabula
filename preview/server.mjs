@@ -231,7 +231,16 @@ async function buildToc() {
     }
 
     const meta = parsePageMetaFromHtml(html);
-    const topicFallback = meta.topic ? '' : topicFromFilePath(rel);
+    let topicFallback = '';
+    if (!meta.topic) {
+      // Built topic pages under site/ don't have .nav-meta; use the document <title>
+      // as a user-friendly topic name so preview matches the canonical topics UI.
+      if (String(rel).replace(/\\/g, '/').startsWith('site/') && meta.docTitle) {
+        topicFallback = meta.docTitle;
+      } else {
+        topicFallback = topicFromFilePath(rel);
+      }
+    }
     if (meta.topicLinks.length > bestTopicOrder.length) {
       bestTopicOrder = meta.topicLinks.map((t) => t.name);
     }
@@ -265,6 +274,14 @@ async function buildToc() {
       if (ai !== bi) return ai - bi;
       return String(a.file).localeCompare(String(b.file), 'he');
     });
+
+    // If pageTotal is missing (common for site/ built pages), fill it from the topic size.
+    const total = t.pages.length;
+    for (const p of t.pages) {
+      if (typeof p.pageIndex === 'number' && typeof p.pageTotal !== 'number') {
+        p.pageTotal = total;
+      }
+    }
   }
 
   // Sort topics: use hinted order from preview-nav-topics, then others, with "אחר" last.

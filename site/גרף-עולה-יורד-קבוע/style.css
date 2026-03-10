@@ -5,7 +5,6 @@
   --paper: #fff;
   --screen-bg: #f2f2f2;
   --title-blue: #0b55d4;
-  --accent-red: #d40000;
   --page-padding: 14mm;
   --page-outline: 1px dashed rgba(0, 0, 0, 0.45);
 
@@ -58,7 +57,7 @@ body {
   top: 14mm;
   width: 18mm;
   height: 18mm;
-  border: 0.8mm solid var(--accent-red);
+  border: 0.8mm solid var(--title-blue);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -66,7 +65,7 @@ body {
   font-weight: 700;
   font-size: 18pt;
   line-height: 1;
-  color: var(--accent-red);
+  color: var(--title-blue);
   background: var(--paper);
 }
 

@@ -2,12 +2,7 @@
 @import url("../topics/pythagoras.css");
 
 .page-9 {
-	--problem-block-height: 306px;
-}
-
-.page-9 .header-container {
-	margin-bottom: 0;
-	padding-bottom: 0;
+	--problem-block-height: 300px;
 }
 
 .page-9 .q-main {
@@ -31,7 +26,7 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	column-gap: 14px;
-	row-gap: 8px;
+	row-gap: 10px;
 	width: 100%;
 	align-items: start;
 }

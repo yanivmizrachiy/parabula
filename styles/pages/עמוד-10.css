@@ -5,11 +5,6 @@
 	--problem-block-height: 314px;
 }
 
-.page-10 .header-container {
-	margin-bottom: 0;
-	padding-bottom: 0;
-}
-
 .page-10 .q-main {
 	margin-bottom: 0;
 }
@@ -32,13 +27,13 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	column-gap: 14px;
-	row-gap: 0;
+	row-gap: 8px;
 	width: 100%;
 	align-items: start;
 }
 
 .page-10 .problem-block {
-	height: var(--problem-block-height);
+	height: calc(var(--problem-block-height) - 8px);
 	background: var(--bg-subtle);
 	border: 1px solid var(--border-light);
 	border-radius: 8px;
