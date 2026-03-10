@@ -177,3 +177,14 @@ Prev/Next links must match the repo’s global reading order as defined by topic
 2. Locate the matching rule section in this file.
 3. Fix source HTML/CSS (do **not** modify tests to “make it pass”).
 4. If preview live-reload drops, restart `npm run preview`.
+
+---
+
+## Preview Stability Contract (required)
+
+- `/preview` must never show a blank main reading area when valid TOC entries exist.
+- If a stored/selected file becomes invalid, the reader must clear the broken state and fall back to the first valid page.
+- The reader must show a visible loading state while the preview page is being resolved.
+- If primary rendering fails, the reader must display a fallback iframe for a valid page instead of leaving an empty gray area.
+- A blank preview shell with a loaded sidebar is considered a critical regression.
+

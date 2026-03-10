@@ -2,27 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-
-const ROOT = process.cwd();
-
-async function listFilesRecursive(dir) {
-  /** @type {string[]} */
-  const out = [];
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  for (const e of entries) {
-    const full = path.join(dir, e.name);
-    if (e.isDirectory()) {
-      out.push(...(await listFilesRecursive(full)));
-    } else if (e.isFile()) {
-      out.push(full);
-    }
-  }
-  return out;
-}
-
-function relFromRoot(absPath) {
-  return path.relative(ROOT, absPath).replace(/\\/g, '/');
-}
+import { listFilesRecursive, relFromRoot, ROOT } from './_test-utils.mjs';
 
 function hasSelectorBlock(css, selector) {
   // Very lightweight heuristic: selector followed by '{' (ignores minified edge cases but fits this repo's style).

@@ -1,19 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { promises as fs } from 'node:fs';
 import path from 'node:path';
-
-const ROOT = process.cwd();
-
-async function readText(relPath) {
-  const fullPath = path.join(ROOT, relPath);
-  return fs.readFile(fullPath, 'utf8');
-}
-
-function countMatches(re, text) {
-  const m = text.match(re);
-  return m ? m.length : 0;
-}
+import { readText, countMatches } from './_test-utils.mjs';
 
 test('Pythagoras topic page 2 (עמוד-10.html): has 6 SVG triangle problems and solutions footer', async () => {
   const html = await readText('עמוד-10.html');
