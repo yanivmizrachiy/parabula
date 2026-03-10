@@ -398,7 +398,14 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Default: reader UI
-  if (requestUrl.pathname === '/' || requestUrl.pathname === '/preview' || requestUrl.pathname === '/preview/') {
+  if (
+    requestUrl.pathname === '/' ||
+    requestUrl.pathname === '/preview' ||
+    requestUrl.pathname === '/preview/' ||
+    requestUrl.pathname === '/preview/index.html' ||
+    requestUrl.pathname === '/preview/reader' ||
+    requestUrl.pathname === '/preview/reader/'
+  ) {
     const filePath = path.join(ROOT_DIR, 'preview', 'index.html');
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     createReadStream(filePath).pipe(res);
