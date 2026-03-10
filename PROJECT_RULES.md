@@ -149,6 +149,7 @@ Prev/Next links must match the repo’s global reading order as defined by topic
 - The topic page index UI is the circular badge `.page-badge`.
 - Its **visual design must remain uniform across the entire project** (match the canonical A4 header badge look).
 - The badge color must use `var(--title-blue)` (not per-topic accent colors).
+- The number inside `.page-badge` MUST match the page index `X` from the path `pages/<topic>/עמוד-X/index.html`.
 - The badge must be styled only in the canonical topic stylesheet `pages/<topic>/style.css`.
 - Do not create or link per-page topic stylesheets like `pages/<topic>/עמוד-X/style.css`.
 
