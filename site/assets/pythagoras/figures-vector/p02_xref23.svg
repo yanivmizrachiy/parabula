@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="194" viewBox="0 0 960 194">
+<style>
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+<path fill="rgb(113,113,113)" stroke="rgb(113,113,113)" stroke-width="0" opacity="1" d="M 68.5 28 L 74 41.5 L 76.5 44 L 140 44.5 L 75.5 152 L 75 44 L 71 43.5 L 72 41.5 L 71 39 Q 65.6 37.5 64 40.5 L 65 43.5 L 61.5 44 L 63 41.5 L 68.5 28 Z M 68 33 L 65 38 L 70 38 L 68 33 Z M 77 46 L 77 56 L 79 57 L 87 57 L 87 46 L 77 46 Z M 89 46 L 89 58 L 77 58 L 78 145 L 137 47 L 89 46 Z " /><path fill="rgb(113,113,113)" stroke="rgb(113,113,113)" stroke-width="0" opacity="1" d="M 144.5 28 L 152 29 L 151.5 33 L 149.5 30 L 145.5 29 L 142 31.5 L 141 37.5 L 144.5 43 Q 149.2 44.2 150.5 42 L 149.5 44 Q 140.8 45.8 139 40.5 L 138 35.5 L 142.5 29 L 144.5 28 Z " /><path fill="rgb(113,113,113)" stroke="rgb(113,113,113)" stroke-width="0" opacity="1" d="M 103 32 L 106 32 Q 105 35 108 34 Q 106.9 31.3 109.5 32 L 109 33.5 L 108 36.5 L 112 41.5 L 108 42 L 106.5 38 Q 102.8 40 104.5 42 L 102 41.5 L 105 35.5 L 103 32 Z " /><path fill="rgb(113,113,113)" stroke="rgb(113,113,113)" stroke-width="0" opacity="1" d="M 482.5 33 L 483 129.5 L 484 131.5 L 483 132.5 L 483 140 L 481 139.5 L 481 132 L 471 132 L 471 139.5 L 469 140 L 469 130 L 480.5 130 L 481 129.5 L 481 39.5 L 480 39.5 L 450.5 89 L 450 86.5 L 482.5 33 Z " /><path fill="rgb(113,113,113)" stroke="rgb(113,113,113)" stroke-width="0" opacity="1" d="M 749.5 48 L 820 165.5 L 749 166 L 749.5 48 Z M 751 54 L 750 150 L 752 151 L 763 151 L 763 164 L 817 164 L 751 54 Z M 750 152 L 750 164 L 762 164 L 762 152 L 750 152 Z " /><path fill="rgb(113,113,113)" stroke="rgb(113,113,113)" stroke-width="0" opacity="1" d="M 446.5 93 L 448 93.5 L 419.5 140 L 418 139.5 L 446.5 93 Z " />
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-ltr" x="473" y="25" font-size="14" text-anchor="start">A</text>
+<text class="pyt-word pyt-ltr" x="293" y="50" font-size="12" text-anchor="start">a</text>
+<text class="pyt-word pyt-rtl" x="626" y="50" font-size="12" text-anchor="end">ה.‎</text>
+<text class="pyt-word pyt-ltr" x="744" y="40" font-size="14" text-anchor="start">8</text>
+<text class="pyt-word pyt-ltr" x="926" y="50" font-size="12" text-anchor="start">Ri</text>
+<text class="pyt-word pyt-ltr" x="57" y="93" font-size="14" text-anchor="start">9</text>
+<text class="pyt-word pyt-ltr" x="119" y="97" font-size="14" text-anchor="start">Ni</text>
+<text class="pyt-word pyt-ltr" x="425" y="87" font-size="14" text-anchor="start">2/</text>
+<text class="pyt-word pyt-ltr" x="488" y="96" font-size="14" text-anchor="start">hr</text>
+<text class="pyt-word pyt-ltr" x="791" y="108" font-size="14" text-anchor="start">=</text>
+<text class="pyt-word pyt-rtl" x="740" y="122" font-size="10" text-anchor="end">א‎</text>
+<text class="pyt-word pyt-ltr" x="59" y="159" font-size="14" text-anchor="start">8</text>
+<text class="pyt-word pyt-ltr" x="397" y="160" font-size="20" text-anchor="start">BTC</text>
+<text class="pyt-word pyt-ltr" x="732" y="183" font-size="14" text-anchor="start">B</text>
+<text class="pyt-word pyt-ltr" x="782" y="182" font-size="14" text-anchor="start">5</text>
+<text class="pyt-word pyt-ltr" x="820" y="182" font-size="14" text-anchor="start">C</text>
+</g>
+</svg>

@@ -1,0 +1,150 @@
+/* עמוד 32 — משוואה ריבועית חסרה */
+
+.page-32 .question-block {
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.page-32 .eq-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.page-32 .eq-grid {
+	flex: 1;
+	min-height: 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, minmax(0, 1fr));
+	column-gap: 8px;
+	row-gap: 8px;
+	width: 100%;
+	align-items: stretch;
+}
+
+.page-32 .problem-block {
+	min-height: 0;
+	height: 100%;
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	overflow: hidden;
+}
+
+.page-32 .problem-top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	min-height: 22px;
+}
+
+.page-32 .problem-top .bullet-num {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+	flex: 0 0 auto;
+}
+
+.page-32 .problem-work {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.page-32 .problem-figure {
+	flex: 0 0 auto;
+}
+
+.page-32 .problem-equation {
+	direction: ltr;
+	unicode-bidi: isolate;
+	text-align: center;
+	font-size: 15px;
+	line-height: 18px;
+}
+
+.page-32 .solution-space {
+	flex: 1;
+	min-height: 0;
+	border: 1px solid var(--border-light);
+	border-radius: 6px;
+	background-color: var(--bg-paper);
+	padding: 4px 6px;
+	direction: ltr;
+	unicode-bidi: isolate;
+	background-image:
+		linear-gradient(to bottom, transparent 21px, var(--grid-line) 21px, var(--grid-line) 22px),
+		linear-gradient(to right, transparent 21px, var(--grid-line) 21px, var(--grid-line) 22px);
+	background-size: 22px 22px;
+	background-repeat: repeat;
+}
+
+.page-32 .problem-answer {
+	direction: ltr;
+	unicode-bidi: isolate;
+	white-space: nowrap;
+	flex: 0 0 auto;
+	text-align: left;
+	padding-top: 4px;
+	border-top: 1px solid var(--border-light);
+	font-size: 11px;
+}
+
+.page-32 .problem-answer .answer-box {
+	height: 18px;
+	transform: translateY(-1px);
+}
+
+.page-32 .eq-footer {
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.page-32 .eq-solutions .q-sub {
+	margin-bottom: 0;
+}
+
+.page-32 .eq-solutions {
+	padding-bottom: 1mm;
+}
+
+.page-32 .eq-solutions .q-text {
+	display: grid;
+	grid-template-columns: max-content repeat(9, minmax(0, 1fr));
+	column-gap: 8px;
+	align-items: center;
+	width: 100%;
+	font-size: 10px;
+}
+
+.page-32 .eq-solutions .solutions-label {
+	font-weight: 500;
+}
+
+.page-32 .eq-solution {
+	direction: ltr;
+	unicode-bidi: isolate;
+	font-weight: 500 !important;
+	text-align: center;
+	white-space: nowrap;
+}

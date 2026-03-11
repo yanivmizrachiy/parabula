@@ -1,0 +1,460 @@
+/* Reader UI uses existing tokens from styles/a4-base.css (:root) */
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  /* Golden Preview Standard: solid museum background outside A4. */
+  background-color: #eef0f2;
+  background-image: none !important;
+  /* Override global A4 base layout hacks (a4-base.css applies flex to html/body). */
+  display: block;
+}
+
+body {
+  background-color: #eef0f2;
+  background-image: none !important;
+  align-items: stretch;
+}
+
+/* In "all pages" mode we want normal browser scrolling (not an inner scroller). */
+body[data-mode='all'] {
+  height: auto;
+}
+
+.reader-shell {
+  /* The topbar is fixed, so reserve space for it. JS keeps this var in sync. */
+  padding-top: var(--reader-topbar-h, 0px);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-mode='all'] .reader-shell {
+  height: auto;
+  min-height: 100vh;
+}
+
+/* Preview-only diagnostics overlay (must not affect layout or print) */
+.reader-diag {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  max-width: min(560px, calc(100vw - 24px));
+  padding: 8px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-paper);
+  color: var(--text-main);
+  font-size: 12px;
+  line-height: 18px;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 50;
+}
+
+@media print {
+  .reader-diag {
+    display: none !important;
+  }
+}
+
+.reader-topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-paper);
+  border-bottom: 1px solid var(--border-light);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.reader-topbarRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reader-topics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reader-topicBtn {
+  padding: 6px 10px;
+}
+
+
+
+.reader-title {
+  font-size: 16px;
+  font-weight: 500 !important;
+  color: var(--title-blue);
+  white-space: normal;
+}
+
+.reader-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.reader-navBtn {
+  font-weight: 500 !important;
+  padding: 8px 14px;
+}
+
+.reader-modes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reader-btn {
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reader-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.reader-btn.is-active {
+  border-color: var(--title-blue);
+}
+
+.reader-btn:hover {
+  background: var(--bg-subtle);
+}
+
+.reader-select {
+  min-width: 320px;
+  max-width: 52vw;
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.reader-meta {
+  font-size: 13px;
+  color: var(--text-main);
+  opacity: 0.75;
+  white-space: normal;
+}
+
+.reader-main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* Book mode is optimized for a single A4 page on screen.
+   Regression guard: do not fully hide the sidebar with display:none.
+   Instead, collapse it so the page can use the full width. */
+body[data-mode='book'] .reader-sidebar {
+  width: 0;
+  flex: 0 0 0;
+  border-left: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Always prioritize preview area over TOC/sidebar. */
+body[data-mode='all'] .reader-main {
+  flex: initial;
+  min-height: initial;
+}
+
+.reader-sidebar {
+  width: 320px;
+  background: var(--bg-paper);
+  border-left: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.reader-sidebar-title {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--title-blue);
+  font-weight: 500 !important;
+}
+
+.reader-list {
+  padding: 8px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reader-topic {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reader-topicTitle {
+  padding: 6px 8px;
+  color: var(--title-blue);
+  font-weight: 500 !important;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.reader-topicList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reader-item {
+  text-align: right;
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.reader-item:hover {
+  background: var(--bg-subtle);
+}
+
+.reader-item.is-active {
+  border-color: var(--title-blue);
+}
+
+.reader-stage {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  background: #eef0f2;
+  background-image: none !important;
+  position: relative;
+}
+
+body[data-mode='book'] .reader-stage {
+  background: #eef0f2;
+  background-image: none !important;
+}
+
+.reader-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #eef0f2;
+  color: var(--text-main);
+  border-right: 1px solid var(--border-light);
+  white-space: pre-line;
+  text-align: center;
+  z-index: 20;
+}
+
+.reader-fallback[hidden] {
+  display: none;
+}
+
+.reader-frameWrap {
+  flex: 1;
+  margin: 0;
+  border: 0;
+  background: #eef0f2;
+  background-image: none !important;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* Book mode: let the A4 page shadow render outside its box. */
+body[data-mode='book'] .reader-frameWrap {
+  overflow: visible;
+  background: #eef0f2;
+  background-image: none !important;
+}
+
+body[data-mode='all'] .reader-frameWrap {
+  overflow: visible;
+}
+
+.reader-all {
+  height: 100%;
+  overflow: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #eef0f2;
+  background-image: none !important;
+}
+
+body[data-mode='all'] .reader-all {
+  height: auto;
+  overflow: visible;
+}
+
+.reader-allItem {
+  border: 1px solid var(--border-light);
+  background: var(--bg-paper);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.reader-allItem.is-active {
+  border-color: var(--title-blue);
+}
+
+.reader-allFrame {
+  width: 100%;
+  height: 240px;
+  border: 0;
+  display: block;
+  background: var(--bg-paper);
+}
+
+.reader-book {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+}
+
+/* Book mode: single page at a time. */
+body[data-mode='book'] .reader-gutter,
+body[data-mode='book'] .reader-leaf--left {
+  display: none;
+}
+
+.reader-leaf {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background: #eef0f2;
+  background-image: none !important;
+}
+
+body[data-mode='book'] .reader-leaf {
+  background: #eef0f2;
+  background-image: none !important;
+}
+
+.reader-gutter {
+  width: 12px;
+  background: var(--bg-paper);
+  border-left: 0;
+  border-right: 0;
+}
+
+.reader-pageHost {
+  width: 100%;
+  height: 100%;
+  /* Golden Preview Standard: top-down layout, no flex centering hacks. */
+  overflow: hidden;
+  background: #eef0f2;
+  background-image: none !important;
+  display: block;
+  padding-top: 20px;
+}
+
+body[data-mode='book'] .reader-pageHost {
+  background: #eef0f2;
+  background-image: none !important;
+  padding: 20px 18px 18px;
+  overflow: visible;
+}
+
+.reader-hostFrame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: var(--bg-paper);
+}
+
+.reader-pageHost .a4-page {
+  margin: 0 auto;
+  transform-origin: top center;
+}
+
+/* All-pages mode: show a clear A4 boundary frame without heavy drop-shadows. */
+body[data-mode='all'] .reader-pageHost .a4-page {
+  margin: 0 auto !important;
+  margin-bottom: 0 !important;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--border-light) !important;
+}
+
+/* Book mode: Golden Preview page definition (clean white + premium shadow). */
+body[data-mode='book'] .reader-pageHost .a4-page {
+  background: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.reader-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-main);
+  opacity: 0.55;
+  background: var(--bg-paper);
+}
+
+.reader-item.is-inSpread {
+  border-color: var(--border-light);
+  background: var(--bg-subtle);
+}
+
+@media (max-width: 980px) {
+  .reader-select {
+    min-width: 200px;
+  }
+
+  .reader-gutter,
+  .reader-leaf--left {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .reader-topbarRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reader-controls {
+    justify-content: space-between;
+  }
+
+  .reader-select {
+    min-width: 0;
+    flex: 1;
+    max-width: none;
+  }
+}

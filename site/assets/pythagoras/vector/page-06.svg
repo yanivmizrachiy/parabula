@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1489" height="2105" viewBox="0 0 1489 2105">
+<style>
+  .pyt-art path:not([fill="rgb(255,255,255)"]):not([fill="rgb(254,254,254)"]):not([fill="rgb(253,253,253)"]):not([fill="rgb(252,252,252)"]){ fill:#000; }
+  .pyt-word{ fill:#000; font-family:'Rubik',sans-serif; font-weight:400; }
+  .pyt-rtl{ direction:rtl; unicode-bidi:plaintext; }
+  .pyt-ltr{ direction:ltr; unicode-bidi:plaintext; }
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g class="pyt-art">
+<path fill="rgb(2,2,2)" stroke="rgb(2,2,2)" stroke-width="0" opacity="1" d="M 1315.5 209 L 1320.5 210 L 1400 210 L 1399.5 212 L 1297 212 L 1297.5 210 L 1314.5 210 L 1315.5 209 Z " /><path fill="rgb(2,2,2)" stroke="rgb(2,2,2)" stroke-width="0" opacity="1" d="M 524.5 570 L 524.5 571 L 524.5 570 Z " /><path fill="rgb(2,2,2)" stroke="rgb(2,2,2)" stroke-width="0" opacity="1" d="M 1201.5 1720 L 1205.5 1721 L 1302.5 1721 L 1307.5 1720 L 1308.5 1721 L 1400 1721 L 1399.5 1723 L 1183 1723 L 1183.5 1721 L 1200.5 1721 L 1201.5 1720 Z " />
+</g>
+<g class="pyt-text">
+<text class="pyt-word pyt-ltr" x="1298" y="203" font-size="20" text-anchor="start">6</text>
+<text class="pyt-word pyt-rtl" x="1384" y="301" font-size="28" text-anchor="end">במלבן</text>
+<text class="pyt-word pyt-ltr" x="1194" y="295" font-size="23" text-anchor="start">ABCD‏</text>
+<text class="pyt-word pyt-rtl" x="1173" y="302" font-size="23" text-anchor="end">נתון:</text>
+<text class="pyt-word pyt-ltr" x="1062" y="295" font-size="22" text-anchor="start">24</text>
+<text class="pyt-word pyt-rtl" x="1050" y="295" font-size="22" text-anchor="end">מ&apos;</text>
+<text class="pyt-word pyt-ltr" x="989" y="291" font-size="10" text-anchor="start">=</text>
+<text class="pyt-word pyt-ltr" x="914" y="295" font-size="23" text-anchor="start">.DC‏</text>
+<text class="pyt-word pyt-rtl" x="429" y="303" font-size="23" text-anchor="end">(המידות</text>
+<text class="pyt-word pyt-rtl" x="335" y="303" font-size="23" text-anchor="end">במטרים.)</text>
+<text class="pyt-word pyt-ltr" x="1315" y="354" font-size="16" text-anchor="start">now‏</text>
+<text class="pyt-word pyt-rtl" x="1302" y="358" font-size="27" text-anchor="end">המלבן:</text>
+<text class="pyt-word pyt-ltr" x="1139" y="353" font-size="23" text-anchor="start">240</text>
+<text class="pyt-word pyt-rtl" x="1127" y="353" font-size="22" text-anchor="end">מ&quot;ר.</text>
+<text class="pyt-word pyt-rtl" x="1051" y="354" font-size="16" text-anchor="end">מה</text>
+<text class="pyt-word pyt-rtl" x="1002" y="359" font-size="22" text-anchor="end">היקף</text>
+<text class="pyt-word pyt-rtl" x="927" y="353" font-size="22" text-anchor="end">המשולש</text>
+<text class="pyt-word pyt-ltr" x="711" y="353" font-size="23" text-anchor="start">AADC‏</text>
+<text class="pyt-word pyt-ltr" x="684" y="353" font-size="23" text-anchor="start">?</text>
+<text class="pyt-word pyt-ltr" x="114" y="405" font-size="20" text-anchor="start">A</text>
+<text class="pyt-word pyt-ltr" x="535" y="405" font-size="20" text-anchor="start">B‏</text>
+<text class="pyt-word pyt-rtl" x="521" y="540" font-size="145" text-anchor="end">ב</text>
+<text class="pyt-word pyt-ltr" x="533" y="589" font-size="21" text-anchor="start">0</text>
+<text class="pyt-word pyt-ltr" x="338" y="605" font-size="20" text-anchor="start">4</text>
+<text class="pyt-word pyt-rtl" x="328" y="605" font-size="20" text-anchor="end">מ&apos;</text>
+<text class="pyt-word pyt-ltr" x="110" y="590" font-size="20" text-anchor="start">2</text>
+<text class="pyt-word pyt-ltr" x="1184" y="1714" font-size="20" text-anchor="start">6</text>
+<text class="pyt-word pyt-rtl" x="1399" y="1783" font-size="23" text-anchor="end">היקף</text>
+<text class="pyt-word pyt-rtl" x="1324" y="1777" font-size="23" text-anchor="end">המשולש</text>
+<text class="pyt-word pyt-rtl" x="1208" y="1778" font-size="18" text-anchor="end">הוא</text>
+<text class="pyt-word pyt-ltr" x="1121" y="1778" font-size="20" text-anchor="start">60</text>
+<text class="pyt-word pyt-rtl" x="1111" y="1778" font-size="17" text-anchor="end">סיימ</text>
+</g>
+</svg>
