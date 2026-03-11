@@ -188,3 +188,14 @@ Prev/Next links must match the repo’s global reading order as defined by topic
 - If primary rendering fails, the reader must display a fallback iframe for a valid page instead of leaving an empty gray area.
 - A blank preview shell with a loaded sidebar is considered a critical regression.
 
+
+---
+
+## Preview Reading Stability
+
+- preview חייב להתחיל מראש הדף ולא מאמצע
+- אסור מצב שבו sidebar מוצג אך אין עמוד
+- state שמור חייב להיבדק מול TOC
+- אם state שבור יש לעבור לעמוד ראשון תקין
+- מצב כל הדפים חייב להיות רצף אנכי ממורכז
+- מצב דפדוף לא ישאיר slot ריק

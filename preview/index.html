@@ -1264,7 +1264,11 @@
 
       boot();
     </script>
-</body>
+  </body>
 </html>
+let sc=document.scrollingElement||document.documentElement||document.body;
 
+try{sc.scrollTop=0}catch(e){}
+
+let f=document.querySelector("iframe");
 
