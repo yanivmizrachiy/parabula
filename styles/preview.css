@@ -438,3 +438,25 @@ body[data-mode='book'] .reader-pageHost .a4-page {
     max-width: none;
   }
 }
+/* תיקון יסודי למירכוז ותצוגה */
+.reader-pageHost { 
+    display: flex !important; 
+    justify-content: center !important; 
+    align-items: flex-start !important; 
+    padding-top: 20px !important; 
+}
+.reader-pageHost .a4-page { 
+    margin: 0 auto !important; 
+    transform-origin: top center !important; 
+}
+/* תיקון יסודי למירכוז ותצוגה */
+.reader-pageHost { 
+    display: flex !important; 
+    justify-content: center !important; 
+    align-items: flex-start !important; 
+    padding-top: 20px !important; 
+}
+.reader-pageHost .a4-page { 
+    margin: 0 auto !important; 
+    transform-origin: top center !important; 
+}
