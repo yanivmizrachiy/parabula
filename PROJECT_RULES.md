@@ -206,6 +206,13 @@ Example step updates:
 - Vertical alignment must always be **Top**, with a 20px top margin inside the preview host.
 - Scaling must prioritize **vertical fit** (height-first) to maximize readability (fill the viewport height under the fixed topbar).
 
+### Zero Tolerance — Non-centered preview pages
+
+- The A4 preview must be **horizontally centered at all times** in `/preview` (all modes).
+- Any drift/bias to the right (common under RTL) is a **critical regression**.
+- The preview _layout container_ may be forced to `direction: ltr` to guarantee centering, but the `.a4-page` content must remain RTL.
+- The `.a4-page` must never be allowed to shrink in flex layouts (`flex-shrink: 0`) and must keep a stable outer margin in the host.
+
 ---
 
 ## Preview Stability Contract (required)

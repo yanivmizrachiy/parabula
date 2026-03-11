@@ -28,8 +28,16 @@ test('Golden Preview: solid museum background + top-aligned host', async () => {
 
   assert.ok(/background-color\s*:\s*#eef0f2\b/iu.test(css), 'styles/preview.css: expected museum background #eef0f2');
   assert.ok(
-    /\.reader-pageHost\s*\{[\s\S]*?display\s*:\s*block\s*;[\s\S]*?padding-top\s*:\s*20px\s*;[\s\S]*?\}/u.test(css),
-    'styles/preview.css: expected .reader-pageHost to be display:block with padding-top:20px'
+    /\.reader-pageHost\s*\{[\s\S]*?display\s*:\s*block\s*!important\s*;[\s\S]*?text-align\s*:\s*center\s*!important\s*;[\s\S]*?direction\s*:\s*ltr\s*!important\s*;[\s\S]*?padding-top\s*:\s*20px\s*!important\s*;[\s\S]*?\}/u.test(
+      css
+    ),
+    'styles/preview.css: expected .reader-pageHost to be block + text-align centered + LTR'
+  );
+  assert.ok(
+    /\.a4-page\s*\{[\s\S]*?display\s*:\s*inline-block\s*!important\s*;[\s\S]*?margin\s*:\s*0\s+auto\s*!important\s*;[\s\S]*?direction\s*:\s*rtl\s*!important\s*;[\s\S]*?\}/u.test(
+      css
+    ),
+    'styles/preview.css: expected .a4-page to be inline-block centered and remain RTL'
   );
   assert.ok(/background-image\s*:\s*none/iu.test(css), 'styles/preview.css: expected background-image: none guards (no patterns outside A4)');
 });
@@ -78,9 +86,8 @@ test('Golden Preview: fitA4InHost must be height-first (viewport minus topbar)',
 
   assert.ok(/function\s+fitA4InHost\s*\(/u.test(html), 'preview/index.html: missing fitA4InHost()');
   assert.ok(/window\.innerHeight/u.test(html), 'preview/index.html: expected fitA4InHost to use window.innerHeight');
-  assert.ok(
-    /--reader-topbar-h/u.test(html) || /topbar\.getBoundingClientRect\(\)\.height/u.test(html),
-    'preview/index.html: expected topbar height usage for scaling'
-  );
-  assert.ok(/-\s*40\b/u.test(html), 'preview/index.html: expected 40px safety margin in scaling');
+  assert.ok(/-\s*100\b/u.test(html), 'preview/index.html: expected 100px safety margin in scaling');
+  assert.ok(/\b1123\b/u.test(html), 'preview/index.html: expected A4 pixel height constant 1123 for scaling');
+  assert.ok(/\b0\.6\b/u.test(html), 'preview/index.html: expected minimum scale clamp of 0.6');
+  assert.ok(/transform\s*=\s*`?scale\(/u.test(html) || /style\.transform\s*=\s*['"]scale\(/u.test(html), 'preview/index.html: expected scaling via CSS transform (scale)');
 });
