@@ -27,6 +27,7 @@ function isIgnoredPath(relPath) {
 }
 
 const A4_PAGE_FILE_RE = /^עמוד-(\d+)\.html$/u;
+const SITE_ROOT_A4_PAGE_RE = /^site\/עמוד-(\d+)\.html$/u;
 
 /** @type {null | {topics: any[], flat: any[]}} */
 let tocCache = null;
@@ -156,6 +157,11 @@ async function listHtmlFiles() {
       sitePages = all
         .filter((rel) => rel.toLowerCase().endsWith('.html'))
         .filter((rel) => rel !== 'site/index.html');
+
+      // build-site.ps1 publishes root A4 pages under site/ for GitHub Pages.
+      // In preview we already list root-level עמוד-*.html, so exclude the published copies
+      // to avoid duplicates in the reader TOC.
+      sitePages = sitePages.filter((rel) => !SITE_ROOT_A4_PAGE_RE.test(rel));
     }
   } catch {
     // no site dir
