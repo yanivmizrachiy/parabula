@@ -180,6 +180,34 @@ Prev/Next links must match the repo’s global reading order as defined by topic
 
 ---
 
+## 5) Progress reporting (required)
+
+When executing multi-step work (especially via Copilot/automation), **every step update** must include an explicit remaining-work percentage using this exact format:
+
+- `נותרו X% לסיום.`
+
+Rules:
+
+- `X` is an integer `0`–`100`.
+- `X` must decrease as progress is made.
+- Use `0%` only when the task is fully complete.
+
+Example step updates:
+
+- `נותרו 70% לסיום.`
+- `נותרו 25% לסיום.`
+- `נותרו 0% לסיום.`
+
+---
+
+## 6) Golden Preview Standard (required)
+
+- Preview background must be a **solid** neutral color; patterns/gradients/images are strictly forbidden outside the A4 boundary.
+- Vertical alignment must always be **Top**, with a 20px top margin inside the preview host.
+- Scaling must prioritize **vertical fit** (height-first) to maximize readability (fill the viewport height under the fixed topbar).
+
+---
+
 ## Preview Stability Contract (required)
 
 - `/preview` must never show a blank main reading area when valid TOC entries exist.
@@ -187,7 +215,6 @@ Prev/Next links must match the repo’s global reading order as defined by topic
 - The reader must show a visible loading state while the preview page is being resolved.
 - If primary rendering fails, the reader must display a fallback iframe for a valid page instead of leaving an empty gray area.
 - A blank preview shell with a loaded sidebar is considered a critical regression.
-
 
 ---
 

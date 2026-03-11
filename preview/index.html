@@ -638,9 +638,31 @@
         const pageW = page.offsetWidth;
         const pageH = page.offsetHeight;
 
-        // Account for any host padding (e.g., book mode uses padding to frame the A4 page).
+        // Golden Preview scaling engine: height-first.
+        // Target: scale by (window.innerHeight - topbarHeight - 40px) / A4 height (297mm).
+        // Practically, at scale=1 the element height already maps to 297mm in CSS, so we can use pageH.
         let availW = hostEl.clientWidth;
         let availH = hostEl.clientHeight;
+
+        // Prefer viewport height (minus fixed topbar), not host height.
+        let topbarH = 0;
+        try {
+          const v = window.getComputedStyle(document.documentElement).getPropertyValue('--reader-topbar-h') || '';
+          topbarH = Math.max(0, Math.ceil(parseFloat(v) || 0));
+        } catch {
+          // ignore
+        }
+        if (!topbarH && topbar) {
+          try {
+            topbarH = Math.max(0, Math.ceil(topbar.getBoundingClientRect().height || 0));
+          } catch {
+            // ignore
+          }
+        }
+
+        availH = Math.max(0, window.innerHeight - topbarH - 40);
+
+        // Account for any host padding (e.g., Golden Preview uses padding-top: 20px).
         try {
           const cs = window.getComputedStyle(hostEl);
           const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
@@ -650,12 +672,15 @@
         } catch {
           // ignore
         }
+
         if (availW <= 0 || availH <= 0 || pageW <= 0 || pageH <= 0) return;
 
-        // Allow generous upscaling so A4 can fill large monitors.
         const maxScale = 6;
-        const scaleRaw = Math.min(availW / pageW, availH / pageH);
-        const scale = Math.min(scaleRaw, maxScale);
+        const scaleByH = availH / pageH;
+        const scaleByW = availW / pageW;
+
+        // Height-first, but never overflow horizontally.
+        const scale = Math.min(scaleByH, scaleByW, maxScale);
         page.style.zoom = String(scale);
       }
 
@@ -1266,9 +1291,4 @@
     </script>
   </body>
 </html>
-let sc=document.scrollingElement||document.documentElement||document.body;
-
-try{sc.scrollTop=0}catch(e){}
-
-let f=document.querySelector("iframe");
 

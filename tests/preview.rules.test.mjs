@@ -23,6 +23,17 @@ test('Preview CSS must style topic bar and not hide navigation elements', async 
   assert.ok(!/\.reader-sidebar\s*\{\s*display\s*:\s*none\s*;?\s*\}/u.test(css), 'styles/preview.css: must not set .reader-sidebar { display: none }');
 });
 
+test('Golden Preview: solid museum background + top-aligned host', async () => {
+  const css = await readText(path.join('styles', 'preview.css'));
+
+  assert.ok(/background-color\s*:\s*#eef0f2\b/iu.test(css), 'styles/preview.css: expected museum background #eef0f2');
+  assert.ok(
+    /\.reader-pageHost\s*\{[\s\S]*?display\s*:\s*block\s*;[\s\S]*?padding-top\s*:\s*20px\s*;[\s\S]*?\}/u.test(css),
+    'styles/preview.css: expected .reader-pageHost to be display:block with padding-top:20px'
+  );
+  assert.ok(/background-image\s*:\s*none/iu.test(css), 'styles/preview.css: expected background-image: none guards (no patterns outside A4)');
+});
+
 test('Rules doc must explicitly require /preview topic buttons', async () => {
   const rules = await readText('rules.html');
 
@@ -49,4 +60,27 @@ test('Preview server must not serve rules.html', async () => {
       /isForbiddenForServing\([\s\S]*?\)\s*\{[\s\S]*statusCode\s*=\s*404/u.test(serverCode),
     'preview/server.mjs: expected 404 response for rules.html'
   );
+});
+
+test('preview/index.html must not contain content after </html>', async () => {
+  const html = await readText(path.join('preview', 'index.html'));
+  const closeTag = '</html>';
+  const lastIdx = html.lastIndexOf(closeTag);
+
+  assert.ok(lastIdx !== -1, 'preview/index.html: missing </html> close tag');
+
+  const tail = html.slice(lastIdx + closeTag.length);
+  assert.ok(/^\s*$/u.test(tail), 'preview/index.html: found non-whitespace content after </html>');
+});
+
+test('Golden Preview: fitA4InHost must be height-first (viewport minus topbar)', async () => {
+  const html = await readText(path.join('preview', 'index.html'));
+
+  assert.ok(/function\s+fitA4InHost\s*\(/u.test(html), 'preview/index.html: missing fitA4InHost()');
+  assert.ok(/window\.innerHeight/u.test(html), 'preview/index.html: expected fitA4InHost to use window.innerHeight');
+  assert.ok(
+    /--reader-topbar-h/u.test(html) || /topbar\.getBoundingClientRect\(\)\.height/u.test(html),
+    'preview/index.html: expected topbar height usage for scaling'
+  );
+  assert.ok(/-\s*40\b/u.test(html), 'preview/index.html: expected 40px safety margin in scaling');
 });
