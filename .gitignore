@@ -1,2 +1,12 @@
 /node_modules/
 .DS_Store
+
+# Generated outputs (keep repo clean)
+/visual-out/
+/print/
+*.log
+
+# Local OCR artifacts (do not commit)
+*.traineddata
+scripts/ocr-pythagoras-page3-answers.mjs
+

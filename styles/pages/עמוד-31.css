@@ -1,9 +1,5 @@
 /* עמוד 31 — משוואה ריבועית חסרה (c=0) */
 
-.page-31 {
-	--problem-block-height: 220px;
-}
-
 .page-31 .question-block {
 	justify-content: flex-start;
 	gap: 10px;
@@ -18,24 +14,27 @@
 }
 
 .page-31 .eq-grid {
+	flex: 1;
+	min-height: 0;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	column-gap: 10px;
-	row-gap: 10px;
+	grid-template-rows: repeat(3, minmax(0, 1fr));
+	column-gap: 8px;
+	row-gap: 8px;
 	width: 100%;
-	align-items: start;
+	align-items: stretch;
 }
 
 .page-31 .problem-block {
-	height: var(--problem-block-height);
+	min-height: 0;
+	height: 100%;
 	background: var(--bg-subtle);
 	border: 1px solid var(--border-light);
 	border-radius: 8px;
-	padding: 6px;
+	padding: 5px;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
-	min-height: 0;
+	gap: 4px;
 	overflow: hidden;
 }
 
@@ -67,7 +66,7 @@
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 4px;
 }
 
 .page-31 .problem-figure {
@@ -78,8 +77,8 @@
 	direction: ltr;
 	unicode-bidi: isolate;
 	text-align: center;
-	font-size: 16px;
-	line-height: 20px;
+	font-size: 15px;
+	line-height: 18px;
 }
 
 .page-31 .solution-space {
@@ -88,7 +87,7 @@
 	border: 1px solid var(--border-light);
 	border-radius: 6px;
 	background-color: var(--bg-paper);
-	padding: 6px 8px;
+	padding: 4px 6px;
 	direction: ltr;
 	unicode-bidi: isolate;
 	background-image:
@@ -104,9 +103,9 @@
 	white-space: nowrap;
 	flex: 0 0 auto;
 	text-align: left;
-	padding-top: 6px;
+	padding-top: 4px;
 	border-top: 1px solid var(--border-light);
-	font-size: 12px;
+	font-size: 11px;
 }
 
 .page-31 .problem-answer .answer-box {
@@ -118,7 +117,7 @@
 	margin-top: auto;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 4px;
 }
 
 .page-31 .eq-solutions .q-sub {
@@ -126,16 +125,16 @@
 }
 
 .page-31 .eq-solutions {
-	padding-bottom: 2mm;
+	padding-bottom: 1mm;
 }
 
 .page-31 .eq-solutions .q-text {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px 10px;
+	display: grid;
+	grid-template-columns: max-content repeat(9, minmax(0, 1fr));
+	column-gap: 8px;
 	align-items: center;
 	width: 100%;
-	font-size: 11px;
+	font-size: 10px;
 }
 
 .page-31 .eq-solutions .solutions-label {
@@ -146,5 +145,6 @@
 	direction: ltr;
 	unicode-bidi: isolate;
 	font-weight: 500 !important;
+	text-align: center;
 	white-space: nowrap;
 }

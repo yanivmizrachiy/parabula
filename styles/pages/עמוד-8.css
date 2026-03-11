@@ -9,11 +9,6 @@
   padding-top: 8mm;
 }
 
-.page-8 .p8-part-letter {
-  font-weight: 500 !important;
-  color: var(--title-blue);
-}
-
 .page-8 .p8-showcase {
   justify-content: space-around;
   align-items: flex-end;

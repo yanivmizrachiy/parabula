@@ -2,5 +2,6 @@
     "livePreview.autoRefreshPreview": "onAnyChange",
     "livePreview.openPreviewTarget": "Embedded Preview",
     "livePreview.notifyOnOpen": false,
-    "livePreview.defaultPreviewPath": "/pages/reader.html"
+    "livePreview.defaultPreviewPath": "/preview/index.html",
+    "task.allowAutomaticTasks": "on"
 }

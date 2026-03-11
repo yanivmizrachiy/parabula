@@ -5,6 +5,8 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $pagesRoot = Join-Path $repoRoot 'pages'
 $outRoot = Join-Path $repoRoot 'site'
 
+$A4RootPageRe = '^עמוד-(\d+)\.html$'
+
 $mathJaxLine = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>'
 
 function Encode-UrlPath {
@@ -29,6 +31,29 @@ New-Item -ItemType Directory -Force -Path $outRoot | Out-Null
 
 if (-not (Test-Path -LiteralPath $pagesRoot)) {
     throw "Missing pages/: $pagesRoot"
+}
+
+# 1) Copy root textbook pages (עמוד-*.html) into site/
+$rootEntries = Get-ChildItem -LiteralPath $repoRoot -File | Where-Object { $_.Name -match $A4RootPageRe }
+if (-not $rootEntries -or $rootEntries.Count -eq 0) {
+    throw 'No root textbook pages found (expected עמוד-*.html in repo root).'
+}
+foreach ($f in $rootEntries) {
+    Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $outRoot $f.Name) -Force
+}
+
+# Copy root 404.html if present (GitHub Pages fallback)
+$root404 = Join-Path $repoRoot '404.html'
+if (Test-Path -LiteralPath $root404 -PathType Leaf) {
+    Copy-Item -LiteralPath $root404 -Destination (Join-Path $outRoot '404.html') -Force
+}
+
+# Copy shared static directories so published pages render correctly.
+foreach ($dirName in @('styles', 'assets')) {
+    $src = Join-Path $repoRoot $dirName
+    if (-not (Test-Path -LiteralPath $src -PathType Container)) { continue }
+    $dest = Join-Path $outRoot $dirName
+    Copy-Item -LiteralPath $src -Destination $dest -Recurse -Force
 }
 
 $indexFiles = Get-ChildItem -LiteralPath $pagesRoot -Recurse -File -Filter 'index.html'
@@ -84,7 +109,15 @@ if (-not (Test-Path -LiteralPath $noJekyllPath -PathType Leaf)) {
 }
 
 $generatedHtml = Get-ChildItem -LiteralPath $outRoot -Recurse -File -Filter '*.html'
-$linkFiles = $generatedHtml | Where-Object { $_.Name -ne 'index.html' } | Sort-Object FullName
+$rootPages = Get-ChildItem -LiteralPath $outRoot -File | Where-Object { $_.Name -match $A4RootPageRe } |
+Sort-Object { [int]($_.Name -replace '^עמוד-(\d+)\.html$', '$1') }
+
+$otherPages = $generatedHtml |
+Where-Object { $_.Name -ne 'index.html' -and $_.Name -ne '404.html' } |
+Where-Object { -not ($_.DirectoryName -eq $outRoot -and $_.Name -match $A4RootPageRe) } |
+Sort-Object FullName
+
+$linkFiles = @($rootPages) + @($otherPages)
 if (-not $linkFiles -or $linkFiles.Count -eq 0) {
     throw 'site/ contains no generated .html pages to link to.'
 }

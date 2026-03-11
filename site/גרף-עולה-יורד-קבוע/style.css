@@ -5,7 +5,6 @@
   --paper: #fff;
   --screen-bg: #f2f2f2;
   --title-blue: #0b55d4;
-  --accent-red: #d40000;
   --page-padding: 14mm;
   --page-outline: 1px dashed rgba(0, 0, 0, 0.45);
 
@@ -58,7 +57,7 @@ body {
   top: 14mm;
   width: 18mm;
   height: 18mm;
-  border: 0.8mm solid var(--accent-red);
+  border: 0.8mm solid var(--title-blue);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -66,7 +65,7 @@ body {
   font-weight: 700;
   font-size: 18pt;
   line-height: 1;
-  color: var(--accent-red);
+  color: var(--title-blue);
   background: var(--paper);
 }
 
@@ -176,10 +175,10 @@ body {
 
 .answers-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, auto);
-  grid-auto-flow: column;
-  gap: 3.5mm 4.5mm;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, auto);
+  grid-auto-flow: row;
+  gap: 3mm;
   align-items: start;
 }
 
@@ -187,6 +186,7 @@ body {
   display: flex;
   gap: 2mm;
   align-items: center;
+  min-width: 0;
 }
 
 .answerkey {
@@ -219,6 +219,12 @@ body {
 
 .answer-box.mini { width: 30mm; }
 
+.answeritem .answer-box.mini {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+}
+
 @media print {
   .answer-box {
     background: var(--paper);
@@ -231,6 +237,8 @@ body {
 .subprompt {
   margin: 4mm 0 0 0;
   font-size: 13pt;
+  /* Align with instruction text (after the bullet), so it doesn't appear to start at the section bullet dot. */
+  padding-right: calc(3.2mm + 2.5mm);
 }
 
 .blank {

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A4 Page Metadata",
+  "type": "object",
+  "required": ["href","title","topic","order"],
+  "properties": {
+    "href":  {"type":"string","minLength":1},
+    "title": {"type":"string","minLength":1},
+    "topic": {"type":"string","minLength":1},
+    "order": {"type":"integer","minimum":0},
+    "level": {"type":"string"},
+    "tags":  {"type":"array","items":{"type":"string"}}
+  },
+  "additionalProperties": true
+}

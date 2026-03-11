@@ -32,6 +32,11 @@
                     <div class="q-text">מטרת המסמך: להגדיר סטנדרט אחיד ליצירת דפי עבודה להדפסה A4, באותו סגנון בדיוק, עם הפרדה מוחלטת בין HTML ל-CSS.</div>
                 </div>
 
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>Single Source of Truth (SSOT):</strong> המסמך המחייב לפרויקט הוא <span class="rules-code">PROJECT_RULES.md</span>. <span class="rules-code">rules.html</span> הוא גרסה קריאה לבני אדם; אם יש אי־התאמה—נשענים על <span class="rules-code">PROJECT_RULES.md</span>.</div>
+                </div>
+
                 <hr>
 
                 <div class="q-main">
@@ -56,7 +61,7 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>Preview:</strong> בכל עמוד יש <span class="rules-code">.preview-nav</span> עם <span class="rules-code">הקודם/הבא</span> ו-<span class="rules-code">nav-meta</span> תקין. ב-<span class="rules-code">/preview</span> מצב <strong>"כל הדפים"</strong> הוא ברירת מחדל, וסרגל הכפתורים (מצב תצוגה / הקודם- הבא / כפתורי נושאים) <strong>נשאר גלוי גם בזמן גלילה</strong> כדי שלא נאבד ניווט.</div>
+                    <div class="q-text rules-paragraph"><strong>Preview:</strong> בכל עמוד יש <span class="rules-code">.preview-nav</span> עם <span class="rules-code">הקודם/הבא</span> ו-<span class="rules-code">nav-meta</span> תקין. ב-<span class="rules-code">/preview</span> מצב <strong>"כל הדפים"</strong> הוא ברירת מחדל, וסרגל הכפתורים (מצב תצוגה / הקודם- הבא / כפתורי נושאים) <strong>נשאר גלוי גם בזמן גלילה</strong> כדי שלא נאבד ניווט. בנוסף, התצוגה המקדימה חייבת להציג <strong>מסגרת גבולות A4 להדפסה בצורה מדויקת</strong> כל הזמן (בכל מצב תצוגה), כולל בנושאים כמו <strong>"גרף עולה/יורד"</strong>.</div>
                 </div>
 
                 <div class="q-sub">
@@ -177,6 +182,11 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>אחידות בעיצוב/מיקום המספור:</strong> העיצוב והמיקום של העיגול <span class="rules-code">.page-number</span> הם רכיב בסיס וחייבים להישאר אחידים בכל הפרויקט (לא עושים overrides לא ל-<span class="rules-code">.page-number</span> ולא ל-<span class="rules-code">.header-container</span> ב-<span class="rules-code">styles/pages/עמוד-N.css</span>). בדפי נושא, <span class="rules-code">.page-badge</span> חייב להיות באותו צבע כחול קנוני (<span class="rules-code">var(--title-blue)</span>) והעיצוב שלו חייב להגיע ממקור יחיד: <span class="rules-code">pages/&lt;topic&gt;/style.css</span> (לא יוצרים/מקשרים <span class="rules-code">pages/&lt;topic&gt;/עמוד-X/style.css</span>). בנוסף, המספר בתוך <span class="rules-code">.page-badge</span> חייב להתאים ל-X של <span class="rules-code">עמוד-X</span> (גם במקור תחת <span class="rules-code">pages/</span> וגם בפלט תחת <span class="rules-code">site/</span>).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
                     <div class="q-text rules-paragraph"><strong>כותרות:</strong> הכותרות בכל הפרויקט (כלומר <span class="rules-code">.page-title</span>) הן <strong>כתב כחול</strong> (<span class="rules-code">var(--title-blue)</span>) <strong>ללא הדגשה</strong> (משקל רגיל; לא bold).</div>
                 </div>
 
@@ -187,12 +197,42 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>כלל מספור:</strong> ברירת המחדל למספור פנימי היא מספרים <strong>1, 2, 3…</strong> (למשל בטבלה/רשימת פריטים/פתרונות). <strong>אותיות עבריות</strong> (<strong>א, ב, ג…</strong>) מותרות רק כאשר זה חלק מדרישת ה-UX של הדף (למשל סימון תרגילים א–ו בדפי תרגול), ובמקרה כזה זה מוגדר בעמוד עצמו.</div>
+                    <div class="q-text rules-paragraph"><strong>כלל מספור:</strong> ברירת המחדל לסעיפי משנה היא <strong>בולט שחור בלבד</strong> (ללא מספור ידני בתוך הטקסט—לא <strong>א./ב./ג.</strong> ולא <strong>1/2/3</strong>). כותבים מספרים <strong>רק</strong> כאשר יש דרישה מפורשת ממך למיספור. אותיות עבריות (א/ב/ג…) מותרות רק אם זה חלק מדרישת ה-UX של הדף ואתה ביקשת זאת במפורש.</div>
                 </div>
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
                     <div class="q-text rules-paragraph"><strong>כלל תוכן חובה:</strong> השאלות עצמן <strong>לא ממוספרות</strong> — לא כותבים <span class="rules-code">שאלה 1</span>, <span class="rules-code">שאלה 2</span> וכו'. כל שאלה מתחילה בבולט שחור (לפי רכיבי הבסיס), ורק <strong>העמודים</strong> ממוספרים בעיגול <span class="rules-code">.page-number</span> בהתאם לעיצוב הרגיל של הפרויקט.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>פתרונות עם שני שורשים:</strong> כשיש שני פתרונות (למשל שורשי משוואה ריבועית), כותבים <span class="rules-code">\(x_1\)</span> ו-<span class="rules-code">\(x_2\)</span> עם אינדקסים (לא <span class="rules-code">x1/x2</span> כטקסט רגיל).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>ניצול שטח לכתיבה:</strong> בעמודים שיש בהם אזור פתרון/כתיבה חופשית (למשל <span class="rules-code">.solution-space</span>), הפריסה חייבת לגרום לאזור הזה <strong>להתרחב ולנצל את שטח ה-A4</strong> (לא להשאיר שטחים לבנים גדולים בלי סיבה).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>הפרדה בין סעיפים/תרגילים:</strong> בעמודים שיש בהם גריד תרגילים (למשל <span class="rules-code">.pyt-tri-grid</span> עם <span class="rules-code">.problem-block</span>), חייב להיות <strong>רווח לבן ברור</strong> שמפריד בין כל סעיף לסעיף. בלוקים לא נוגעים אחד בשני.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>שורת תשובות (פריסה + סוגריים):</strong> כשיש שורת <span class="rules-code">תשובות</span> בתחתית (למשל <span class="rules-code">.eq-solutions</span>), היא חייבת להיפרס בצורה אחידה על <strong>כל רוחב השורה</strong> (לדוגמה עם Grid). תשובות שהן זוג פתרונות נכתבות בתוך סוגריים תקניים, למשל <span class="rules-code">\((0,\,6)\)</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>כתיב מתמטי תקני בעברית:</strong> מספר שלילי נכתב עם מינוס לפני המספר: <strong>"מינוס 4"</strong> או באמצעות MathJax: <span class="rules-code">\(-4\)</span>. לא כותבים "4 מינוס".</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>תיבות תשובה לא גולשות:</strong> בדפים שיש בהם תיבות תשובה של תלמיד (גם בדפי נושא תחת <span class="rules-code">pages/</span>), הפריסה חייבת להיות רספונסיבית כך שהתיבות <strong>לא ייצאו מגבולות ה-A4</strong> וינצלו את הרוחב הקיים בצורה יציבה.</div>
                 </div>
 
                 <hr>
@@ -270,7 +310,7 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">פיתוח מהיר (Vite): <span class="rules-code">npm run dev</span> מרים שרת מקומי על <span class="rules-code">http://localhost:5173/</span> (או פורט אחר אם 5173 תפוס) ומאפשר לפתוח קבצי עמוד ישירות (למשל <span class="rules-code">/עמוד-9.html</span>).</div>
+                    <div class="q-text rules-paragraph">פיתוח מהיר (Vite, אופציונלי): <span class="rules-code">npm run dev</span> מרים שרת מקומי על <span class="rules-code">http://localhost:5173/</span> (או פורט אחר אם 5173 תפוס) ומאפשר לפתוח קבצי עמוד ישירות (למשל <span class="rules-code">/עמוד-9.html</span>). זה <strong>לא</strong> תחליף ל-Preview הרשמי של הספר, שהוא השרת <span class="rules-code">npm run preview</span> וה-Reader ב-<span class="rules-code">/preview</span>.</div>
                 </div>
 
                 <div class="q-sub">
@@ -455,7 +495,7 @@
             <div>
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text">גרסה: 2026-03-02</div>
+                        <div class="q-text">גרסה: 2026-03-09</div>
                 </div>
             </div>
         </div>

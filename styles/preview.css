@@ -161,6 +161,18 @@ body[data-mode='all'] .reader-shell {
   min-height: 0;
 }
 
+/* Book mode is optimized for a single A4 page on screen.
+   Regression guard: do not fully hide the sidebar with display:none.
+   Instead, collapse it so the page can use the full width. */
+body[data-mode='book'] .reader-sidebar {
+  width: 0;
+  flex: 0 0 0;
+  border-left: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 /* Always prioritize preview area over TOC/sidebar. */
 body[data-mode='all'] .reader-main {
   flex: initial;
@@ -235,6 +247,10 @@ body[data-mode='all'] .reader-main {
   position: relative;
 }
 
+body[data-mode='book'] .reader-stage {
+  background: var(--grid-line);
+}
+
 .reader-fallback {
   position: absolute;
   inset: 0;
@@ -262,6 +278,12 @@ body[data-mode='all'] .reader-main {
   border-radius: 0;
   box-shadow: none;
   overflow: hidden;
+}
+
+/* Book mode: let the A4 page shadow render outside its box. */
+body[data-mode='book'] .reader-frameWrap {
+  overflow: visible;
+  background: var(--grid-line);
 }
 
 body[data-mode='all'] .reader-frameWrap {
@@ -310,11 +332,21 @@ body[data-mode='all'] .reader-all {
   align-items: stretch;
 }
 
+/* Book mode: single page at a time. */
+body[data-mode='book'] .reader-gutter,
+body[data-mode='book'] .reader-leaf--left {
+  display: none;
+}
+
 .reader-leaf {
   flex: 1;
   min-width: 0;
   position: relative;
   background: var(--bg-paper);
+}
+
+body[data-mode='book'] .reader-leaf {
+  background: var(--grid-line);
 }
 
 .reader-gutter {
@@ -330,8 +362,15 @@ body[data-mode='all'] .reader-all {
   overflow: hidden;
   background: var(--bg-paper);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  padding-top: 20px;
+}
+
+body[data-mode='book'] .reader-pageHost {
+  background: var(--grid-line);
+  padding: 20px 18px 18px;
+  overflow: visible;
 }
 
 .reader-hostFrame {
@@ -342,12 +381,23 @@ body[data-mode='all'] .reader-all {
   background: var(--bg-paper);
 }
 
-/* When injecting pages directly into /preview, we want the page to be “seamless” (no extra shadow/margins). */
 .reader-pageHost .a4-page {
-  margin: 0 !important;
+  margin: 0 auto;
+  transform-origin: top center;
+}
+
+/* All-pages mode: show a clear A4 boundary frame without heavy drop-shadows. */
+body[data-mode='all'] .reader-pageHost .a4-page {
+  margin: 0 auto !important;
   margin-bottom: 0 !important;
-  box-shadow: none !important;
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--border-light) !important;
+}
+
+/* Book mode: match the canonical standalone A4 look (e.g., משוואה ריבועית pages).
+   Revert shadow overrides so the base `.a4-page` drop-shadow is preserved. */
+body[data-mode='book'] .reader-pageHost .a4-page {
+  box-shadow: revert !important;
 }
 
 .reader-empty {

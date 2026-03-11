@@ -1,14 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { promises as fs } from 'node:fs';
 import path from 'node:path';
-
-const ROOT = process.cwd();
-
-async function readText(relPath) {
-  const fullPath = path.join(ROOT, relPath);
-  return fs.readFile(fullPath, 'utf8');
-}
+import { readText } from './_test-utils.mjs';
 
 test('/preview Reader must have persistent topic buttons UI', async () => {
   const html = await readText(path.join('preview', 'index.html'));

@@ -27,6 +27,7 @@ function isIgnoredPath(relPath) {
 }
 
 const A4_PAGE_FILE_RE = /^עמוד-(\d+)\.html$/u;
+const SITE_ROOT_A4_PAGE_RE = /^site\/עמוד-(\d+)\.html$/u;
 
 /** @type {null | {topics: any[], flat: any[]}} */
 let tocCache = null;
@@ -156,6 +157,11 @@ async function listHtmlFiles() {
       sitePages = all
         .filter((rel) => rel.toLowerCase().endsWith('.html'))
         .filter((rel) => rel !== 'site/index.html');
+
+      // build-site.ps1 publishes root A4 pages under site/ for GitHub Pages.
+      // In preview we already list root-level עמוד-*.html, so exclude the published copies
+      // to avoid duplicates in the reader TOC.
+      sitePages = sitePages.filter((rel) => !SITE_ROOT_A4_PAGE_RE.test(rel));
     }
   } catch {
     // no site dir
@@ -231,7 +237,16 @@ async function buildToc() {
     }
 
     const meta = parsePageMetaFromHtml(html);
-    const topicFallback = meta.topic ? '' : topicFromFilePath(rel);
+    let topicFallback = '';
+    if (!meta.topic) {
+      // Built topic pages under site/ don't have .nav-meta; use the document <title>
+      // as a user-friendly topic name so preview matches the canonical topics UI.
+      if (String(rel).replace(/\\/g, '/').startsWith('site/') && meta.docTitle) {
+        topicFallback = meta.docTitle;
+      } else {
+        topicFallback = topicFromFilePath(rel);
+      }
+    }
     if (meta.topicLinks.length > bestTopicOrder.length) {
       bestTopicOrder = meta.topicLinks.map((t) => t.name);
     }
@@ -265,6 +280,14 @@ async function buildToc() {
       if (ai !== bi) return ai - bi;
       return String(a.file).localeCompare(String(b.file), 'he');
     });
+
+    // If pageTotal is missing (common for site/ built pages), fill it from the topic size.
+    const total = t.pages.length;
+    for (const p of t.pages) {
+      if (typeof p.pageIndex === 'number' && typeof p.pageTotal !== 'number') {
+        p.pageTotal = total;
+      }
+    }
   }
 
   // Sort topics: use hinted order from preview-nav-topics, then others, with "אחר" last.
@@ -381,7 +404,14 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Default: reader UI
-  if (requestUrl.pathname === '/' || requestUrl.pathname === '/preview' || requestUrl.pathname === '/preview/') {
+  if (
+    requestUrl.pathname === '/' ||
+    requestUrl.pathname === '/preview' ||
+    requestUrl.pathname === '/preview/' ||
+    requestUrl.pathname === '/preview/index.html' ||
+    requestUrl.pathname === '/preview/reader' ||
+    requestUrl.pathname === '/preview/reader/'
+  ) {
     const filePath = path.join(ROOT_DIR, 'preview', 'index.html');
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     createReadStream(filePath).pipe(res);

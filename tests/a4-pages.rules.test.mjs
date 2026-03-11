@@ -2,17 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-
-const ROOT = process.cwd();
+import { ROOT, readText, stripHtml, matchOne, mustNotMatch, escapeRegExpLiteral, countMatches } from './_test-utils.mjs';
 
 function isA4PageFile(relPath) {
   return /^עמוד-\d+\.html$/u.test(relPath);
 }
 
-async function readText(relPath) {
-  const fullPath = path.join(ROOT, relPath);
-  return fs.readFile(fullPath, 'utf8');
-}
 
 async function listRootHtmlFiles() {
   const entries = await fs.readdir(ROOT, { withFileTypes: true });
@@ -22,12 +17,7 @@ async function listRootHtmlFiles() {
     .sort((a, b) => a.localeCompare(b, 'he'));
 }
 
-function stripHtml(text) {
-  return String(text)
-    .replace(/<[^>]*>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+// stripHtml imported
 
 function parseTopicOrderHints(html) {
   const topicBlockMatch = html.match(/<div\s+class="preview-nav-topics"[\s\S]*?<\/div>/iu);
@@ -57,24 +47,11 @@ function parseNavHref(html, label) {
   return { href: '', disabled };
 }
 
-function matchOne(re, text, fileLabel) {
-  const m = text.match(re);
-  assert.ok(m, `${fileLabel}: expected to match ${String(re)}`);
-  return m;
-}
+// matchOne + mustNotMatch imported
 
-function mustNotMatch(re, text, fileLabel, message) {
-  assert.ok(!re.test(text), `${fileLabel}: ${message}`);
-}
+// escapeRegExpLiteral imported
 
-function escapeRegExpLiteral(text) {
-  // Escape only actual regex metacharacters. Do not escape '-' (can become an invalid escape under /u).
-  return String(text).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
-}
-
-function countMatches(re, text) {
-  return Array.from(String(text).matchAll(re)).length;
-}
+// countMatches imported
 
 test('Global HTML rule: no inline CSS (<style> or style="...")', async () => {
   const htmlFiles = await listRootHtmlFiles();
@@ -280,7 +257,8 @@ test('Pythagoras (page 3): figures are inline SVGs styled consistently (3 croppe
   const file = 'עמוד-11.html';
   const html = await readText(file);
 
-  assert.ok(/מצאו את\s*\\\(a\\\)\s*ואת\s*\\\(y\\\)/u.test(html), `${file}: instruction must mention \\(a\\) and \\(y\\)`);
+  assert.ok(/מצאו את\s*\\\(x\\\)\s*ואת\s*\\\(y\\\)/u.test(html), `${file}: instruction must mention \\(x\\) and \\(y\\)`);
+  mustNotMatch(/\\\(a\\\)/u, html, file, 'must not mention \\(a\\) (project convention: use x/y only)');
 
   // Must render as inline SVG so page CSS tokens apply (same approach as pages 9/10).
   const inlineSvgs = countMatches(/<svg\s+class="pyt-fig-svg"/gu, html);

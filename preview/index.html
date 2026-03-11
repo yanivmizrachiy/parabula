@@ -17,7 +17,7 @@
 
     <link rel="stylesheet" href="/styles/a4-base.css" />
     <link rel="stylesheet" href="/styles/preview.css" />
-  </head>
+</head>
   <body>
     <div class="reader-shell">
       <header class="reader-topbar">
@@ -61,7 +61,7 @@
 
               <div class="reader-leaf reader-leaf--left" aria-label="עמוד שמאל">
                 <div class="reader-pageHost" id="pageLeft" aria-label="תצוגה מקדימה — שמאל"></div>
-                <div class="reader-empty" id="emptyLeft" hidden>סוף</div>
+                <div class="reader-empty" id="emptyLeft" hidden></div>
               </div>
             </div>
 
@@ -404,16 +404,15 @@
       }
 
       function spreadStartIndexForFile(file) {
+        // In book mode we show a single page at a time.
         const idx = findIndex(file);
         if (idx < 0) return 0;
-        // Book-like spread: odd pages on the right (1-based), even on the left.
-        return idx % 2 === 0 ? idx : Math.max(0, idx - 1);
+        return idx;
       }
 
       function spreadFiles(startIdx) {
         const right = toc.flat[startIdx] || null;
-        const left = toc.flat[startIdx + 1] || null;
-        return { right, left };
+        return { right, left: null };
       }
 
       function describeSpread(right, left) {
@@ -454,14 +453,25 @@
         spreadAbortRight = new AbortController();
         spreadAbortLeft = new AbortController();
 
-        const { right, left } = spreadFiles(startIdx);
+        const { right } = spreadFiles(startIdx);
         if (!right) return;
 
-        meta.textContent = `${describeSpread(right, left)}${reason ? ' • ' + reason : ''}`;
+        meta.textContent = `${labelForEntry(right)}${reason ? ' • ' + reason : ''}`;
 
         const okRight = await renderPageIntoHost(right.file, pageRight, spreadAbortRight.signal);
         if (seq !== spreadRenderSeq) return;
-        if (okRight) fitA4InHost(pageRight);
+        if (okRight) {
+          fitA4InHost(pageRight);
+          // Fonts / MathJax can settle slightly later; re-fit once (best-effort).
+          window.setTimeout(() => {
+            if (seq !== spreadRenderSeq) return;
+            try {
+              fitA4InHost(pageRight);
+            } catch {
+              // ignore
+            }
+          }, 250);
+        }
         if (diagConfig.enabled && okRight) {
           try {
             const pageEl = pageRight?.querySelector?.('main.a4-page') || pageRight?.querySelector?.('.a4-page');
@@ -471,25 +481,10 @@
           }
         }
 
-        if (left) {
-          emptyLeft.hidden = true;
-          pageLeft.hidden = false;
-          const okLeft = await renderPageIntoHost(left.file, pageLeft, spreadAbortLeft.signal);
-          if (seq !== spreadRenderSeq) return;
-          if (okLeft) fitA4InHost(pageLeft);
-          if (diagConfig.enabled && okLeft) {
-            try {
-              const pageEl = pageLeft?.querySelector?.('main.a4-page') || pageLeft?.querySelector?.('.a4-page');
-              upsertDiag(diagnosePageEl(left.file, pageEl));
-            } catch {
-              // ignore
-            }
-          }
-        } else {
-          pageLeft.innerHTML = '';
-          pageLeft.hidden = true;
-          emptyLeft.hidden = false;
-        }
+        // Single-page book mode: never render a left page.
+        pageLeft.innerHTML = '';
+        pageLeft.hidden = true;
+        emptyLeft.hidden = true;
       }
 
       /** @type {Set<string>} */
@@ -633,15 +628,33 @@
         const page = hostEl?.querySelector?.('.a4-page');
         if (!page) return;
 
+        // Reset any previous scaling and force a reflow so measurements are stable.
         page.style.zoom = '';
+        page.style.transform = '';
+        page.style.transformOrigin = '';
+        // eslint-disable-next-line no-unused-expressions
+        page.offsetWidth;
 
-        const pageRect = page.getBoundingClientRect();
-        const availW = hostEl.clientWidth;
-        const availH = hostEl.clientHeight;
-        if (availW <= 0 || availH <= 0 || pageRect.width <= 0 || pageRect.height <= 0) return;
+        const pageW = page.offsetWidth;
+        const pageH = page.offsetHeight;
 
-        const maxScale = 2.5;
-        const scaleRaw = Math.min(availW / pageRect.width, availH / pageRect.height);
+        // Account for any host padding (e.g., book mode uses padding to frame the A4 page).
+        let availW = hostEl.clientWidth;
+        let availH = hostEl.clientHeight;
+        try {
+          const cs = window.getComputedStyle(hostEl);
+          const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+          const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+          availW = Math.max(0, availW - padX);
+          availH = Math.max(0, availH - padY);
+        } catch {
+          // ignore
+        }
+        if (availW <= 0 || availH <= 0 || pageW <= 0 || pageH <= 0) return;
+
+        // Allow generous upscaling so A4 can fill large monitors.
+        const maxScale = 6;
+        const scaleRaw = Math.min(availW / pageW, availH / pageH);
         const scale = Math.min(scaleRaw, maxScale);
         page.style.zoom = String(scale);
       }
@@ -676,8 +689,10 @@
           .preview-nav { display: none !important; }
           html, body { background: var(--bg-paper) !important; display: block !important; }
           body { margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
-          .a4-page { margin: 0 !important; margin-bottom: 0 !important; box-shadow: none !important; }
-          .page { margin: 0 !important; outline: none !important; }
+          .a4-page { margin: 0 !important; margin-bottom: 0 !important; box-shadow: inset 0 0 0 1px var(--border-light) !important; }
+          /* Built topic pages under site/ use .page and already draw an A4 outline in their own CSS.
+             Keep that outline visible to match the preview rules (A4 boundary always shown). */
+          .page { margin: 0 !important; }
         `;
         doc.head.appendChild(style);
       }
@@ -768,11 +783,9 @@
           return;
         }
 
-        const startIdx = spreadStartIndexForFile(current);
-        let maxStart = Math.max(0, toc.flat.length - 1);
-        if (maxStart % 2 === 1) maxStart -= 1;
-        prevBtn.disabled = startIdx <= 0;
-        nextBtn.disabled = startIdx >= maxStart;
+        const idx = findIndex(current);
+        prevBtn.disabled = idx <= 0;
+        nextBtn.disabled = idx < 0 || idx >= toc.flat.length - 1;
       }
 
       async function selectNeighbor(delta) {
@@ -1081,20 +1094,19 @@
       async function selectNeighborSpread(deltaSpreads) {
         if (currentMode === 'all') return;
         const current = getSelectedFile();
-        const startIdx = spreadStartIndexForFile(current);
-        let maxStart = Math.max(0, toc.flat.length - 1);
-        // Spread starts are even indices: 0,2,4,... (so right page is odd-numbered 1-based).
-        if (maxStart % 2 === 1) maxStart -= 1;
+        const idx = findIndex(current);
+        if (idx < 0) return;
 
-        const nextStart = Math.min(maxStart, Math.max(0, startIdx + deltaSpreads * 2));
-        const rightFile = toc.flat[nextStart]?.file;
-        if (!rightFile) return;
-        setSelectedFile(rightFile);
-        renderList(rightFile);
+        const nextIdx = Math.min(toc.flat.length - 1, Math.max(0, idx + deltaSpreads));
+        const file = toc.flat[nextIdx]?.file;
+        if (!file) return;
+
+        setSelectedFile(file);
+        renderList(file);
         showFallback('טוען…');
-        await updateSpread(nextStart, 'דפדוף');
+        await updateSpread(nextIdx, 'דפדוף');
         hideFallback();
-        setActiveTopicButtons(rightFile);
+        setActiveTopicButtons(file);
       }
 
       async function boot() {
@@ -1231,7 +1243,6 @@
             }
 
             fitA4InHost(pageRight);
-            if (!pageLeft.hidden) fitA4InHost(pageLeft);
           });
           ro.observe(frameWrap);
         } else {
@@ -1255,3 +1266,9 @@
     </script>
   </body>
 </html>
+let sc=document.scrollingElement||document.documentElement||document.body;
+
+try{sc.scrollTop=0}catch(e){}
+
+let f=document.querySelector("iframe");
+
