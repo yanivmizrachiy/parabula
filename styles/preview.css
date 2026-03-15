@@ -29,13 +29,14 @@ body[data-mode='all'] {
   /* The topbar is fixed, so reserve space for it. JS keeps this var in sync. */
   padding-top: var(--reader-topbar-h, 0px);
   height: 100vh;
-  width: 100vw;
+  /* Outside A4 must remain a solid neutral "museum" color. */
+  background: #eef0f2;
   display: flex;
   flex-direction: column;
 }
 
 body[data-mode='all'] .reader-shell {
-  height: auto;
+  background: #eef0f2;
   min-height: 100vh;
 }
 
@@ -285,7 +286,7 @@ body[data-mode='book'] .reader-stage {
   flex: 1;
   margin: 0;
   border: 0;
-  background: var(--bg-subtle);
+  background: #eef0f2;
   background-image: none !important;
   border-radius: 0;
   box-shadow: none;
@@ -295,7 +296,7 @@ body[data-mode='book'] .reader-stage {
 /* Book mode: let the A4 page shadow render outside its box. */
 body[data-mode='book'] .reader-frameWrap {
   overflow: visible;
-  background: var(--bg-subtle);
+  background: #eef0f2;
   background-image: none !important;
 }
 
@@ -306,13 +307,14 @@ body[data-mode='all'] .reader-frameWrap {
 .reader-all {
   height: 100%;
   overflow: auto;
-  padding: 0;
+  /* Golden Preview Standard: top aligned with a stable 20px offset. */
+  padding: 20px 0 24px;
   display: flex;
   flex-direction: column;
   /* Golden Preview Standard: always center A4 previews horizontally (avoid RTL right-bias). */
   align-items: center;
-  gap: 12px;
-  background: var(--bg-subtle);
+  gap: 20px;
+  background: transparent;
   background-image: none !important;
 }
 
@@ -322,26 +324,30 @@ body[data-mode='all'] .reader-all {
 }
 
 .reader-allItem {
-  border: 1px solid var(--border-light);
-  background: var(--bg-paper);
-  border-radius: 12px;
-  overflow: hidden;
-  /* Keep each preview at a stable A4-like width and centered. */
-  width: min(794px, calc(100% - 24px));
+  /* Do not wrap pages with a rounded "card" that can be mistaken for print bounds.
+     The only boundary that matters is the A4 outline inside the page itself. */
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  /* Comfortable reading width; iframe scaling logic will zoom the page inside. */
+  width: min(1200px, calc(100% - 24px));
   /* Ensure scrollIntoView doesn't hide the page under the fixed topbar. */
   scroll-margin-top: calc(var(--reader-topbar-h, 0px) + 12px);
 }
 
 .reader-allItem.is-active {
-  border-color: var(--title-blue);
+  outline: 2px solid var(--title-blue);
+  outline-offset: 4px;
 }
 
 .reader-allFrame {
   width: 100%;
-  height: 240px;
+  /* Approx A4 height at 96dpi; updated after load by fitA4InFrame(). */
+  height: 1123px;
   border: 0;
   display: block;
-  background: var(--bg-paper);
+  background: transparent;
 }
 
 .reader-book {
