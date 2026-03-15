@@ -4,17 +4,20 @@ html,
 body {
   height: 100%;
   width: 100%;
-  /* Golden Preview Standard: solid museum background outside A4. */
-  background-color: #eef0f2;
+  /* Golden Preview Standard: calm background outside A4 (use existing tokens only). */
+  background-color: var(--bg-subtle);
   background-image: none !important;
   /* Override global A4 base layout hacks (a4-base.css applies flex to html/body). */
-  display: block;
+  display: block !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
 }
 
 body {
-  background-color: #eef0f2;
+  background-color: var(--bg-subtle);
   background-image: none !important;
   align-items: stretch;
+  margin: 0;
 }
 
 /* In "all pages" mode we want normal browser scrolling (not an inner scroller). */
@@ -26,13 +29,14 @@ body[data-mode='all'] {
   /* The topbar is fixed, so reserve space for it. JS keeps this var in sync. */
   padding-top: var(--reader-topbar-h, 0px);
   height: 100vh;
-  width: 100vw;
+  /* Outside A4 must remain a solid neutral "museum" color. */
+  background: #eef0f2;
   display: flex;
   flex-direction: column;
 }
 
 body[data-mode='all'] .reader-shell {
-  height: auto;
+  background: #eef0f2;
   min-height: 100vh;
 }
 
@@ -249,13 +253,13 @@ body[data-mode='all'] .reader-main {
   flex: 1;
   display: flex;
   min-width: 0;
-  background: #eef0f2;
+  background: var(--bg-subtle);
   background-image: none !important;
   position: relative;
 }
 
 body[data-mode='book'] .reader-stage {
-  background: #eef0f2;
+  background: var(--bg-subtle);
   background-image: none !important;
 }
 
@@ -266,7 +270,7 @@ body[data-mode='book'] .reader-stage {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: #eef0f2;
+  background: var(--bg-paper);
   color: var(--text-main);
   border-right: 1px solid var(--border-light);
   white-space: pre-line;
@@ -303,11 +307,14 @@ body[data-mode='all'] .reader-frameWrap {
 .reader-all {
   height: 100%;
   overflow: auto;
-  padding: 0;
+  /* Golden Preview Standard: top aligned with a stable 20px offset. */
+  padding: 20px 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background: #eef0f2;
+  /* Golden Preview Standard: always center A4 previews horizontally (avoid RTL right-bias). */
+  align-items: center;
+  gap: 20px;
+  background: transparent;
   background-image: none !important;
 }
 
@@ -317,22 +324,30 @@ body[data-mode='all'] .reader-all {
 }
 
 .reader-allItem {
-  border: 1px solid var(--border-light);
-  background: var(--bg-paper);
-  border-radius: 12px;
-  overflow: hidden;
+  /* Do not wrap pages with a rounded "card" that can be mistaken for print bounds.
+     The only boundary that matters is the A4 outline inside the page itself. */
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  /* Comfortable reading width; iframe scaling logic will zoom the page inside. */
+  width: min(1200px, calc(100% - 24px));
+  /* Ensure scrollIntoView doesn't hide the page under the fixed topbar. */
+  scroll-margin-top: calc(var(--reader-topbar-h, 0px) + 12px);
 }
 
 .reader-allItem.is-active {
-  border-color: var(--title-blue);
+  outline: 2px solid var(--title-blue);
+  outline-offset: 4px;
 }
 
 .reader-allFrame {
   width: 100%;
-  height: 240px;
+  /* Approx A4 height at 96dpi; updated after load by fitA4InFrame(). */
+  height: 1123px;
   border: 0;
   display: block;
-  background: var(--bg-paper);
+  background: transparent;
 }
 
 .reader-book {
@@ -353,38 +368,42 @@ body[data-mode='book'] .reader-leaf--left {
   flex: 1;
   min-width: 0;
   position: relative;
-  background: #eef0f2;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: var(--bg-subtle);
   background-image: none !important;
 }
 
 body[data-mode='book'] .reader-leaf {
-  background: #eef0f2;
+  background: var(--bg-subtle);
   background-image: none !important;
 }
 
 .reader-gutter {
   width: 12px;
-  background: var(--bg-paper);
+  background: var(--bg-subtle);
   border-left: 0;
   border-right: 0;
 }
 
 .reader-pageHost {
-  width: 100%;
-  height: 100%;
-  /* Golden Preview Standard: top-down layout, no flex centering hacks. */
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16px 12px 24px;
+  background: transparent;
   overflow: hidden;
-  background: #eef0f2;
-  background-image: none !important;
-  display: block;
-  padding-top: 20px;
 }
 
-body[data-mode='book'] .reader-pageHost {
-  background: #eef0f2;
-  background-image: none !important;
-  padding: 20px 18px 18px;
-  overflow: visible;
+/* Book-mode injected A4 page: remove the multi-page bottom margin so centering is stable. */
+.reader-pageHost > .a4-page {
+  margin: 0 !important;
+  outline: 1px solid var(--border-light);
+  outline-offset: -1px;
 }
 
 .reader-hostFrame {
@@ -395,23 +414,39 @@ body[data-mode='book'] .reader-pageHost {
   background: var(--bg-paper);
 }
 
-.reader-pageHost .a4-page {
-  margin: 0 auto;
-  transform-origin: top center;
-}
 
-/* All-pages mode: show a clear A4 boundary frame without heavy drop-shadows. */
-body[data-mode='all'] .reader-pageHost .a4-page {
-  margin: 0 auto !important;
-  margin-bottom: 0 !important;
-  overflow: hidden;
-  box-shadow: inset 0 0 0 1px var(--border-light) !important;
-}
+@media print {
+  /* Printing from /preview should print clean pages, not the UI chrome. */
+  .reader-topbar,
+  .reader-sidebar,
+  .reader-diag {
+    display: none !important;
+  }
 
-/* Book mode: Golden Preview page definition (clean white + premium shadow). */
-body[data-mode='book'] .reader-pageHost .a4-page {
-  background: #ffffff !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  .reader-shell {
+    padding-top: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  html,
+  body,
+  .reader-stage,
+  .reader-frameWrap {
+    background: white !important;
+  }
+
+  .reader-pageHost {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .reader-pageHost > .a4-page {
+    zoom: 1 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
 }
 
 .reader-empty {

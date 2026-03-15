@@ -71,6 +71,15 @@ foreach ($indexFile in $indexFiles) {
 
     $destPath = Join-Path $destDir ($leaf + '.html')
 
+    # If this topic has assets/ (e.g. exported SVG pages), publish them under site/<topic>/assets.
+    if (-not [string]::IsNullOrWhiteSpace($parentRel)) {
+        $topicAssets = Join-Path (Join-Path $pagesRoot $parentRel) 'assets'
+        if (Test-Path -LiteralPath $topicAssets -PathType Container) {
+            $destAssets = Join-Path $destDir 'assets'
+            Copy-Item -LiteralPath $topicAssets -Destination $destAssets -Recurse -Force
+        }
+    }
+
     # If this page/topic ships a stylesheet, copy it next to the flattened output.
     $topicStyle = if ([string]::IsNullOrWhiteSpace($parentRel)) { $null } else { Join-Path (Join-Path $pagesRoot $parentRel) 'style.css' }
     $pageStyle = Join-Path $srcDir 'style.css'
@@ -91,6 +100,11 @@ foreach ($indexFile in $indexFiles) {
     # Rewrite a shared topic stylesheet href accordingly.
     $html = $html.Replace('href="../style.css"', 'href="style.css"')
     $html = $html.Replace("href='../style.css'", "href='style.css'")
+
+    # Topics may refer to per-topic assets (e.g. ../assets/page-01.svg). After flattening
+    # to site/<topic>/עמוד-X.html, those assets live at site/<topic>/assets/.
+    $html = $html.Replace('src="../assets/', 'src="assets/')
+    $html = $html.Replace("src='../assets/", "src='assets/")
 
     if ($html -notlike '*tex-chtml.js*') {
         $pos = $html.IndexOf('</head>', [System.StringComparison]::OrdinalIgnoreCase)

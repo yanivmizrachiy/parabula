@@ -13,6 +13,13 @@ function parseArgValue(flag) {
   return process.argv[index + 1] ?? null;
 }
 
+function parseIntArg({ flag, defaultValue }) {
+  const raw = parseArgValue(flag);
+  if (raw == null) return defaultValue;
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) ? n : null;
+}
+
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -130,6 +137,8 @@ async function main() {
   const pagesArg = parseArgValue("--pages");
   const langArg = parseArgValue("--lang");
   const ppiArg = parseArgValue("--ppi");
+  const whitelistArg = parseArgValue("--whitelist");
+  const psmArg = parseIntArg({ flag: "--psm", defaultValue: 6 });
   const forceArg = process.argv.includes("--force");
 
   const workspaceRoot = process.cwd();
@@ -154,6 +163,12 @@ async function main() {
     process.exit(2);
   }
 
+  const psm = psmArg;
+  if (!Number.isInteger(psm) || psm < 0 || psm > 13) {
+    console.error("Invalid --psm. Expected an integer between 0 and 13.");
+    process.exit(2);
+  }
+
   const lang = langArg ?? "eng";
 
   const total = await pdfPageCount(pdfPath);
@@ -161,7 +176,7 @@ async function main() {
   const wanted = pages.filter((p) => p >= 1 && p <= total);
   if (wanted.length === 0) {
     console.error(
-      "Usage: node scripts/ocr-equations-topic.mjs [--pdf site/משוואות.pdf] [--outDir pages/משוואות/ocr] [--imagesDir tmp/equations-ocr-png] [--pages 1-3] [--lang eng] [--ppi 400] [--force]"
+      "Usage: node scripts/ocr-equations-topic.mjs [--pdf site/משוואות.pdf] [--outDir pages/משוואות/ocr] [--imagesDir tmp/equations-ocr-png] [--pages 1-3] [--lang eng] [--ppi 400] [--psm 6] [--whitelist <chars>] [--force]"
     );
     process.exit(2);
   }
@@ -172,9 +187,10 @@ async function main() {
   const worker = await createWorker(lang);
   await worker.setParameters({
     preserve_interword_spaces: "1",
-    tessedit_pageseg_mode: "6",
+    tessedit_pageseg_mode: String(psm),
     // Encourage equation-like characters.
-    tessedit_char_whitelist: "0123456789xyzXYZ+-=*/().,[]{}\\|^_\\u221a",
+    tessedit_char_whitelist:
+      whitelistArg ?? "0123456789xyzXYZ+-=*/().,[]{}\\\\|^_\\u221a",
   });
 
   try {

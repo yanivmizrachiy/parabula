@@ -81,6 +81,15 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 - Every SVG stroke must be **non-scaling**:
   - Use `vector-effect: non-scaling-stroke` (in SVG attributes or via page CSS selectors).
 
+### Geometry diagrams — parallelism notation (required)
+
+- **Placement:** Parallel markers MUST be placed at the **exact midpoint** of the segment they annotate.
+- **Style:** Markers must be **clean, sharp chevrons** centered on the segment (avoid cluttered marks that can read as right-angle/angle notation).
+- **Distinct pairs:** Use a **single chevron** (`>`) for the first parallel pair and a **double chevron** (`>>`) for the second parallel pair.
+- **Alignment:** The chevrons must be rotated to match the **segment direction/slope**.
+- **Labels:** Vertex labels (A, B, C, D) must sit **outside** the polygon with a consistent padding (~5pt) and must not touch/overlap any stroke.
+- **Print clarity:** Use consistent, high-contrast strokes suitable for A4 printing (no faint gray lines for primary geometry edges).
+
 ### Geometry / coordinate systems
 
 - Coordinate system container size: **440px × 440px**.
