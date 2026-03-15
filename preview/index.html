@@ -706,19 +706,17 @@
         style.textContent = `
           .preview-nav { display: none !important; }
           html, body { background: var(--bg-paper) !important; width: 100% !important; height: 100% !important; }
-          /* Center the page in the iframe viewport (works for both RTL/LTR) */
           body {
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
-            display: flex !important;
-            align-items: flex-start !important;
-            justify-content: center !important;
+            display: block !important;
           }
-          .a4-page { margin: 0 !important; margin-bottom: 0 !important; box-shadow: inset 0 0 0 1px var(--border-light) !important; }
+          /* Stable centering without direction hacks */
+          .a4-page { margin: 0 auto !important; margin-bottom: 0 !important; box-shadow: inset 0 0 0 1px var(--border-light) !important; }
           /* Built topic pages under site/ use .page and already draw an A4 outline in their own CSS.
              Keep that outline visible to match the preview rules (A4 boundary always shown). */
-          .page { margin: 0 !important; }
+          .page { margin: 0 auto !important; }
         `;
         doc.head.appendChild(style);
       }
