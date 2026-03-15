@@ -941,7 +941,7 @@
           btn.className = 'reader-btn reader-topicBtn';
           btn.textContent = name;
 
-          btn.addEventListener('click', () => {
+          btn.addEventListener('click', async () => {
             // Robust filename normalization for Hebrew/Unicode paths.
             // Use encodeURIComponent as requested, but keep a raw file key for TOC matching.
             let firstFile = firstFileRaw;
@@ -955,7 +955,15 @@
             const entry = toc.flat.find((p) => p.topic === name) || toc.flat.find((p) => p.file === firstFile) || null;
             const fileToOpen = entry?.file || firstFile;
 
-            openFileInCurrentMode(fileToOpen, 'נושא');
+            // UX: Built topic pages under site/ render via iframe fallback.
+            // In ALL mode this becomes an "expanded" scroll of many iframes.
+            // For topics like "גרף עולה/יורד" we prefer a single-page Book view.
+            if (currentMode === 'all' && String(fileToOpen).replace(/\\/g, '/').startsWith('site/')) {
+              setMode('book');
+              setModeUi('book');
+            }
+
+            await openFileInCurrentMode(fileToOpen, 'נושא');
             setActiveTopicButtons(getSelectedFile() || fileToOpen);
           });
 
