@@ -61,7 +61,7 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>Preview:</strong> בכל עמוד יש <span class="rules-code">.preview-nav</span> עם <span class="rules-code">הקודם/הבא</span> ו-<span class="rules-code">nav-meta</span> תקין. ב-<span class="rules-code">/preview</span> מצב <strong>"כל הדפים"</strong> הוא ברירת מחדל, וסרגל הכפתורים (מצב תצוגה / הקודם- הבא / כפתורי נושאים) <strong>נשאר גלוי גם בזמן גלילה</strong> כדי שלא נאבד ניווט. בנוסף, התצוגה המקדימה חייבת להציג <strong>מסגרת גבולות A4 להדפסה בצורה מדויקת</strong> כל הזמן (בכל מצב תצוגה), כולל בנושאים כמו <strong>"גרף עולה/יורד"</strong>.</div>
+                    <div class="q-text rules-paragraph"><strong>Preview:</strong> ראו בהמשך: <strong>"תצוגה מקדימה (Reader)"</strong>.</div>
                 </div>
 
                 <div class="q-sub">
@@ -276,7 +276,7 @@
 
                 <div class="q-main">
                     <div class="bullet-container"><div class="bullet-large"></div></div>
-                    <div class="q-text">תצוגה מקדימה (דפדוף כמו ספר):</div>
+                    <div class="q-text">תצוגה מקדימה (Reader):</div>
                 </div>
 
                 <div class="q-sub">
@@ -286,21 +286,32 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>. במצב <strong>"דפדוף"</strong> ה-Reader מציג עמוד אחד בכל רגע; במצב <strong>"כל הדפים"</strong> מוצגים כל העמודים ברצף (גלילה).</div>
+                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>.</div>
                 </div>
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>Preview אוטומטי ללא חיכוך</strong><br>
-                    סביבת הפיתוח וה‑Preview חייבות להיות מוגדרות כך שהרצת Preview לא תדרוש אישורים ידניים (Allow / Trust / Permissions).<br>
-                    ה‑Preview אמור לעלות אוטומטית בהרצה אחת, ללא אינטראקציה מצד המשתמש.<br>
-                    כל בקשת אישור נחשבת חיכוך שיש להסיר או לתעד כחריגה.<br>
-                    הערה: Prompt של <strong>Workspace Trust</strong> הוא מנגנון אבטחה של VS Code שנשמר בפרופיל המשתמש (לא בקבצי הריפו), ולכן לא ניתן להבטיח ביטולו מתוך הפרויקט בלבד. אם מופיע Trust Prompt בעת פתיחת התיקייה—יש לסמן Trust פעם אחת או להגדיר זאת בהגדרות משתמש של VS Code, ולתעד זאת כחריגה אם אי אפשר להסיר.</div>
+                    <div class="q-text rules-paragraph"><strong>דרישת UX:</strong> ה-Preview צריך לעלות בהרצה אחת וללא אינטראקציה ידנית (ללא "Allow" / "Permissions"). אם VS Code מציג <strong>Workspace Trust</strong>, יש לאשר Trust פעם אחת בפרופיל המשתמש כדי לאפשר Preview תקין.</div>
                 </div>
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">אפשר לפתוח ישירות קובץ מסוים בתוך ה-Reader באמצעות פרמטר <span class="rules-code">file</span>, לדוגמה: <span class="rules-code">/preview?file=עמוד-3.html</span>.</div>
+                    <div class="q-text rules-paragraph">אפשר לפתוח ישירות קובץ מסוים בתוך ה-Reader באמצעות פרמטר <span class="rules-code">file</span>, ולשלוט במצב תצוגה עם <span class="rules-code">mode</span> (<span class="rules-code">all</span>/<span class="rules-code">book</span>). לדוגמה: <span class="rules-code">/preview?mode=all&amp;file=עמוד-3.html</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>יציבות:</strong> אסור ש-<span class="rules-code">/preview</span> יפתח למסך קריאה ריק כאשר קיימים דפים תקינים ב-TOC. בזמן טעינה חייב להופיע מצב <strong>"טוען…"</strong>, ואם נבחר <span class="rules-code">file</span> שלא קיים ב-TOC (ב-URL או מ-state שמור) ה-Reader חייב לעבור אוטומטית לעמוד תקין ראשון.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>ניווט תמיד זמין:</strong> ב-<span class="rules-code">/preview</span> סרגל העליון (מצב תצוגה / הקודם- הבא / כפתורי נושאים) חייב להישאר <strong>גלוי וזמין בזמן גלילה</strong>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>גבולות הדפסה:</strong> התצוגה המקדימה חייבת להציג <strong>מסגרת גבולות A4 להדפסה בצורה מדויקת</strong> כל הזמן (בכל מצב תצוגה), כולל בנושאים כמו <strong>"גרף עולה/יורד"</strong>.</div>
                 </div>
 
                 <div class="q-sub">
@@ -315,12 +326,7 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">ה-Reader כולל שני מצבי תצוגה: <strong>"כל הדפים"</strong> — תצוגה רציפה של כל הדפים לפי סדר הקריאה (גלילה כמו ספר לימוד), ו-<strong>"דפדוף"</strong> — תצוגת ספר (עמוד/זוג עמודים) עם כפתורי “הקודם/הבא”.</div>
-                </div>
-
-                <div class="q-sub">
-                    <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>כלל ברזל:</strong> ב-<span class="rules-code">/preview</span> חייבת להיות <strong>תצוגה קבועה של כל דפי העבודה</strong> ברצף (מצב “כל הדפים”), כך שאפשר לקרוא/לסקור את כל החומר <strong>בסקרול אחד</strong> בלי דפדוף ידני בין קבצים. מצב “כל הדפים” הוא <strong>ברירת המחדל</strong>.</div>
+                    <div class="q-text rules-paragraph"><strong>מצבי תצוגה:</strong> ה-Reader כולל שני מצבים: <strong>"כל הדפים"</strong> (ברירת מחדל) לתצוגה רציפה של כל הדפים לפי סדר הקריאה, ו-<strong>"דפדוף"</strong> לתצוגה של עמוד אחד בכל רגע עם כפתורי “הקודם/הבא”.</div>
                 </div>
 
                 <div class="q-sub">
@@ -336,11 +342,6 @@
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
                     <div class="q-text rules-paragraph"><strong>דרישה חובה:</strong> גם בתוך ה-Reader בכתובת <span class="rules-code">/preview</span> חייב להיות אזור “מעבר בין נושאים” עם כפתורי נושא (לחצנים). הכפתורים חייבים להיות זמינים <strong>תמיד</strong> — גם במצב <strong>"כל הדפים"</strong> וגם במצב <strong>"דפדוף"</strong> — כדי לאפשר מעבר מיידי לנושא אחר בלי לחפש בעמודים.</div>
-                </div>
-
-                <div class="q-sub">
-                    <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph"><strong>דרישה חובה:</strong> בטעינה ראשונית של <span class="rules-code">/preview</span> לא מתחילים במסך ריק. מוצג טקסט מצב “טוען…” עד שהעמוד הראשון נטען ומוצג בפועל.</div>
                 </div>
 
                 <div class="q-sub">

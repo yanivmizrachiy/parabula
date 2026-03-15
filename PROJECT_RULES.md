@@ -95,7 +95,12 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 
 - Run: `npm run preview`
 - URL: http://127.0.0.1:5179
-- Reader UI: `/preview` (same as `/`)
+- Reader UI: `/preview` (also served at `/`)
+
+Reader URL parameters (supported):
+
+- `mode=all` (default) or `mode=book`
+- `file=<relative html path>` (must exist in the Preview TOC; otherwise the reader falls back to the first valid page)
 
 Notes:
 
@@ -104,13 +109,10 @@ Notes:
 
 ### Live reload + correctness signals
 
-- The preview must reload on changes to:
-  - `styles/a4-base.css`
-  - `styles/pages/*.css`
-  - `עמוד-*.html`
+- The preview must reload on changes to watched files (recursive): `*.html`, `*.css`, `*.js`, `*.mjs`, `*.svg` (excluding ignored paths like `.git/`, `node_modules/`, `.vscode/`).
 - The preview must **detect A4 overflow** for `.a4-page` and report a terminal line:
   - Prefix: `[CRITICAL ERROR]`
-  - Include file name and measured heights.
+  - Format: `A4 overflow: <file> (...)` including measured scroll/client sizes.
 
 ### /preview Reader UI (navigation must stay visible)
 
@@ -211,8 +213,8 @@ Example step updates:
 ## 6) Golden Preview Standard (required)
 
 - Preview background must be a **solid** neutral color; patterns/gradients/images are strictly forbidden outside the A4 boundary.
-- Vertical alignment must always be **Top**, with a 20px top margin inside the preview host.
-- Scaling must prioritize **vertical fit** (height-first) to maximize readability (fill the viewport height under the fixed topbar).
+- Preview pages must be **top-aligned** in the reading area (no vertical centering that starts mid-page).
+- In “all pages” mode, pages must appear as a **single vertical sequence** with stable spacing.
 
 ### Zero Tolerance — Non-centered preview pages
 
@@ -231,13 +233,7 @@ Example step updates:
 - If primary rendering fails, the reader must display a fallback iframe for a valid page instead of leaving an empty gray area.
 - A blank preview shell with a loaded sidebar is considered a critical regression.
 
----
+Additional stability requirements:
 
-## Preview Reading Stability
-
-- preview חייב להתחיל מראש הדף ולא מאמצע
-- אסור מצב שבו sidebar מוצג אך אין עמוד
-- state שמור חייב להיבדק מול TOC
-- אם state שבור יש לעבור לעמוד ראשון תקין
-- מצב כל הדפים חייב להיות רצף אנכי ממורכז
-- מצב דפדוף לא ישאיר slot ריק
+- The reader must start at the **top of the selected page** (not mid-scroll).
+- Book mode must not render an “empty slot” state.

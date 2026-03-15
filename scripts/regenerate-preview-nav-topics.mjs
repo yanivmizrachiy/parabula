@@ -129,10 +129,13 @@ async function main() {
     if (!currentTopic) continue;
 
     const existingBlockMatch = page.html.match(/(^[\t ]*)<div\s+class="preview-nav-topics"[\s\S]*?<\/div>/imu);
-    const indent = existingBlockMatch ? existingBlockMatch[1] : '      ';
+    const indentRaw = existingBlockMatch ? existingBlockMatch[1] : '      ';
+    // Guard against pathological whitespace indentation that can cause visible layout glitches.
+    const indent = indentRaw.length > 12 ? '      ' : indentRaw;
     const newBlock = buildTopicsBlock({ topics, currentTopic, currentPageHref: page.name, indent });
 
-    const blockRegex = /<div\s+class="preview-nav-topics"[\s\S]*?<\/div>/iu;
+    // Replace including leading indentation at line start.
+    const blockRegex = /^[\t ]*<div\s+class="preview-nav-topics"[\s\S]*?<\/div>/imu;
     let patched = page.html;
 
     if (blockRegex.test(patched)) {

@@ -17,7 +17,7 @@
 	min-height: 0;
 	width: 100%;
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	grid-template-rows: repeat(3, minmax(0, 1fr));
 	column-gap: 18px;
 	row-gap: 18px;
@@ -30,10 +30,11 @@
 	display: flex;
 	align-items: baseline;
 	justify-content: flex-start;
-	gap: 10px;
+	gap: 8px;
 	font-size: 18px;
 	line-height: 22px;
 	white-space: nowrap;
+	min-width: 0;
 }
 
 .page-37 .dist-index {
@@ -42,6 +43,7 @@
 
 .page-37 .dist-eq {
 	text-align: left;
+	min-width: 0;
 }
 
 .page-37 .dist-sign {
@@ -49,7 +51,11 @@
 }
 
 .page-37 .dist-answer {
-	width: 160px;
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 100%;
+	width: auto;
 	height: 22px;
 	transform: translateY(-2px);
+	margin: 0;
 }

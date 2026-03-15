@@ -1,0 +1,95 @@
+@page { size: A4; margin: 0; }
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --screen-bg: #f2f2f2;
+  --title-blue: #0b55d4;
+  --page-padding: 14mm;
+  --page-outline: 1px dashed rgba(0, 0, 0, 0.45);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, "Noto Sans Hebrew", "Segoe UI", sans-serif;
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@media screen {
+  body { background: var(--screen-bg); }
+
+  .page {
+    margin: 12px auto;
+    background: var(--paper);
+    outline: var(--page-outline);
+    outline-offset: 0;
+  }
+}
+
+@media print {
+  body { background: var(--paper); }
+
+  .page {
+    margin: 0;
+    outline: none;
+  }
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 0;
+  position: relative;
+}
+
+.page-badge {
+  position: absolute;
+  left: 14mm;
+  top: 14mm;
+  width: 18mm;
+  height: 18mm;
+  border: 0.8mm solid var(--title-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18pt;
+  line-height: 1;
+  color: var(--title-blue);
+  background: var(--paper);
+  display: none;
+}
+
+.header {
+  margin-top: 2mm;
+  margin-bottom: 6mm;
+  padding-left: 24mm;
+  display: none;
+}
+
+.title {
+  color: var(--title-blue);
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 21pt;
+  font-weight: 700;
+  margin: 0;
+  text-align: right;
+  letter-spacing: 0.35px;
+  padding-bottom: 2.5mm;
+  border-bottom: 0.8mm solid var(--title-blue);
+}
+
+.pdf-wrap {
+  margin-top: 0;
+}
+
+.pdf-page {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -355,7 +355,7 @@ async function buildToc() {
   // Primary ordering comes from root A4 pages (preview-nav-topics) when available,
   // but we must also include additional built topics under site/ (e.g. "גרף עולה, יורד או קבוע").
   // Guardrails: never include system/redirect topics.
-  /** @type {{name: string, firstFile: string}[]} */
+  /** @type {{name: string, firstFile: string, aliasFor?: string}[]} */
   const buttonTopics = [];
   const namesOrdered = bestTopicOrder.length ? bestTopicOrder : Array.from(canonicalTopicNames);
   const seen = new Set();
@@ -386,6 +386,24 @@ async function buildToc() {
   // 2) Append any remaining non-system topics (e.g. site-built topics).
   for (const t of topics) {
     tryAddButtonTopic(t?.name);
+  }
+
+  // Convenience alias: expose "פונקציה קווית" as a shortcut to the existing
+  // "גרף עולה, יורד או קבוע" topic in the preview top bar.
+  // This is a UI-only alias (does not change TOC grouping).
+  try {
+    const aliasName = 'פונקציה קווית';
+    const targetName = 'גרף עולה, יורד או קבוע';
+    const already = buttonTopics.some((t) => t?.name === aliasName);
+    const target = buttonTopics.find((t) => t?.name === targetName);
+    if (!already && target?.firstFile && !isSystemFile(target.firstFile)) {
+      const idx = buttonTopics.indexOf(target);
+      const entry = { name: aliasName, firstFile: target.firstFile, aliasFor: targetName };
+      if (idx >= 0) buttonTopics.splice(idx + 1, 0, entry);
+      else buttonTopics.push(entry);
+    }
+  } catch {
+    // ignore alias errors
   }
 
   return { topics, flat, buttonTopics };

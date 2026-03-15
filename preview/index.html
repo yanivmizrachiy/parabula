@@ -530,15 +530,14 @@
 
         meta.textContent = `${labelForEntry(right)}${reason ? ' • ' + reason : ''}`;
 
-        const okRight = await renderPageIntoHost(right.file, pageRight, spreadAbortRight.signal);
+        const okRight = await renderBookFrameIntoHost(right.file, pageRight, spreadAbortRight.signal);
         if (seq !== spreadRenderSeq) return;
         if (okRight) {
-          fitA4InHost(pageRight);
           // Fonts / MathJax can settle slightly later; re-fit once (best-effort).
           window.setTimeout(() => {
             if (seq !== spreadRenderSeq) return;
             try {
-              fitA4InHost(pageRight);
+              fitCurrentBookFrame();
             } catch {
               // ignore
             }
@@ -546,7 +545,9 @@
         }
         if (diagConfig.enabled && okRight) {
           try {
-            const pageEl = pageRight?.querySelector?.('main.a4-page') || pageRight?.querySelector?.('.a4-page');
+            const frame = pageRight?.querySelector?.('iframe.reader-hostFrame');
+            const doc = frame?.contentDocument;
+            const pageEl = doc?.querySelector?.('main.a4-page') || doc?.querySelector?.('.a4-page') || doc?.querySelector?.('.page');
             upsertDiag(diagnosePageEl(right.file, pageEl));
           } catch {
             // ignore
@@ -559,39 +560,8 @@
         emptyLeft.hidden = true;
       }
 
-      /** @type {Set<string>} */
-      const injectedStyles = new Set();
-
-      function normalizeHref(href) {
-        const h = String(href || '').trim();
-        if (!h) return '';
-        if (h.startsWith('http://') || h.startsWith('https://')) return h;
-        if (h.startsWith('/')) return h;
-        return '/' + h.replace(/^\.+\//, '');
-      }
-
-      function ensureStylesheet(href) {
-        const normalized = normalizeHref(href);
-        if (!normalized) return;
-        if (injectedStyles.has(normalized)) return;
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = normalized;
-        document.head.appendChild(link);
-        injectedStyles.add(normalized);
-      }
-
       function sleep(ms) {
         return new Promise((r) => setTimeout(r, ms));
-      }
-
-      async function ensureMathJaxReady(timeoutMs = 3000) {
-        const started = Date.now();
-        while (Date.now() - started < timeoutMs) {
-          if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') return true;
-          await sleep(50);
-        }
-        return false;
       }
 
       function encodeUrlPath(relPath) {
@@ -600,124 +570,111 @@
         return parts.map((p) => encodeURIComponent(p)).join('/');
       }
 
-      function resolveAssetHref(file, href) {
-        const h = String(href || '').trim();
-        if (!h) return '';
-        if (h.startsWith('http://') || h.startsWith('https://')) return h;
-        if (h.startsWith('/')) return h;
-
-        const filePath = '/' + encodeUrlPath(file);
-        const baseDir = filePath.replace(/[^/]*$/, '');
-
-        try {
-          const u = new URL(h, window.location.origin + baseDir);
-          return u.pathname + u.search;
-        } catch {
-          // Last resort: behave like normalizeHref() used to.
-          return '/' + h.replace(/^\.+\//, '');
-        }
+      function fitCurrentBookFrame() {
+        const frame = pageRight?.querySelector?.('iframe.reader-hostFrame');
+        if (!frame) return;
+        fitA4InFrame(frame, 'book');
       }
 
-      async function renderPageIntoHost(file, hostEl, abortSignal) {
+      async function renderBookFrameIntoHost(file, hostEl, abortSignal) {
         if (!file || !hostEl) return false;
 
         hostEl.innerHTML = '';
 
-        let html = '';
-        try {
-          const res = await fetch(`/${encodeUrlPath(file)}`, { cache: 'no-store', signal: abortSignal });
-          if (!res.ok) {
-            hostEl.textContent = `שגיאה בטעינת העמוד (${res.status})`;
-            return false;
-          }
-          html = await res.text();
-        } catch (err) {
-          if (err && typeof err === 'object' && 'name' in err && err.name === 'AbortError') {
-            return false;
-          }
-          hostEl.textContent = 'שגיאה בטעינת העמוד.';
-          return false;
-        }
-
-        const parsed = new DOMParser().parseFromString(html, 'text/html');
-
-        const main = parsed.querySelector('main.a4-page');
-        if (main) {
-          // Load page styles (base + page-specific). We keep /styles/preview.css separate.
-          // IMPORTANT: resolve relative hrefs against the *page file* path (not /preview's <base href="/">).
-          for (const link of parsed.querySelectorAll('link[rel="stylesheet"][href]')) {
-            const href = link.getAttribute('href') || '';
-            ensureStylesheet(resolveAssetHref(file, href));
-          }
-
-          hostEl.appendChild(main);
-
-          // Render math (best-effort).
-          const ready = await ensureMathJaxReady();
-          if (ready) {
-            try {
-              await window.MathJax.typesetPromise([hostEl]);
-            } catch {
-              // ignore typeset failures
-            }
-          }
-
-          // Layout guard: detect A4 overflow and report to server (terminal).
-          try {
-            const pageEl = hostEl.querySelector('.a4-page');
-            await reportLayoutGuardStable(file, pageEl);
-          } catch {
-            // ignore measurement errors
-          }
-
-          return true;
-        }
-
-        // Fallback for non-A4 pages (e.g., built topic pages under site/): use an iframe.
         const frame = document.createElement('iframe');
         frame.className = 'reader-hostFrame';
         frame.title = String(file);
         frame.referrerPolicy = 'no-referrer';
         frame.loading = 'eager';
-        const bust = String(Date.now());
-        frame.src = `/${encodeUrlPath(file)}?v=${bust}`;
-        hostEl.appendChild(frame);
+        // Keep a stable srcBase for diagnostics/fitting; actual src is cache-busted.
+        frame.dataset.src = `/${encodeUrlPath(file)}`;
 
-        frame.addEventListener(
-          'load',
-          () => {
-            fitA4InFrame(frame, 'book');
-            maybeWarnIframeBlocked(frame);
-          },
-          { once: true }
-        );
+        return await new Promise((resolve) => {
+          let done = false;
 
-        return true;
-      }
+          /** @type {number | null} */
+          let timeoutId = null;
 
-      function fitA4InHost(hostEl) {
-        const page = hostEl?.querySelector?.('.a4-page');
-        if (!page) return;
+          const cleanup = () => {
+            try {
+              abortSignal?.removeEventListener?.('abort', onAbort);
+            } catch {
+              // ignore
+            }
+            try {
+              if (timeoutId != null) window.clearTimeout(timeoutId);
+            } catch {
+              // ignore
+            }
+          };
 
-        // Reset any previous scaling and force a reflow so measurements are stable.
-        page.style.zoom = '';
-        page.style.transform = '';
-        page.style.transformOrigin = '';
-        // eslint-disable-next-line no-unused-expressions
-        page.offsetWidth;
+          const finish = (ok) => {
+            if (done) return;
+            done = true;
+            cleanup();
+            resolve(ok);
+          };
 
-        // Robust height-first scaling engine (fixed A4 pixel height at 96dpi).
-        // Spec:
-        //   availH = window.innerHeight - 100
-        //   scale = availH / 1123
-        //   scale >= 0.6
-        const availH = Math.max(0, window.innerHeight - 100);
-        let scale = availH / 1123;
-        if (!Number.isFinite(scale) || scale <= 0) return;
-        if (scale < 0.6) scale = 0.6;
+          const onAbort = () => finish(false);
+          try {
+            abortSignal?.addEventListener?.('abort', onAbort, { once: true });
+          } catch {
+            // ignore
+          }
 
-        page.style.transformOrigin = 'top center';
-        page.style.transform = `scale(${scale})`;
+          frame.addEventListener(
+            'load',
+            () => {
+              try {
+                fitA4InFrame(frame, 'book');
+                // Fonts can settle slightly later; re-fit once.
+                window.setTimeout(() => {
+                  try {
+                    fitA4InFrame(frame, 'book');
+                  } catch {
+                    // ignore
+                  }
+                }, 250);
+              } catch {
+                // ignore
+              }
+              try {
+                maybeWarnIframeBlocked(frame);
+              } catch {
+                // ignore
+              }
+              finish(true);
+            },
+            { once: true }
+          );
+
+          frame.addEventListener(
+            'error',
+            () => {
+              try {
+                hostEl.textContent = 'שגיאה בטעינת העמוד.';
+              } catch {
+                // ignore
+              }
+              finish(false);
+            },
+            { once: true }
+          );
+
+          timeoutId = window.setTimeout(() => {
+            try {
+              hostEl.textContent = 'שגיאה בטעינת העמוד (Timeout).';
+            } catch {
+              // ignore
+            }
+            finish(false);
+          }, 15_000);
+
+          // Set src+append only after listeners are installed.
+          const bust = String(Date.now());
+          frame.src = `${frame.dataset.src}?v=${bust}`;
+          hostEl.appendChild(frame);
+        });
       }
 
       function maybeWarnIframeBlocked(frameEl) {
@@ -748,14 +705,58 @@
         style.id = '__reader_injected';
         style.textContent = `
           .preview-nav { display: none !important; }
-          html, body { background: var(--bg-paper) !important; display: block !important; }
-          body { margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+          html, body { background: var(--bg-paper) !important; width: 100% !important; height: 100% !important; }
+          /* Center the page in the iframe viewport (works for both RTL/LTR) */
+          body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+          }
           .a4-page { margin: 0 !important; margin-bottom: 0 !important; box-shadow: inset 0 0 0 1px var(--border-light) !important; }
           /* Built topic pages under site/ use .page and already draw an A4 outline in their own CSS.
              Keep that outline visible to match the preview rules (A4 boundary always shown). */
           .page { margin: 0 !important; }
         `;
         doc.head.appendChild(style);
+      }
+
+      function fitA4InHost(hostEl, page, mode = 'book') {
+        if (!hostEl || !page) return;
+
+        // Use host box (not hard-coded A4 constants) and account for host padding.
+        const hostCs = getComputedStyle(hostEl);
+        const padL = Number.parseFloat(hostCs.paddingLeft || '0') || 0;
+        const padR = Number.parseFloat(hostCs.paddingRight || '0') || 0;
+        const padT = Number.parseFloat(hostCs.paddingTop || '0') || 0;
+        const padB = Number.parseFloat(hostCs.paddingBottom || '0') || 0;
+
+        const availW = Math.max(0, hostEl.clientWidth - padL - padR);
+        const availH = Math.max(0, hostEl.clientHeight - padT - padB);
+        if (availW <= 0 || availH <= 0) return;
+
+        const pageRect = page.getBoundingClientRect();
+        if (pageRect.width <= 0 || pageRect.height <= 0) return;
+
+        // Allow upscaling in preview so the page can actually fill available space.
+        const minScale = 0.55;
+        const maxScale = 2.5;
+        const scaleRaw =
+          mode === 'all'
+            ? availW / pageRect.width
+            : Math.min(availW / pageRect.width, availH / pageRect.height);
+        const scale = Math.max(minScale, Math.min(scaleRaw, maxScale));
+
+        // Prefer zoom (stable in Chromium) over transform.
+        page.style.zoom = String(scale);
+
+        // In all-pages mode, the host should grow to match scaled A4 height.
+        if (mode === 'all') {
+          const desiredH = Math.ceil(pageRect.height * scale + 2 + padT + padB);
+          if (Number.isFinite(desiredH) && desiredH > 0) hostEl.style.height = `${desiredH}px`;
+        }
       }
 
       function fitA4InFrame(frameEl, mode = 'book') {
@@ -790,27 +791,7 @@
           page.style.transform = '';
           page.style.transformOrigin = '';
 
-          const pageRect = page.getBoundingClientRect();
-          const availW = frameEl.clientWidth;
-          const availH = frameEl.clientHeight;
-          if (availW <= 0 || availH <= 0 || pageRect.width <= 0 || pageRect.height <= 0) return;
-
-          // Allow upscaling in preview so the page can actually fill the available space.
-          // Cap to avoid absurd zoom on very large viewports.
-          const maxScale = 2.5;
-          const scaleRaw =
-            mode === 'all'
-              ? availW / pageRect.width
-              : Math.min(availW / pageRect.width, availH / pageRect.height);
-          const scale = Math.min(scaleRaw, maxScale);
-
-          // Prefer `zoom` (stable in Chromium) to avoid transform layout issues.
-          page.style.zoom = String(scale);
-
-          if (mode === 'all') {
-            const desiredH = Math.ceil(pageRect.height * scale + 2);
-            if (Number.isFinite(desiredH) && desiredH > 0) frameEl.style.height = `${desiredH}px`;
-          }
+          fitA4InHost(frameEl, page, mode);
         } catch {
           // Ignore cross-origin / transient iframe loading states.
         }
@@ -887,8 +868,10 @@
         const entry = findEntry(selectedFile);
         const activeTopic = entry ? entry.topic || 'אחר' : '';
         for (const [topicName, btn] of topicButtonsMap.entries()) {
-          btn.classList.toggle('is-active', topicName === activeTopic);
-          if (topicName === activeTopic) btn.setAttribute('aria-current', 'true');
+          const aliasFor = String(btn?.dataset?.aliasFor || '').trim();
+          const isActive = topicName === activeTopic || (aliasFor && aliasFor === activeTopic);
+          btn.classList.toggle('is-active', isActive);
+          if (isActive) btn.setAttribute('aria-current', 'true');
           else btn.removeAttribute('aria-current');
         }
       }
@@ -926,12 +909,13 @@
         const fallbackTopics = !buttonTopics.length ? toc.topics : [];
 
         const items = buttonTopics.length
-          ? buttonTopics.map((t) => ({ name: t?.name || '', firstFile: t?.firstFile || '' }))
-          : fallbackTopics.map((t) => ({ name: t?.name || '', firstFile: t?.pages?.[0]?.file || '' }));
+          ? buttonTopics.map((t) => ({ name: t?.name || '', firstFile: t?.firstFile || '', aliasFor: t?.aliasFor || '' }))
+          : fallbackTopics.map((t) => ({ name: t?.name || '', firstFile: t?.pages?.[0]?.file || '', aliasFor: '' }));
 
         for (const item of items) {
           const name = String(item?.name || '').trim();
           const firstFileRaw = String(item?.firstFile || '').trim();
+          const aliasFor = String(item?.aliasFor || '').trim();
           if (!name || !firstFileRaw) continue;
           if (name === 'אחר') continue;
           if (/\bredirect\b/iu.test(name)) continue;
@@ -940,6 +924,7 @@
           btn.type = 'button';
           btn.className = 'reader-btn reader-topicBtn';
           btn.textContent = name;
+          if (aliasFor) btn.dataset.aliasFor = aliasFor;
 
           btn.addEventListener('click', async () => {
             // Robust filename normalization for Hebrew/Unicode paths.
@@ -1335,7 +1320,7 @@
           if (diagConfig.enabled) flushDiagReport();
         });
 
-        // Book mode uses direct DOM injection (no iframe). We still fit on resize.
+        // Book mode uses an iframe (like All Pages), so fit on resize.
 
         if (window.ResizeObserver && frameWrap) {
           const ro = new ResizeObserver(() => {
@@ -1344,7 +1329,7 @@
               return;
             }
 
-            fitA4InHost(pageRight);
+            fitCurrentBookFrame();
           });
           ro.observe(frameWrap);
         } else {
@@ -1354,8 +1339,7 @@
               return;
             }
 
-            fitA4InHost(pageRight);
-            if (!pageLeft.hidden) fitA4InHost(pageLeft);
+            fitCurrentBookFrame();
           });
         }
         } catch (err) {
