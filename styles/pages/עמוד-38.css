@@ -1,0 +1,161 @@
+/* עמוד 38 — פילוג מורחב */
+
+.page-38 .question-block {
+	justify-content: flex-start;
+	gap: 8px;
+}
+
+.page-38 .dist2-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.page-38 .match-block {
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	background: var(--bg-subtle);
+	padding: 8px 10px;
+}
+
+.page-38 .match-cols {
+	display: flex;
+	gap: 18px;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.page-38 .match-col {
+	flex: 1;
+	min-width: 0;
+	background: var(--bg-paper);
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	padding: 6px 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.page-38 .match-title {
+	font-weight: 500 !important;
+	text-align: center;
+	padding-bottom: 4px;
+	border-bottom: 1px solid var(--border-light);
+}
+
+.page-38 .match-item {
+	direction: ltr;
+	unicode-bidi: isolate;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+	gap: 10px;
+	font-size: 16px;
+	line-height: 22px;
+	white-space: nowrap;
+}
+
+.page-38 .match-index {
+	font-weight: 500;
+}
+
+.page-38 .match-item .bullet-num {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+	flex: 0 0 auto;
+}
+
+.page-38 .dist2-top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	min-height: 22px;
+}
+
+.page-38 .dist2-top .bullet-num {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+	flex: 0 0 auto;
+}
+
+.page-38 .dist2-line {
+	direction: ltr;
+	unicode-bidi: isolate;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+	gap: 8px;
+	font-size: 17px;
+	line-height: 22px;
+	white-space: nowrap;
+	min-width: 0;
+}
+
+.page-38 .dist2-eq {
+	min-width: 0;
+}
+
+.page-38 .match-eq {
+	text-align: left;
+}
+
+.page-38 .dist2-grid {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-rows: repeat(3, minmax(0, 1fr));
+	column-gap: 22px;
+	row-gap: 16px;
+	align-items: stretch;
+}
+
+.page-38 .dist2-item {
+	min-height: 0;
+	height: 100%;
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	padding: 6px 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	overflow: hidden;
+}
+
+.page-38 .dist2-sign {
+	font-weight: 500;
+}
+
+.page-38 .dist2-answer {
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 100%;
+	width: auto;
+	height: 22px;
+	transform: translateY(-2px);
+	margin: 0;
+}

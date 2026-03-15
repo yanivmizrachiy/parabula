@@ -1,0 +1,109 @@
+@page { size: A4; margin: 0; }
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --screen-bg: #f2f2f2;
+  --title-blue: #0b55d4;
+  --page-padding: 14mm;
+  --page-outline: 1px dashed rgba(0, 0, 0, 0.45);
+
+  /* Crop the top of the PDF-derived SVG so our canonical header replaces it
+     without hiding actual exercise content. Tune in mm if needed. */
+  --pdf-top-crop: 22mm;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, "Noto Sans Hebrew", "Segoe UI", sans-serif;
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@media screen {
+  body { background: var(--screen-bg); }
+
+  .page {
+    margin: 12px auto;
+    background: var(--paper);
+    outline: var(--page-outline);
+    outline-offset: 0;
+  }
+}
+
+@media print {
+  body { background: var(--paper); }
+
+  .page {
+    margin: 0;
+    outline: none;
+  }
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-badge {
+  position: absolute;
+  left: 14mm;
+  top: 14mm;
+  width: 18mm;
+  height: 18mm;
+  border: 0.8mm solid var(--title-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18pt;
+  line-height: 1;
+  color: var(--title-blue);
+  background: var(--paper);
+  z-index: 3;
+}
+
+.header {
+  position: absolute;
+  right: 14mm;
+  left: 14mm;
+  top: 14mm;
+  padding-left: 24mm;
+  padding-top: 2mm;
+  padding-bottom: 6mm;
+  z-index: 2;
+  background: var(--paper);
+}
+
+.title {
+  color: var(--title-blue);
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 21pt;
+  font-weight: 700;
+  margin: 0;
+  text-align: right;
+  letter-spacing: 0.35px;
+  padding-bottom: 2.5mm;
+  border-bottom: 0.8mm solid var(--title-blue);
+}
+
+.pdf-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.pdf-page {
+  width: 100%;
+  height: calc(100% + var(--pdf-top-crop));
+  display: block;
+  transform: translateY(calc(-1 * var(--pdf-top-crop)));
+}

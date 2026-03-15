@@ -1,0 +1,151 @@
+/* עמוד 40 — מקבילית (עמוד 2) */
+
+.page-40 .question-block {
+  gap: 6mm;
+}
+
+.page-40 .para-sectionTitle {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-right: 6px solid var(--title-blue);
+  background: var(--bg-subtle);
+  font-size: 18px;
+  color: var(--title-blue);
+  font-weight: 500 !important;
+  margin: 2mm 0;
+}
+
+.page-40 .para-card {
+  margin-top: 3mm;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg-paper);
+  display: flex;
+  gap: 10mm;
+  align-items: center;
+}
+
+.page-40 .para-cardFigure {
+  flex: 0 0 auto;
+  width: 220px;
+}
+
+.page-40 .para-cardLogic {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-40 .para-given {
+  font-weight: 500 !important;
+}
+
+.page-40 .para-arrow {
+  color: var(--title-blue);
+  width: 20px;
+  height: 22px;
+  position: relative;
+  flex: 0 0 auto;
+  align-self: center;
+  font-size: 0;
+  line-height: 0;
+}
+
+.page-40 .para-arrow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1px;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 13px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.page-40 .para-arrow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 13px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid currentColor;
+}
+
+.page-40 .para-conclusion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  line-height: 22px;
+}
+
+.page-40 .para-blank-word {
+  width: 110px;
+}
+
+.page-40 .para-blank-num {
+  width: 72px;
+}
+
+.page-40 .para-blank-seg {
+  width: 68px;
+}
+
+.page-40 .para-svg {
+  width: 100%;
+  height: auto;
+  color: var(--text-main);
+  shape-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
+  overflow: visible;
+}
+
+.page-40 .para-svg text.lbl {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  fill: currentColor;
+}
+
+.page-40 .para-svg .seg {
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.page-40 .para-svg .mark {
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.page-40 .para-svg .diag {
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 5 4;
+}
+
+.page-40 .para-svg .pt {
+  fill: currentColor;
+}
+
+.page-40 .para-svg .angle {
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}

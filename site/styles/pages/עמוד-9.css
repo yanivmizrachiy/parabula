@@ -1,0 +1,197 @@
+/* עמוד 9 — משפט פיתגורס */
+@import url("../topics/pythagoras.css");
+
+.page-9 {
+	--problem-block-height: 300px;
+}
+
+.page-9 .q-main {
+	margin-bottom: 0;
+}
+
+.page-9 .question-block {
+	justify-content: space-between;
+	gap: 6px;
+}
+
+.page-9 .pyt-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.page-9 .pyt-tri-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 14px;
+	row-gap: 10px;
+	width: 100%;
+	align-items: start;
+}
+
+.page-9 .problem-block {
+	height: var(--problem-block-height);
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.page-9 .problem-top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	min-height: 22px;
+}
+
+.page-9 .problem-top .bullet-num {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+	flex: 0 0 auto;
+}
+
+.page-9 .problem-answer {
+	direction: ltr;
+	unicode-bidi: isolate;
+	white-space: nowrap;
+	flex: 0 0 auto;
+	text-align: left;
+	padding-top: 6px;
+	border-top: 1px solid var(--border-light);
+}
+
+.page-9 .problem-work {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.page-9 .problem-figure {
+	flex: 0 0 auto;
+}
+
+.page-9 .pyt-tri-wrap {
+	position: relative;
+	width: 100%;
+	height: 31mm;
+	margin-top: -4px;
+}
+
+.page-9 .pyt-tri-svg {
+	width: 100%;
+	height: 31mm;
+	display: block;
+	color: var(--accent-dark);
+	shape-rendering: geometricPrecision;
+}
+
+.page-9 .pyt-tri-svg text {
+	font-family: inherit;
+	text-anchor: middle;
+	dominant-baseline: middle;
+	alignment-baseline: middle;
+}
+
+.page-9 .pyt-tri-edge,
+.page-9 .pyt-tri-right {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	vector-effect: non-scaling-stroke;
+}
+
+.page-9 .pyt-tri-point {
+	font-size: 14px;
+	font-weight: 500;
+	fill: var(--text-main);
+	unicode-bidi: isolate;
+}
+
+.page-9 .pyt-tri-side {
+	font-size: 13px;
+	font-weight: 400;
+	fill: var(--text-main);
+	unicode-bidi: isolate;
+}
+
+.page-9 .pyt-tri-x {
+	font-size: 14px;
+	font-weight: 500;
+	fill: var(--text-main);
+	font-style: italic;
+	unicode-bidi: isolate;
+}
+
+
+.page-9 .solution-space {
+	flex: 1;
+	min-height: 0;
+	border: 1px solid var(--border-light);
+	border-radius: 6px;
+	background-color: var(--bg-paper);
+	padding: 6px 8px;
+	direction: ltr;
+	unicode-bidi: isolate;
+	background-image:
+		linear-gradient(to bottom, transparent 21px, var(--grid-line) 21px, var(--grid-line) 22px),
+		linear-gradient(to right, transparent 21px, var(--grid-line) 21px, var(--grid-line) 22px);
+	background-size: 22px 22px;
+	background-repeat: repeat;
+}
+
+.page-9 .pyt-footer {
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.page-9 .pyt-solutions .q-sub {
+	margin-bottom: 0;
+}
+
+.page-9 .pyt-solutions {
+	padding-bottom: 0;
+}
+
+.page-9 .pyt-solutions .q-text {
+	display: grid;
+	grid-template-columns: max-content repeat(6, minmax(0, 1fr));
+	column-gap: 10px;
+	align-items: center;
+	width: 100%;
+	font-size: 12px;
+}
+
+.page-9 .pyt-solutions .solutions-label {
+	font-weight: 500;
+}
+
+.page-9 .pyt-solution {
+	direction: ltr;
+	unicode-bidi: isolate;
+	font-weight: 500 !important;
+	text-align: center;
+	white-space: nowrap;
+}

@@ -16,7 +16,7 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 ### A4 content coverage (required)
 
 - Pages must be laid out to **use the full A4 page area** (no large unintended empty regions), while still respecting the A4 contract above.
-- **Pythagoras — page 3** (`עמוד-3.html`) MUST be composed to **span the entire A4 page** and utilize the available height according to the design rules of this repo.
+- **Pythagoras — topic page 1** (`עמוד-9.html`) MUST be composed to **span the entire A4 page** and utilize the available height according to the design rules of this repo.
 
 ### Topic pages must not overflow (required)
 
@@ -81,6 +81,15 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 - Every SVG stroke must be **non-scaling**:
   - Use `vector-effect: non-scaling-stroke` (in SVG attributes or via page CSS selectors).
 
+### Geometry diagrams — parallelism notation (required)
+
+- **Placement:** Parallel markers MUST be placed at the **exact midpoint** of the segment they annotate.
+- **Style:** Markers must be **clean, sharp chevrons** centered on the segment (avoid cluttered marks that can read as right-angle/angle notation).
+- **Distinct pairs:** Use a **single chevron** (`>`) for the first parallel pair and a **double chevron** (`>>`) for the second parallel pair.
+- **Alignment:** The chevrons must be rotated to match the **segment direction/slope**.
+- **Labels:** Vertex labels (A, B, C, D) must sit **outside** the polygon with a consistent padding (~5pt) and must not touch/overlap any stroke.
+- **Print clarity:** Use consistent, high-contrast strokes suitable for A4 printing (no faint gray lines for primary geometry edges).
+
 ### Geometry / coordinate systems
 
 - Coordinate system container size: **440px × 440px**.
@@ -95,7 +104,12 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 
 - Run: `npm run preview`
 - URL: http://127.0.0.1:5179
-- Reader UI: `/preview` (same as `/`)
+- Reader UI: `/preview` (also served at `/`)
+
+Reader URL parameters (supported):
+
+- `mode=all` (default) or `mode=book`
+- `file=<relative html path>` (must exist in the Preview TOC; otherwise the reader falls back to the first valid page)
 
 Notes:
 
@@ -104,13 +118,10 @@ Notes:
 
 ### Live reload + correctness signals
 
-- The preview must reload on changes to:
-  - `styles/a4-base.css`
-  - `styles/pages/*.css`
-  - `עמוד-*.html`
+- The preview must reload on changes to watched files (recursive): `*.html`, `*.css`, `*.js`, `*.mjs`, `*.svg` (excluding ignored paths like `.git/`, `node_modules/`, `.vscode/`).
 - The preview must **detect A4 overflow** for `.a4-page` and report a terminal line:
   - Prefix: `[CRITICAL ERROR]`
-  - Include file name and measured heights.
+  - Format: `A4 overflow: <file> (...)` including measured scroll/client sizes.
 
 ### /preview Reader UI (navigation must stay visible)
 
@@ -120,6 +131,14 @@ Notes:
 ---
 
 ## 2) Navigation engine (textbook hierarchy)
+
+### System files must never appear in the Preview TOC (required)
+
+- System/deployment files (Redirects, 404, Rules) must never appear in the `/preview` TOC or topic buttons.
+
+### Topic buttons must always lead to the first page (required)
+
+- Clicking a topic button must always navigate to the **first page** in that topic sequence (topic-local page 1), not to a previously selected or cached page.
 
 Each page MUST contain a `.preview-nav` with:
 
@@ -203,8 +222,15 @@ Example step updates:
 ## 6) Golden Preview Standard (required)
 
 - Preview background must be a **solid** neutral color; patterns/gradients/images are strictly forbidden outside the A4 boundary.
-- Vertical alignment must always be **Top**, with a 20px top margin inside the preview host.
-- Scaling must prioritize **vertical fit** (height-first) to maximize readability (fill the viewport height under the fixed topbar).
+- Preview pages must be **top-aligned** in the reading area (no vertical centering that starts mid-page).
+- In “all pages” mode, pages must appear as a **single vertical sequence** with stable spacing.
+
+### Zero Tolerance — Non-centered preview pages
+
+- The A4 preview must be **horizontally centered at all times** in `/preview` (all modes).
+- Any drift/bias to the right (common under RTL) is a **critical regression**.
+- The preview _layout container_ may be forced to `direction: ltr` to guarantee centering, but the `.a4-page` content must remain RTL.
+- The `.a4-page` must never be allowed to shrink in flex layouts (`flex-shrink: 0`) and must keep a stable outer margin in the host.
 
 ---
 
@@ -216,13 +242,7 @@ Example step updates:
 - If primary rendering fails, the reader must display a fallback iframe for a valid page instead of leaving an empty gray area.
 - A blank preview shell with a loaded sidebar is considered a critical regression.
 
----
+Additional stability requirements:
 
-## Preview Reading Stability
-
-- preview חייב להתחיל מראש הדף ולא מאמצע
-- אסור מצב שבו sidebar מוצג אך אין עמוד
-- state שמור חייב להיבדק מול TOC
-- אם state שבור יש לעבור לעמוד ראשון תקין
-- מצב כל הדפים חייב להיות רצף אנכי ממורכז
-- מצב דפדוף לא ישאיר slot ריק
+- The reader must start at the **top of the selected page** (not mid-scroll).
+- Book mode must not render an “empty slot” state.

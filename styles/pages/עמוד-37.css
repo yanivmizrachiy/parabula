@@ -1,0 +1,93 @@
+/* עמוד 37 — פילוג מורחב */
+
+.page-37 .question-block {
+	justify-content: flex-start;
+}
+
+.page-37 .dist-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.page-37 .dist-grid {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-rows: repeat(3, minmax(0, 1fr));
+	column-gap: 8px;
+	row-gap: 8px;
+	align-items: stretch;
+}
+
+.page-37 .dist-item {
+	min-height: 0;
+	height: 100%;
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-light);
+	border-radius: 8px;
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	overflow: hidden;
+}
+
+.page-37 .dist-top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	min-height: 22px;
+}
+
+.page-37 .dist-top .bullet-num {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	border: 1.5px solid var(--accent-dark);
+	background: var(--bg-paper);
+	color: var(--text-main);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+	flex: 0 0 auto;
+}
+
+.page-37 .dist-line {
+	direction: ltr;
+	unicode-bidi: isolate;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+	gap: 8px;
+	font-size: 17px;
+	line-height: 22px;
+	white-space: nowrap;
+	min-width: 0;
+}
+
+.page-37 .dist-eq {
+	text-align: left;
+	min-width: 0;
+}
+
+.page-37 .dist-sign {
+	font-weight: 500;
+}
+
+.page-37 .dist-answer {
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 100%;
+	width: auto;
+	height: 22px;
+	transform: translateY(-2px);
+	margin: 0;
+}

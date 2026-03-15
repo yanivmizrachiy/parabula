@@ -23,13 +23,24 @@ test('Preview CSS must style topic bar and not hide navigation elements', async 
   assert.ok(!/\.reader-sidebar\s*\{\s*display\s*:\s*none\s*;?\s*\}/u.test(css), 'styles/preview.css: must not set .reader-sidebar { display: none }');
 });
 
-test('Golden Preview: solid museum background + top-aligned host', async () => {
+test('Golden Preview: calm background + centered host (no LTR hacks)', async () => {
   const css = await readText(path.join('styles', 'preview.css'));
 
-  assert.ok(/background-color\s*:\s*#eef0f2\b/iu.test(css), 'styles/preview.css: expected museum background #eef0f2');
   assert.ok(
-    /\.reader-pageHost\s*\{[\s\S]*?display\s*:\s*block\s*;[\s\S]*?padding-top\s*:\s*20px\s*;[\s\S]*?\}/u.test(css),
-    'styles/preview.css: expected .reader-pageHost to be display:block with padding-top:20px'
+    /background-color\s*:\s*var\(--bg-subtle\)/iu.test(css),
+    'styles/preview.css: expected museum background to use existing token var(--bg-subtle)'
+  );
+  assert.ok(
+    /\.reader-pageHost\s*\{[\s\S]*?display\s*:\s*flex\s*;[\s\S]*?justify-content\s*:\s*center\s*;[\s\S]*?overflow\s*:\s*hidden\s*;[\s\S]*?\}/u.test(
+      css
+    ),
+    'styles/preview.css: expected .reader-pageHost to center content (flex) and avoid inner scrollbars'
+  );
+  assert.ok(
+    /\.reader-pageHost\s*>\s*\.a4-page\s*\{[\s\S]*?margin\s*:\s*0\s*!important\s*;[\s\S]*?outline\s*:\s*1px\s+solid\s+var\(--border-light\)\s*;[\s\S]*?\}/u.test(
+      css
+    ),
+    'styles/preview.css: expected injected A4 page to have stable margin reset + visible boundary outline'
   );
   assert.ok(/background-image\s*:\s*none/iu.test(css), 'styles/preview.css: expected background-image: none guards (no patterns outside A4)');
 });
@@ -73,14 +84,14 @@ test('preview/index.html must not contain content after </html>', async () => {
   assert.ok(/^\s*$/u.test(tail), 'preview/index.html: found non-whitespace content after </html>');
 });
 
-test('Golden Preview: fitA4InHost must be height-first (viewport minus topbar)', async () => {
+test('Golden Preview: fitA4InHost must be host-based (no magic A4 constants)', async () => {
   const html = await readText(path.join('preview', 'index.html'));
 
   assert.ok(/function\s+fitA4InHost\s*\(/u.test(html), 'preview/index.html: missing fitA4InHost()');
-  assert.ok(/window\.innerHeight/u.test(html), 'preview/index.html: expected fitA4InHost to use window.innerHeight');
-  assert.ok(
-    /--reader-topbar-h/u.test(html) || /topbar\.getBoundingClientRect\(\)\.height/u.test(html),
-    'preview/index.html: expected topbar height usage for scaling'
-  );
-  assert.ok(/-\s*40\b/u.test(html), 'preview/index.html: expected 40px safety margin in scaling');
+  assert.ok(/hostEl\.clientWidth/u.test(html), 'preview/index.html: expected fitA4InHost to use hostEl.clientWidth');
+  assert.ok(/hostEl\.clientHeight/u.test(html), 'preview/index.html: expected fitA4InHost to use hostEl.clientHeight');
+  assert.ok(/getComputedStyle\(hostEl\)/u.test(html), 'preview/index.html: expected fitA4InHost to account for host padding');
+  assert.ok(/\b0\.55\b/u.test(html), 'preview/index.html: expected minimum scale clamp of 0.55');
+  assert.ok(/page\.style\.zoom\s*=\s*String\(scale\)/u.test(html), 'preview/index.html: expected scaling via CSS zoom');
+  assert.ok(!/\b1123\b/u.test(html), 'preview/index.html: must not rely on A4 pixel-height constant 1123');
 });

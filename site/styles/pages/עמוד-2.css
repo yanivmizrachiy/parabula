@@ -1,0 +1,27 @@
+/* עמוד 2 — עיצוב/רקע ייעודי לעמוד זה בלבד */
+
+.page-2 {
+}
+
+.page-2 .p2-showcase-tight {
+	padding: 10px 25px;
+}
+
+.page-2 .p2-shape-80 {
+	width: 80px;
+	height: 80px;
+}
+
+.page-2 .p2-visual-tight {
+	margin: 5px 0;
+}
+
+.page-2 .p2-t-shape {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.page-2 .p2-table-full {
+	width: 100%;
+}

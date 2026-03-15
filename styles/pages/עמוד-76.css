@@ -1,0 +1,18 @@
+/* עמוד 76 — משוואות */
+
+.page-76 .question-block {
+  justify-content: flex-start;
+}
+
+.page-76 .pdf-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.page-76 .pdf-page {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}

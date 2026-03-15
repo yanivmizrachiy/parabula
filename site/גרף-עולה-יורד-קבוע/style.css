@@ -1,4 +1,4 @@
-@page { size: A4; margin: 14mm; }
+@page { size: A4; margin: 0; }
 
 :root {
   --ink: #000;
