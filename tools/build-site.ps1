@@ -76,7 +76,14 @@ foreach ($indexFile in $indexFiles) {
         $topicAssets = Join-Path (Join-Path $pagesRoot $parentRel) 'assets'
         if (Test-Path -LiteralPath $topicAssets -PathType Container) {
             $destAssets = Join-Path $destDir 'assets'
-            Copy-Item -LiteralPath $topicAssets -Destination $destAssets -Recurse -Force
+            if (Test-Path -LiteralPath $destAssets -PathType Container) {
+                Remove-Item -LiteralPath $destAssets -Recurse -Force
+            }
+            New-Item -ItemType Directory -Force -Path $destAssets | Out-Null
+
+            # Copy the *contents* of the topic assets directory into site/<topic>/assets
+            # (avoid creating site/<topic>/assets/assets).
+            Copy-Item -Path (Join-Path $topicAssets '*') -Destination $destAssets -Recurse -Force
         }
     }
 
