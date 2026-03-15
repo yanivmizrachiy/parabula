@@ -6,6 +6,9 @@
 /print/
 *.log
 
+# Local scratch
+/tmp/
+
 # Local OCR artifacts (do not commit)
 *.traineddata
 scripts/ocr-pythagoras-page3-answers.mjs

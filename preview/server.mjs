@@ -45,6 +45,26 @@ function isWatchedFile(relPath) {
   return ext === '.html' || ext === '.css' || ext === '.js' || ext === '.mjs' || ext === '.svg';
 }
 
+function isSystemFile(relPath) {
+  const normalized = String(relPath || '').replace(/\\/g, '/');
+  const base = path.basename(normalized).toLowerCase();
+
+  // System / deployment artifacts that must never appear in the preview TOC.
+  if (base === 'redirects.json') return true;
+  if (base === '404.html') return true;
+
+  // Ghost-topic guard: any file name containing "Redirect".
+  if (/redirect/iu.test(base)) return true;
+
+  // Also exclude any path segment containing "redirect" (not just the basename).
+  if (/redirect/iu.test(normalized)) return true;
+
+  // Repo-internal docs that must not be exposed.
+  if (base === 'rules.html') return true;
+
+  return false;
+}
+
 function sendSseEvent(eventName, data) {
   const payload = `event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`;
   for (const res of sseClients) {
@@ -158,6 +178,9 @@ async function listHtmlFiles() {
         .filter((rel) => rel.toLowerCase().endsWith('.html'))
         .filter((rel) => rel !== 'site/index.html');
 
+      // Never include system files in the preview TOC.
+      sitePages = sitePages.filter((rel) => !isSystemFile(rel));
+
       // build-site.ps1 publishes root A4 pages under site/ for GitHub Pages.
       // In preview we already list root-level עמוד-*.html, so exclude the published copies
       // to avoid duplicates in the reader TOC.
@@ -227,7 +250,11 @@ async function buildToc() {
   /** @type {string[]} */
   let bestTopicOrder = [];
 
+  /** @type {Set<string>} */
+  const canonicalTopicNames = new Set();
+
   for (const rel of files) {
+    if (isSystemFile(rel)) continue;
     const fullPath = path.join(ROOT_DIR, rel);
     let html = '';
     try {
@@ -237,6 +264,10 @@ async function buildToc() {
     }
 
     const meta = parsePageMetaFromHtml(html);
+
+    // Extra hardening: if the document title or meta topic indicates Redirect,
+    // drop it from the TOC to avoid "ghost" topics.
+    if (/\bredirect\b/iu.test(meta.docTitle) || /\bredirect\b/iu.test(meta.topic)) continue;
     let topicFallback = '';
     if (!meta.topic) {
       // Built topic pages under site/ don't have .nav-meta; use the document <title>
@@ -249,6 +280,18 @@ async function buildToc() {
     }
     if (meta.topicLinks.length > bestTopicOrder.length) {
       bestTopicOrder = meta.topicLinks.map((t) => t.name);
+    }
+
+    // Canonical topics for the top buttons come ONLY from nav-meta pages.
+    // Source: the topic links embedded in .preview-nav-topics inside root A4 pages.
+    const baseName = path.basename(rel);
+    const isRootA4Page = A4_PAGE_FILE_RE.test(baseName) && !String(rel).includes('/') && !String(rel).includes('\\');
+    if (isRootA4Page) {
+      for (const t of meta.topicLinks) {
+        if (!t?.name) continue;
+        if (/\bredirect\b/iu.test(t.name)) continue;
+        canonicalTopicNames.add(t.name);
+      }
     }
 
     const entry = {
@@ -307,7 +350,45 @@ async function buildToc() {
 
   // Flatten reading order.
   const flat = topics.flatMap((t) => t.pages);
-  return { topics, flat };
+
+  // Build a topic-button list.
+  // Primary ordering comes from root A4 pages (preview-nav-topics) when available,
+  // but we must also include additional built topics under site/ (e.g. "גרף עולה, יורד או קבוע").
+  // Guardrails: never include system/redirect topics.
+  /** @type {{name: string, firstFile: string}[]} */
+  const buttonTopics = [];
+  const namesOrdered = bestTopicOrder.length ? bestTopicOrder : Array.from(canonicalTopicNames);
+  const seen = new Set();
+
+  function tryAddButtonTopic(topicNameRaw) {
+    const topicName = String(topicNameRaw || '').trim();
+    if (!topicName) return;
+    if (topicName === 'אחר') return;
+    if (/\bredirect\b/iu.test(topicName)) return;
+    if (seen.has(topicName)) return;
+
+    const topic = topics.find((t) => t.name === topicName);
+    const firstFile = topic?.pages?.[0]?.file || '';
+    if (!firstFile) return;
+    if (isSystemFile(firstFile)) return;
+
+    buttonTopics.push({ name: topicName, firstFile });
+    seen.add(topicName);
+  }
+
+  // 1) Add topics in the canonical UI order first.
+  for (const name of namesOrdered) {
+    // If canonicalTopicNames exists, still prioritize those, but don't *exclude* additional real topics.
+    // (Canonical is about ordering, not visibility.)
+    tryAddButtonTopic(name);
+  }
+
+  // 2) Append any remaining non-system topics (e.g. site-built topics).
+  for (const t of topics) {
+    tryAddButtonTopic(t?.name);
+  }
+
+  return { topics, flat, buttonTopics };
 }
 
 async function getTocCached() {
@@ -378,18 +459,26 @@ const server = http.createServer(async (req, res) => {
     });
     req.on('end', () => {
       try {
-        /** @type {{file?: string, overflow?: boolean, scrollHeight?: number, clientHeight?: number, ts?: number}} */
+        /** @type {{file?: string, overflow?: boolean, overflowX?: boolean, overflowY?: boolean, scrollHeight?: number, clientHeight?: number, scrollWidth?: number, clientWidth?: number, ts?: number}} */
         const payload = raw ? JSON.parse(raw) : {};
         const file = String(payload.file || '').trim();
         const overflow = Boolean(payload.overflow);
+        const overflowX = Boolean(payload.overflowX);
+        const overflowY = Boolean(payload.overflowY);
         const scrollHeight = Number(payload.scrollHeight || 0);
         const clientHeight = Number(payload.clientHeight || 0);
+        const scrollWidth = Number(payload.scrollWidth || 0);
+        const clientWidth = Number(payload.clientWidth || 0);
 
         if (file) {
           if (overflow) {
-            console.log(
-              `[CRITICAL ERROR] A4 overflow: ${file} (scrollHeight=${scrollHeight}px, clientHeight=${clientHeight}px)`
-            );
+            const parts = [];
+            if (overflowY) parts.push(`Y scrollHeight=${scrollHeight}px clientHeight=${clientHeight}px`);
+            if (overflowX) parts.push(`X scrollWidth=${scrollWidth}px clientWidth=${clientWidth}px`);
+            const details = parts.length
+              ? parts.join(' • ')
+              : `scrollHeight=${scrollHeight}px, clientHeight=${clientHeight}px, scrollWidth=${scrollWidth}px, clientWidth=${clientWidth}px`;
+            console.log(`[CRITICAL ERROR] A4 overflow: ${file} (${details})`);
           }
         }
 

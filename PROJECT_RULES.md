@@ -16,7 +16,7 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 ### A4 content coverage (required)
 
 - Pages must be laid out to **use the full A4 page area** (no large unintended empty regions), while still respecting the A4 contract above.
-- **Pythagoras — page 3** (`עמוד-3.html`) MUST be composed to **span the entire A4 page** and utilize the available height according to the design rules of this repo.
+- **Pythagoras — topic page 1** (`עמוד-9.html`) MUST be composed to **span the entire A4 page** and utilize the available height according to the design rules of this repo.
 
 ### Topic pages must not overflow (required)
 
@@ -120,6 +120,14 @@ Notes:
 ---
 
 ## 2) Navigation engine (textbook hierarchy)
+
+### System files must never appear in the Preview TOC (required)
+
+- System/deployment files (Redirects, 404, Rules) must never appear in the `/preview` TOC or topic buttons.
+
+### Topic buttons must always lead to the first page (required)
+
+- Clicking a topic button must always navigate to the **first page** in that topic sequence (topic-local page 1), not to a previously selected or cached page.
 
 Each page MUST contain a `.preview-nav` with:
 

@@ -112,7 +112,8 @@
       window.addEventListener('resize', () => syncTopbarOffset());
 
       /** @type {{topics: {name: string, pages: any[]}[], flat: any[]}} */
-      let toc = { topics: [], flat: [] };
+      /** @type {{topics: {name: string, pages: any[]}[], flat: any[], buttonTopics?: {name: string, firstFile: string}[]}} */
+      let toc = { topics: [], flat: [], buttonTopics: [] };
 
       /** @type {Map<string, HTMLIFrameElement>} */
       let allFrames = new Map();
@@ -281,7 +282,16 @@
         return f.replace(/^\/+/, '').split('?')[0];
       }
 
-      async function reportLayoutGuard(file, overflow, scrollHeight, clientHeight) {
+      async function reportLayoutGuard(
+        file,
+        overflow,
+        scrollHeight,
+        clientHeight,
+        scrollWidth = 0,
+        clientWidth = 0,
+        overflowX = false,
+        overflowY = false
+      ) {
         const key = extractFileName(file);
         if (!key) return;
 
@@ -296,14 +306,72 @@
             body: JSON.stringify({
               file: key,
               overflow: Boolean(overflow),
+              overflowX: Boolean(overflowX),
+              overflowY: Boolean(overflowY),
               scrollHeight: Number(scrollHeight || 0),
               clientHeight: Number(clientHeight || 0),
+              scrollWidth: Number(scrollWidth || 0),
+              clientWidth: Number(clientWidth || 0),
               ts: Date.now()
             })
           });
         } catch {
           // ignore network errors
         }
+      }
+
+      function nextFrame() {
+        return new Promise((r) => window.requestAnimationFrame(() => r()));
+      }
+
+      async function reportLayoutGuardStable(file, pageEl) {
+        if (!file || !pageEl) return;
+
+        // Let injected styles/fonts settle before measuring.
+        await nextFrame();
+        await nextFrame();
+
+        try {
+          const fonts = document?.fonts;
+          if (fonts && typeof fonts.ready?.then === 'function') {
+            await Promise.race([
+              fonts.ready.catch(() => undefined),
+              sleep(250)
+            ]);
+          }
+        } catch {
+          // ignore
+        }
+
+        const first = measureOverflowFromPageEl(pageEl);
+
+        // Guard against transient false positives during late CSS / MathJax reflow.
+        if (first.overflow) {
+          await sleep(120);
+          const second = measureOverflowFromPageEl(pageEl);
+          await reportLayoutGuard(
+            file,
+            second.overflow,
+            second.scrollHeight,
+            second.clientHeight,
+            second.scrollWidth,
+            second.clientWidth,
+            second.overflowX,
+            second.overflowY
+          );
+          return;
+        }
+
+        await reportLayoutGuard(
+          file,
+          false,
+          first.scrollHeight,
+          first.clientHeight,
+          first.scrollWidth,
+          first.clientWidth,
+          first.overflowX,
+          first.overflowY
+        );
       }
 
       function measureOverflowFromPageEl(pageEl) {
@@ -349,7 +417,10 @@
       // If the environment blocks module scripts, fetch, or iframes (can happen in VS Code Simple Browser),
       // we still want a visible message rather than a blank screen.
       window.addEventListener('error', (e) => {
-        showFallback('שגיאה בתצוגה המקדימה.', String(e?.message || ''));
+        const msg = String(e?.message || '');
+        // Chrome can emit benign ResizeObserver loop errors during layout thrash; they don't mean the reader is broken.
+        if (/resizeobserver loop/i.test(msg)) return;
+        showFallback('שגיאה בתצוגה המקדימה.', msg);
       });
       window.addEventListener('unhandledrejection', (e) => {
         const reason = e?.reason instanceof Error ? e.reason.message : String(e?.reason || '');
@@ -359,7 +430,8 @@
       function getMode() {
         const url = new URL(window.location.href);
         const raw = url.searchParams.get('mode');
-        if (!raw) return 'book';
+        // Rules (SSOT): /preview defaults to "all pages" mode.
+        if (!raw) return 'all';
         const mode = String(raw).toLowerCase();
         return mode === 'all' ? 'all' : 'book';
       }
@@ -593,8 +665,7 @@
           // Layout guard: detect A4 overflow and report to server (terminal).
           try {
             const pageEl = hostEl.querySelector('.a4-page');
-            const m = measureOverflowFromPageEl(pageEl);
-            reportLayoutGuard(file, m.overflow, m.scrollHeight, m.clientHeight);
+            await reportLayoutGuardStable(file, pageEl);
           } catch {
             // ignore measurement errors
           }
@@ -700,7 +771,16 @@
           try {
             const srcBase = frameEl.dataset.src || '';
             const m = measureOverflowFromPageEl(page);
-            reportLayoutGuard(srcBase, m.overflow, m.scrollHeight, m.clientHeight);
+            reportLayoutGuard(
+              srcBase,
+              m.overflow,
+              m.scrollHeight,
+              m.clientHeight,
+              m.scrollWidth,
+              m.clientWidth,
+              m.overflowX,
+              m.overflowY
+            );
           } catch {
             // ignore
           }
@@ -841,19 +921,42 @@
         topicButtons.innerHTML = '';
         topicButtonsMap = new Map();
 
-        for (const topic of toc.topics) {
-          const firstPage = topic?.pages?.[0]?.file || '';
-          const name = topic?.name || '';
+        // Prefer server-provided canonical topic buttons (derived from root A4 nav-meta pages only).
+        const buttonTopics = Array.isArray(toc.buttonTopics) && toc.buttonTopics.length ? toc.buttonTopics : [];
+        const fallbackTopics = !buttonTopics.length ? toc.topics : [];
+
+        const items = buttonTopics.length
+          ? buttonTopics.map((t) => ({ name: t?.name || '', firstFile: t?.firstFile || '' }))
+          : fallbackTopics.map((t) => ({ name: t?.name || '', firstFile: t?.pages?.[0]?.file || '' }));
+
+        for (const item of items) {
+          const name = String(item?.name || '').trim();
+          const firstFileRaw = String(item?.firstFile || '').trim();
+          if (!name || !firstFileRaw) continue;
           if (name === 'אחר') continue;
-          if (!name || !firstPage) continue;
+          if (/\bredirect\b/iu.test(name)) continue;
 
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'reader-btn reader-topicBtn';
           btn.textContent = name;
+
           btn.addEventListener('click', () => {
-            openFileInCurrentMode(firstPage, 'נושא');
-            setActiveTopicButtons(getSelectedFile() || firstPage);
+            // Robust filename normalization for Hebrew/Unicode paths.
+            // Use encodeURIComponent as requested, but keep a raw file key for TOC matching.
+            let firstFile = firstFileRaw;
+            try {
+              firstFile = decodeURIComponent(encodeURIComponent(firstFileRaw));
+            } catch {
+              firstFile = firstFileRaw;
+            }
+
+            // Ensure we always navigate to the first page of that topic sequence.
+            const entry = toc.flat.find((p) => p.topic === name) || toc.flat.find((p) => p.file === firstFile) || null;
+            const fileToOpen = entry?.file || firstFile;
+
+            openFileInCurrentMode(fileToOpen, 'נושא');
+            setActiveTopicButtons(getSelectedFile() || fileToOpen);
           });
 
           topicButtons.appendChild(btn);
@@ -1109,7 +1212,8 @@
           const data = await res.json();
           toc = {
             topics: Array.isArray(data.topics) ? data.topics : [],
-            flat: Array.isArray(data.flat) ? data.flat : []
+            flat: Array.isArray(data.flat) ? data.flat : [],
+            buttonTopics: Array.isArray(data.buttonTopics) ? data.buttonTopics : []
           };
 
           if (diagConfig.enabled) {
