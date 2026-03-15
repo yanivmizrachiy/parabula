@@ -1,0 +1,126 @@
+/* עמוד 35 — משוואה ריבועית */
+
+.page-35 .question-block {
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.page-35 .eq-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.page-35 .eq-lite-grid {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: auto 1fr auto 1fr auto;
+	column-gap: 18px;
+	align-items: start;
+}
+
+.page-35 .eq-lite-item {
+	direction: ltr;
+	unicode-bidi: isolate;
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
+	justify-content: flex-start;
+	font-size: 16px;
+	line-height: 22px;
+	white-space: nowrap;
+}
+
+.page-35 .eq-lite-index {
+	font-weight: 500;
+}
+
+.page-35 .eq-lite-equation {
+	text-align: left;
+}
+
+.page-35 .eq-pos-1 {
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.page-35 .eq-pos-4 {
+	grid-column: 2;
+	grid-row: 1;
+}
+
+.page-35 .eq-pos-7 {
+	grid-column: 3;
+	grid-row: 1;
+}
+
+.page-35 .eq-pos-2 {
+	grid-column: 1;
+	grid-row: 3;
+}
+
+.page-35 .eq-pos-5 {
+	grid-column: 2;
+	grid-row: 3;
+}
+
+.page-35 .eq-pos-8 {
+	grid-column: 3;
+	grid-row: 3;
+}
+
+.page-35 .eq-pos-3 {
+	grid-column: 1;
+	grid-row: 5;
+}
+
+.page-35 .eq-pos-6 {
+	grid-column: 2;
+	grid-row: 5;
+}
+
+.page-35 .eq-pos-9 {
+	grid-column: 3;
+	grid-row: 5;
+}
+
+.page-35 .eq-footer {
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.page-35 .eq-solutions .q-sub {
+	margin-bottom: 0;
+}
+
+.page-35 .eq-solutions {
+	padding-bottom: 1mm;
+}
+
+.page-35 .eq-solutions .q-text {
+	display: grid;
+	grid-template-columns: max-content repeat(9, minmax(0, 1fr));
+	column-gap: 8px;
+	align-items: center;
+	width: 100%;
+	font-size: 9px;
+}
+
+.page-35 .eq-solutions .solutions-label {
+	font-weight: 500;
+}
+
+.page-35 .eq-solution {
+	direction: ltr;
+	unicode-bidi: isolate;
+	font-weight: 500 !important;
+	text-align: center;
+	white-space: nowrap;
+}
