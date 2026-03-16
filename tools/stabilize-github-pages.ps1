@@ -37,6 +37,7 @@ function Write-IndexListing {
         [Parameter(Mandatory = $true)][string]$SiteRoot
     )
 
+    $mathJaxConfigLine = '<script>MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]], displayMath: [["$$", "$$"]] } };</script>'
     $mathJaxLine = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>'
 
     $htmlFiles = Get-ChildItem -LiteralPath $SiteRoot -Recurse -File -Filter '*.html'
@@ -57,6 +58,7 @@ function Write-IndexListing {
     [void]$lines.Add('<head>')
     [void]$lines.Add('  <meta charset="utf-8">')
     [void]$lines.Add('  <meta name="viewport" content="width=device-width, initial-scale=1">')
+    [void]$lines.Add(('  ' + $mathJaxConfigLine))
     [void]$lines.Add(('  ' + $mathJaxLine))
     [void]$lines.Add('  <title>Parabula</title>')
     [void]$lines.Add('</head>')

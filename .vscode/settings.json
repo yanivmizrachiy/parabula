@@ -1,7 +1,8 @@
 {
     "livePreview.autoRefreshPreview": "onAnyChange",
+    "livePreview.portNumber": 5500,
     "livePreview.openPreviewTarget": "Embedded Preview",
     "livePreview.notifyOnOpen": false,
-    "livePreview.defaultPreviewPath": "/preview/index.html",
+    "livePreview.defaultPreviewPath": "עמוד-1.html",
     "task.allowAutomaticTasks": "on"
 }

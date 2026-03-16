@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const PORT_ENV = String(process.env.PORT ?? '').trim();
-const DEFAULT_PORT = Number.isFinite(Number(PORT_ENV)) ? Number(PORT_ENV) : 5179;
+const DEFAULT_PORT = Number.isFinite(Number(PORT_ENV)) ? Number(PORT_ENV) : 5500;
 const DEFAULT_HOST = String(process.env.HOST || '127.0.0.1');
 
 /** @type {Set<import('node:http').ServerResponse>} */
@@ -263,6 +263,9 @@ async function buildToc() {
       continue;
     }
 
+    const normalizedRel = String(rel).replace(/\\/g, '/');
+    const isSiteFile = normalizedRel.startsWith('site/');
+
     const meta = parsePageMetaFromHtml(html);
 
     // Extra hardening: if the document title or meta topic indicates Redirect,
@@ -291,6 +294,16 @@ async function buildToc() {
         if (!t?.name) continue;
         if (/\bredirect\b/iu.test(t.name)) continue;
         canonicalTopicNames.add(t.name);
+      }
+    }
+
+    // Avoid duplicate topics in the preview top-bar when a canonical root A4 topic exists.
+    // Example: site/משוואות/עמוד-X.html uses <title> like "משוואות — עמוד 1" (no nav-meta),
+    // which would otherwise explode into many separate "topics" and buttons.
+    if (isSiteFile && !meta.topic) {
+      const folderTopic = topicFromFilePath(rel);
+      if (folderTopic && canonicalTopicNames.has(folderTopic)) {
+        continue;
       }
     }
 

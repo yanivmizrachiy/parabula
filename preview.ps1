@@ -2,7 +2,7 @@ param(
 	[string]$File = '',
 	[ValidateSet('all', 'book')]
 	[string]$Mode = 'all',
-	[int]$Port = 5179,
+	[int]$Port = 5500,
 	[switch]$Lan,
 	[string]$LanIp = ''
 )

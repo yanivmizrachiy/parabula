@@ -1,18 +1,6 @@
 /* עמוד 70 — משוואות */
+@import "../topics/equations.css";
 
 .page-70 .question-block {
   justify-content: flex-start;
-}
-
-.page-70 .pdf-wrap {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-}
-
-.page-70 .pdf-page {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
 }

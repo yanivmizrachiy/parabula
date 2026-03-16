@@ -3,7 +3,7 @@
 :root {
   --ink: #000;
   --paper: #fff;
-  --screen-bg: #f2f2f2;
+  --screen-bg: #e0e0e0;
   --title-blue: #0b55d4;
   --page-padding: 14mm;
   --page-outline: 1px dashed rgba(0, 0, 0, 0.45);
@@ -25,22 +25,32 @@ body {
 }
 
 @media screen {
-  body { background: var(--screen-bg); }
+  body {
+    background: var(--screen-bg);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
 
   .page {
-    margin: 12px auto;
+    margin: 30px;
     background: var(--paper);
-    outline: var(--page-outline);
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    outline: none;
     outline-offset: 0;
+    overflow: hidden;
   }
 }
 
 @media print {
-  body { background: var(--paper); }
+  body { background: none; }
 
   .page {
     margin: 0;
     outline: none;
+    box-shadow: none;
+    width: 100%;
   }
 }
 

@@ -1,0 +1,48 @@
+/* Topic shared styles — משוואות (root A4 pages) */
+
+.eq-sheet {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.eq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10mm;
+  align-content: start;
+}
+
+.eq-item {
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 6mm 6mm;
+  background: var(--bg-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20mm;
+}
+
+.eq-math {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+/* Make MathJax inherit the page font for uniformity */
+.mjx-chtml {
+  font-family: inherit;
+}
+
+.eq-raw {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}

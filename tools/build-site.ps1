@@ -7,6 +7,7 @@ $outRoot = Join-Path $repoRoot 'site'
 
 $A4RootPageRe = '^עמוד-(\d+)\.html$'
 
+$mathJaxConfigLine = '<script>MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]], displayMath: [["$$", "$$"]] } };</script>'
 $mathJaxLine = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>'
 
 function Encode-UrlPath {
@@ -113,12 +114,22 @@ foreach ($indexFile in $indexFiles) {
     $html = $html.Replace('src="../assets/', 'src="assets/')
     $html = $html.Replace("src='../assets/", "src='assets/")
 
-    if ($html -notlike '*tex-chtml.js*') {
+    $hasMathJax = ($html -like '*tex-chtml.js*')
+    $hasMathJaxConfig = ($html -match '(?is)<script[^>]*>\s*MathJax\s*=')
+
+    if (-not $hasMathJax) {
         $pos = $html.IndexOf('</head>', [System.StringComparison]::OrdinalIgnoreCase)
         if ($pos -lt 0) {
             throw "Missing </head> in: $($indexFile.FullName)"
         }
-        $html = $html.Insert($pos, ($mathJaxLine + "`n"))
+        $html = $html.Insert($pos, ($mathJaxConfigLine + "`n" + $mathJaxLine + "`n"))
+    }
+    elseif (-not $hasMathJaxConfig) {
+        $pos = $html.IndexOf('</head>', [System.StringComparison]::OrdinalIgnoreCase)
+        if ($pos -lt 0) {
+            throw "Missing </head> in: $($indexFile.FullName)"
+        }
+        $html = $html.Insert($pos, ($mathJaxConfigLine + "`n"))
     }
     Set-Content -LiteralPath $destPath -Value $html -Encoding utf8
 }
@@ -151,6 +162,7 @@ $lines = New-Object System.Collections.Generic.List[string]
 [void]$lines.Add('<head>')
 [void]$lines.Add('  <meta charset="utf-8">')
 [void]$lines.Add('  <meta name="viewport" content="width=device-width, initial-scale=1">')
+[void]$lines.Add(('  ' + $mathJaxConfigLine))
 [void]$lines.Add(('  ' + $mathJaxLine))
 [void]$lines.Add('  <title>Parabula</title>')
 [void]$lines.Add('</head>')

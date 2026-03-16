@@ -286,7 +286,32 @@
 
                 <div class="q-sub">
                     <div class="bullet-container"><div class="bullet-small"></div></div>
-                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5179</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5179/preview</span>.</div>
+                    <div class="q-text rules-paragraph">בנוסף יש Reader תצוגה מקדימה בכתובת <span class="rules-code">/preview</span> (דרך השרת <span class="rules-code">npm run preview</span> או <span class="rules-code">./preview.ps1</span>). ברירת המחדל היא פורט <span class="rules-code">5500</span>, לדוגמה: <span class="rules-code">http://127.0.0.1:5500/preview</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>Zero‑Touch בתוך VS Code (חובה):</strong> פתיחת התיקייה חייבת להרים אוטומטית את ה‑Reader בתוך VS Code, <strong>בלי</strong> לפתוח דפדפן חיצוני ובלי להריץ פקודות ידנית.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph">הדרישות הללו נאכפות דרך <span class="rules-code">.vscode/settings.json</span> + <span class="rules-code">.vscode/tasks.json</span>: פורט קבוע <span class="rules-code">5500</span>, פתיחה פנימית (Embedded) ומשימה עם <span class="rules-code">runOn: folderOpen</span>.</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>הרחבה רשמית (חובה):</strong> חייבת להיות מותקנת/מומלצת ההרחבה <span class="rules-code">ms-vscode.live-server</span> (Microsoft Live Preview), וההגדרות שלה ננעלות דרך <span class="rules-code">livePreview.*</span> (פורט <span class="rules-code">5500</span>, Embedded). ההרחבה אינה מחליפה את שרת ה‑Reader (שמוגש ע"י <span class="rules-code">npm run preview</span>).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>סקריפט PowerShell יחיד (חובה):</strong> <span class="rules-code">tools/zero-touch-preview.ps1</span> הוא הסקריפט היחיד שמגדיר הכול: כותב/מיישר <span class="rules-code">.vscode/settings.json</span>, <span class="rules-code">.vscode/tasks.json</span>, <span class="rules-code">.vscode/extensions.json</span> ומתקין את ההרחבה (אם פקודת <span class="rules-code">code</span> זמינה).</div>
+                </div>
+
+                <div class="q-sub">
+                    <div class="bullet-container"><div class="bullet-small"></div></div>
+                    <div class="q-text rules-paragraph"><strong>RTL + MathJax (חובה):</strong> ה‑Preview הפנימי בתוך VS Code חייב לרנדר RTL ו‑MathJax כמו בדפדפן רגיל. לכן לא מסירים <span class="rules-code">dir=&quot;rtl&quot;</span> מה‑HTML, ומשאירים MathJax עם תיחום <span class="rules-code">\( ... \)</span> בלבד.</div>
                 </div>
 
                 <div class="q-sub">

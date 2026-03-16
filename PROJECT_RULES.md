@@ -103,7 +103,7 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 ### The canonical preview server
 
 - Run: `npm run preview`
-- URL: http://127.0.0.1:5179
+- URL: http://127.0.0.1:5500
 - Reader UI: `/preview` (also served at `/`)
 
 Reader URL parameters (supported):
@@ -115,6 +115,14 @@ Notes:
 
 - Default host/port are controlled by env vars `HOST` and `PORT` (see `preview/server.mjs`).
 - Windows helper: `./preview.ps1` (can also run with `-Lan` to bind `0.0.0.0`).
+
+### Zero‑Touch VS Code (required)
+
+- Opening this repo folder in VS Code must automatically start the canonical preview server and open the Reader inside VS Code (no external browser, no manual commands).
+- Port is fixed to `5500`.
+- Repo must include the single setup script: `tools/zero-touch-preview.ps1`.
+- `.vscode/tasks.json` must include a task with `runOptions.runOn = folderOpen`.
+- VS Code must recommend/install the official extension `ms-vscode.live-server` (Live Preview) and pin `livePreview.*` settings in `.vscode/settings.json`.
 
 ### Live reload + correctness signals
 
