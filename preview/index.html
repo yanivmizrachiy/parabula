@@ -864,7 +864,8 @@
 
       function setActiveTopicButtons(selectedFile) {
         const entry = findEntry(selectedFile);
-        const activeTopic = entry ? entry.topic || 'אחר' : '';
+        const activeTopicRaw = entry ? entry.topic || 'אחר' : '';
+        const activeTopic = normalizeTopicName(activeTopicRaw);
         for (const [topicName, btn] of topicButtonsMap.entries()) {
           const aliasFor = String(btn?.dataset?.aliasFor || '').trim();
           const isActive = topicName === activeTopic || (aliasFor && aliasFor === activeTopic);
@@ -872,6 +873,15 @@
           if (isActive) btn.setAttribute('aria-current', 'true');
           else btn.removeAttribute('aria-current');
         }
+      }
+
+      function normalizeTopicName(name) {
+        const s = String(name || '').trim();
+        if (!s) return '';
+        // Collapse generated site topic names like "משוואות — עמוד 1" into the canonical topic.
+        // This prevents dozens of duplicate topic buttons for the same Equations sequence.
+        if (/^משוואות\s*—\s*עמוד\s*\d+(\s*\/\s*\d+)?\s*$/u.test(s)) return 'משוואות';
+        return s;
       }
 
       async function openFileInCurrentMode(file, reason) {
@@ -910,13 +920,29 @@
           ? buttonTopics.map((t) => ({ name: t?.name || '', firstFile: t?.firstFile || '', aliasFor: t?.aliasFor || '' }))
           : fallbackTopics.map((t) => ({ name: t?.name || '', firstFile: t?.pages?.[0]?.file || '', aliasFor: '' }));
 
+        // De-dup topic buttons after normalizing names.
+        /** @type {{name: string, firstFile: string, aliasFor: string}[]} */
+        const deduped = [];
+        const seen = new Set();
         for (const item of items) {
-          const name = String(item?.name || '').trim();
+          const nameRaw = String(item?.name || '').trim();
+          const name = normalizeTopicName(nameRaw);
           const firstFileRaw = String(item?.firstFile || '').trim();
           const aliasFor = String(item?.aliasFor || '').trim();
           if (!name || !firstFileRaw) continue;
           if (name === 'אחר') continue;
           if (/\bredirect\b/iu.test(name)) continue;
+
+          const key = aliasFor ? `${name}::alias::${aliasFor}` : name;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          deduped.push({ name, firstFile: firstFileRaw, aliasFor });
+        }
+
+        for (const item of deduped) {
+          const name = String(item?.name || '').trim();
+          const firstFileRaw = String(item?.firstFile || '').trim();
+          const aliasFor = String(item?.aliasFor || '').trim();
 
           const btn = document.createElement('button');
           btn.type = 'button';
@@ -935,7 +961,10 @@
             }
 
             // Ensure we always navigate to the first page of that topic sequence.
-            const entry = toc.flat.find((p) => p.topic === name) || toc.flat.find((p) => p.file === firstFile) || null;
+            const entry =
+              toc.flat.find((p) => normalizeTopicName(p.topic) === name) ||
+              toc.flat.find((p) => p.file === firstFile) ||
+              null;
             const fileToOpen = entry?.file || firstFile;
 
             // UX: Built topic pages under site/ render via iframe fallback.

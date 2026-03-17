@@ -37,24 +37,22 @@ async function main() {
 
     let patched = html;
 
-    // Fix MathJax delimiter escaping: many generated pages ended up with "\(" which JS treats as "(".
-    // Use exact string replacement (stable and fast).
-    patched = patched.replace(
-      'MathJax = { tex: { inlineMath: [["\\(", "\\)"]] } };',
-      'MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]] } };'
-    );
+    // Ensure MathJax delimiters are escaped correctly in JS source, and enable
+    // automatic line breaks so long OCR-derived equations don't overflow A4.
+    // Note: the desired HTML must contain "\\(" which at runtime becomes "\(".
+    const desired =
+      'MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]] }, chtml: { linebreaks: { automatic: true, width: "container" } } };';
 
-    // A second variant appears in some pages (extra whitespace). Normalize it too.
-    patched = patched.replace(
+    const variants = [
+      // Broken: JS eats the backslash, leaving "(".
       'MathJax = { tex: { inlineMath: [["\\(", "\\)"]] } };',
-      'MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]] } };'
-    );
-
-    // Defensive: if a page already has the correct form, leave it as-is.
-    patched = patched.replace(
+      // Correct delimiters, but missing linebreaks.
       'MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]] } };',
-      'MathJax = { tex: { inlineMath: [["\\\\(", "\\\\)"]] } };'
-    );
+      // Already correct (idempotent).
+      desired
+    ];
+
+    for (const v of variants) patched = patched.replace(v, desired);
 
     if (patched !== html) {
       await fs.writeFile(filePath, patched, "utf8");

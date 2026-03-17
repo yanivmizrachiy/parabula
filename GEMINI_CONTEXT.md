@@ -40,8 +40,8 @@
 - Preview מקומי (מומלץ):
   - `npm run preview` או `./preview.ps1`
   - Reader:
-    - `http://127.0.0.1:5179/preview`
-    - פתיחה על קובץ מסוים: `http://127.0.0.1:5179/preview?file=...`
+    - `http://127.0.0.1:5500/preview`
+    - פתיחה על קובץ מסוים: `http://127.0.0.1:5500/preview?file=...`
 - בדיקות:
   - `npm test`
 

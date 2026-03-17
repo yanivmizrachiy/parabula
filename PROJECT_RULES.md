@@ -32,10 +32,11 @@ This repository is a **self-validating, RTL-first A4 digital textbook**. This do
 ### Project-wide HTML/CSS separation (required)
 
 - The repository enforces **full separation between HTML and CSS**.
-- **No inline CSS anywhere**:
-  - No `<style>` blocks
-  - No `style="..."` attributes
+- **No inline CSS in HTML** (root `עמוד-N.html` and topic HTML under `pages/**`):
+  - No `<style>` blocks in HTML
+  - No `style="..."` attributes in HTML
 - Styling must live in dedicated CSS files (A4 pages under `styles/`, topic pages under their topic `style.css`).
+- **SVG assets are exempt**: SVG files under `assets/**` may include internal `<style>` or `style="..."` as part of the artwork, as long as the HTML stays clean.
 
 ### RTL rules
 

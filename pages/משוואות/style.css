@@ -116,3 +116,53 @@ body {
   display: block;
   transform: translateY(calc(-1 * var(--pdf-top-crop)));
 }
+
+/* Rewritten equations content (MathJax) */
+
+.eq-sheet {
+  position: absolute;
+  inset: calc(14mm + 22mm) 14mm 14mm 14mm;
+  z-index: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.eq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10mm;
+  align-content: start;
+}
+
+.eq-item {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 6mm;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20mm;
+}
+
+.eq-math {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.mjx-chtml {
+  font-family: inherit;
+}
+
+.eq-raw {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}

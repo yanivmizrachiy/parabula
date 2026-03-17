@@ -19,7 +19,7 @@ Key rules:
 
 - A4 wrapper: exactly one `main.a4-page.page-N` per `עמוד-N.html`.
 - A4 size is fixed (don’t “solve” layout via overflow hacks).
-- **No inline CSS anywhere**: no `<style>` tags, no `style="..."` attributes.
+- **No inline CSS in HTML**: no `<style>` tags and no `style="..."` attributes in HTML pages.
 - Page CSS must be in `styles/pages/עמוד-N.css`.
 - MathJax delimiters:
   - Inline: `\( ... \)`
@@ -33,8 +33,9 @@ Key rules:
 ### Preview server
 
 - File: `preview/server.mjs`
-- Default: `HOST=127.0.0.1`, `PORT=5179`
-- URL: `http://127.0.0.1:5179/preview`
+- File: `preview/server.mjs`
+- Default: `HOST=127.0.0.1`, `PORT=5500`
+- URL: `http://127.0.0.1:5500/preview`
 
 Capabilities:
 
